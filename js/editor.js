@@ -179,9 +179,9 @@ function giveEditorFocus() {
 };
 
 // Loads the file editor. Accepts two parameters, dir and filename.
-function showFileEditor(dir, filename) {
+function showFileEditor(dir, filename, fileActions) {
 	// Check if unsupported file format
-	if(FileActions.getCurrentMimeType() === 'text/rtf') {
+	if((fileActions || FileActions).getCurrentMimeType() === 'text/rtf') {
 		// Download the file instead.
 		window.location = OC.filePath('files', 'ajax', 'download.php') + '?files=' + encodeURIComponent(filename) + '&dir=' + encodeURIComponent($('#dir').val());
 	} else {
@@ -331,44 +331,31 @@ function reopenEditor() {
 
 var is_editor_shown = false;
 $(document).ready(function () {
+	var supportedMimeTypes = [
+		'text',
+		'application/xml',
+		'application/x-empty',
+		'inode/x-empty',
+		'application/x-php',
+		'application/javascript',
+		'application/x-pearl',
+		'application/x-tex'
+	];
 	if ($('#isPublic').val()){
 		// disable editor in public mode (not supported yet)
 		return;
 	}
-	if (typeof FileActions !== 'undefined') {
-		FileActions.register('text', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('text', 'Edit');
-		FileActions.register('application/xml', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/xml', 'Edit');
-		FileActions.register('application/x-empty', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/x-empty', 'Edit');
-		FileActions.register('inode/x-empty', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('inode/x-empty', 'Edit');
-		FileActions.register('application/x-php', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/x-php', 'Edit');
-		FileActions.register('application/javascript', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/javascript', 'Edit');
-		FileActions.register('application/x-pearl', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/x-pearl', 'Edit');
-		FileActions.register('application/x-tex', 'Edit', OC.PERMISSION_READ, '', function (filename) {
-			showFileEditor($('#dir').val(), filename);
-		});
-		FileActions.setDefault('application/x-tex', 'Edit');
 
+	function actionHandler(filename, context) {
+		showFileEditor(context.dir, filename, context.fileActions);
+	}
+
+	if (OCA.Files.fileActions) {
+		var fileActions = OCA.Files.fileActions;
+		_.each(supportedMimeTypes, function(mimetype) {
+			fileActions.register(mimetype, 'Edit', OC.PERMISSION_READ, '', actionHandler);
+			fileActions.setDefault(mimetype, 'Edit');
+		});
 	}
 	
 	//legacy search result customization
