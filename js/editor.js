@@ -350,7 +350,7 @@ $(document).ready(function () {
 		showFileEditor(context.dir, filename, context.fileActions);
 	}
 
-	if (OCA.Files.fileActions) {
+	if (OCA.Files) {
 		var fileActions = OCA.Files.fileActions;
 		_.each(supportedMimeTypes, function(mimetype) {
 			fileActions.register(mimetype, 'Edit', OC.PERMISSION_READ, '', actionHandler);
