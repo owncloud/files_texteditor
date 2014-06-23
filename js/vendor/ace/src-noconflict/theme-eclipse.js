@@ -43,12 +43,13 @@ background: #ebebeb;\
 }\
 .ace-eclipse {\
 background-color: #FFFFFF;\
+color: black;\
 }\
 .ace-eclipse .ace_fold {\
 background-color: rgb(60, 76, 114);\
 }\
 .ace-eclipse .ace_cursor {\
-border-left: 2px solid black;\
+color: black;\
 }\
 .ace-eclipse .ace_storage,\
 .ace-eclipse .ace_keyword,\
@@ -107,8 +108,11 @@ color:rgb(127, 0, 127);\
 .ace-eclipse .ace_marker-layer .ace_step {\
 background: rgb(255, 255, 0);\
 }\
-.ace-eclipse .ace_marker-layer .ace_active-line {\
+.ace-eclipse .ace_active-line {\
 background: rgb(232, 242, 254);\
+}\
+.ace-eclipse .ace_gutter-active-line {\
+background-color : #DADADA;\
 }\
 .ace-eclipse .ace_marker-layer .ace_selected-word {\
 border: 1px solid rgb(181, 213, 255);\

@@ -28,17 +28,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/matlab', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/matlab_highlight_rules', 'ace/range'], function(require, exports, module) {
+ace.define('ace/mode/matlab', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/matlab_highlight_rules', 'ace/range'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var MatlabHighlightRules = require("./matlab_highlight_rules").MatlabHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new MatlabHighlightRules().getRules());
+    this.HighlightRules = MatlabHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -47,6 +46,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = "%";
     this.blockComment = {start: "%{", end: "%}"};
 
+    this.$id = "ace/mode/matlab";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -191,7 +191,7 @@ var keywords = (
     this.$rules = {
         "start" : [ {
             token : "comment",
-            regex : "^%[^\r\n]*"
+            regex : "%[^\r\n]*"
         }, {
              token : "string",           // " string
             regex : '".*?"'
@@ -206,7 +206,7 @@ var keywords = (
             regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
         }, {
             token : "keyword.operator",
-            regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
+            regex : "\\+|\\-|\\/|\\/\\/|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
         }, {
              token : "punctuation.operator",
              regex : "\\?|\\:|\\,|\\;|\\."

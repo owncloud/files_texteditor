@@ -44,15 +44,9 @@ background: #272727\
 background-color: #2D2D2D;\
 color: #CCCCCC\
 }\
-.ace-tomorrow-night-eighties .ace_constant.ace_other {\
-color: #CCCCCC\
-}\
+.ace-tomorrow-night-eighties .ace_constant.ace_other,\
 .ace-tomorrow-night-eighties .ace_cursor {\
-border-left: 2px solid #CCCCCC\
-}\
-.ace-tomorrow-night-eighties .ace_overwrite-cursors .ace_cursor {\
-border-left: 0px;\
-border-bottom: 1px solid #CCCCCC\
+color: #CCCCCC\
 }\
 .ace-tomorrow-night-eighties .ace_marker-layer .ace_selection {\
 background: #515151\
@@ -67,6 +61,9 @@ background: rgb(102, 82, 0)\
 .ace-tomorrow-night-eighties .ace_marker-layer .ace_bracket {\
 margin: -1px 0 0 -1px;\
 border: 1px solid #6A6A6A\
+}\
+.ace-tomorrow-night-bright .ace_stack {\
+background: rgb(66, 90, 44)\
 }\
 .ace-tomorrow-night-eighties .ace_marker-layer .ace_active-line {\
 background: #393939\
@@ -120,6 +117,7 @@ color: #6699CC\
 color: #FFCC66\
 }\
 .ace-tomorrow-night-eighties .ace_heading,\
+.ace-tomorrow-night-eighties .ace_markup.ace_heading,\
 .ace-tomorrow-night-eighties .ace_string {\
 color: #99CC99\
 }\

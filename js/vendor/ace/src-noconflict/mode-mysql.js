@@ -28,16 +28,15 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/mysql', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/mysql_highlight_rules', 'ace/range'], function(require, exports, module) {
+ace.define('ace/mode/mysql', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/mysql_highlight_rules', 'ace/range'], function(require, exports, module) {
 
 var oop = require("../lib/oop");
 var TextMode = require("../mode/text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var MysqlHighlightRules = require("./mysql_highlight_rules").MysqlHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new MysqlHighlightRules().getRules());
+    this.HighlightRules = MysqlHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -45,6 +44,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = ["--", "#"]; // todo space
     this.blockComment = {start: "/*", end: "*/"};
 
+    this.$id = "ace/mode/mysql";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -127,7 +127,7 @@ var MysqlHighlightRules = function() {
         "comment" : [
             {token : "comment", regex : "\\*\\/", next : "start"},
             {defaultToken : "comment"}
-        ],
+        ]
     };
 
     this.embedRules(DocCommentHighlightRules, "doc-", [ DocCommentHighlightRules.getEndRule("start") ]);

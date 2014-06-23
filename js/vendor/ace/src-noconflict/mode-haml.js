@@ -33,26 +33,24 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/haml', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/haml_highlight_rules', 'ace/mode/folding/coffee'], function(require, exports, module) {
+ace.define('ace/mode/haml', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/haml_highlight_rules', 'ace/mode/folding/coffee'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var HamlHighlightRules = require("./haml_highlight_rules").HamlHighlightRules;
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    var highlighter = new HamlHighlightRules();
-    this.foldingRules = new FoldMode();    
-    
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.HighlightRules = HamlHighlightRules;
+    this.foldingRules = new FoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
     this.lineCommentStart = ["//", "#"];
     
+    this.$id = "ace/mode/haml";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -339,11 +337,13 @@ var RubyHighlightRules = function() {
                 rules: {
                     heredoc: [{
                         onMatch:  function(value, currentState, stack) {
-                            if (value == stack[1]) {
+                            if (value === stack[1]) {
                                 stack.shift();
                                 stack.shift();
+                                this.next = stack[0] || "start";
                                 return "support.class";
                             }
+                            this.next = "";
                             return "string";
                         },
                         regex: ".*$",
@@ -354,16 +354,26 @@ var RubyHighlightRules = function() {
                         regex: "^ +"
                     }, {
                         onMatch:  function(value, currentState, stack) {
-                            if (value == stack[1]) {
+                            if (value === stack[1]) {
                                 stack.shift();
                                 stack.shift();
+                                this.next = stack[0] || "start";
                                 return "support.class";
                             }
+                            this.next = "";
                             return "string";
                         },
                         regex: ".*$",
                         next: "start"
                     }]
+                }
+            }, {
+                regex : "$",
+                token : "empty",
+                next : function(currentState, stack) {
+                    if (stack[0] === "heredoc" || stack[0] === "indentedHeredoc")
+                        return stack[0];
+                    return currentState;
                 }
             }, {
                 token : "keyword.operator",

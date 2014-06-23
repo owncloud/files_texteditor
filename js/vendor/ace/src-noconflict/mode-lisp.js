@@ -29,19 +29,15 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/lisp', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lisp_highlight_rules'], function(require, exports, module) {
+ace.define('ace/mode/lisp', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/lisp_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var LispHighlightRules = require("./lisp_highlight_rules").LispHighlightRules;
 
 var Mode = function() {
-    var highlighter = new LispHighlightRules();
-    
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
-    this.$keywordList = highlighter.$keywordList;
+    this.HighlightRules = LispHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
@@ -49,6 +45,7 @@ oop.inherits(Mode, TextMode);
        
     this.lineCommentStart = ";";
     
+    this.$id = "ace/mode/lisp";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

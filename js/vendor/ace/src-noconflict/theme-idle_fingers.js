@@ -45,11 +45,7 @@ background-color: #323232;\
 color: #FFFFFF\
 }\
 .ace-idle-fingers .ace_cursor {\
-border-left: 2px solid #91FF00\
-}\
-.ace-idle-fingers .ace_overwrite-cursors .ace_cursor {\
-border-left: 0px;\
-border-bottom: 1px solid #91FF00\
+color: #91FF00\
 }\
 .ace-idle-fingers .ace_marker-layer .ace_selection {\
 background: rgba(90, 100, 126, 0.88)\
@@ -123,7 +119,7 @@ color: #323232;\
 background-color: #FFF980\
 }\
 .ace-idle-fingers .ace_indent-guide {\
-background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y;\
+background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y\
 }";
 
 var dom = require("../lib/dom");

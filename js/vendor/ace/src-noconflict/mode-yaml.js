@@ -28,18 +28,17 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/yaml', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/yaml_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/mode/folding/coffee'], function(require, exports, module) {
+ace.define('ace/mode/yaml', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/yaml_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/mode/folding/coffee'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var YamlHighlightRules = require("./yaml_highlight_rules").YamlHighlightRules;
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new YamlHighlightRules().getRules());
+    this.HighlightRules = YamlHighlightRules;
     this.$outdent = new MatchingBraceOutdent();
     this.foldingRules = new FoldMode();
 };
@@ -71,6 +70,7 @@ oop.inherits(Mode, TextMode);
     };
 
 
+    this.$id = "ace/mode/yaml";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -118,23 +118,20 @@ var YamlHighlightRules = function() {
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // multi line string start
-                regex : '[\\|>]\\w*',
+                regex : '[|>][-+\\d\\s]*$',
                 next : "qqstring"
             }, {
                 token : "string", // single quoted string
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
             }, {
                 token : "constant.numeric", // float
-                regex : /[+\-]?[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)?\b/
+                regex : /(\b|[+\-\.])[\d_]+(?:(?:\.[\d_]*)?(?:[eE][+\-]?[\d_]+)?)/
             }, {
                 token : "constant.numeric", // other number
                 regex : /[+\-]?\.inf\b|NaN\b|0x[\dA-Fa-f_]+|0b[10_]+/
             }, {
                 token : "constant.language.boolean",
                 regex : "(?:true|false|TRUE|FALSE|True|False|yes|no)\\b"
-            }, {
-                token : "invalid.illegal", // comments are not allowed
-                regex : "\\/\\/.*$"
             }, {
                 token : "paren.lparen",
                 regex : "[[({]"
