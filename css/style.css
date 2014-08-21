@@ -3,7 +3,7 @@
 	font-size: 12px !important;
 }
 
-#editor_container #editor {
+#editor_container #editor_content {
 	position: relative;
 	display: block;
 	top: 0;
