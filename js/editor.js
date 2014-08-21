@@ -71,8 +71,7 @@ function showControls(context, dir, filename, writeable) {
 	if (writeable) {
 		editorbarhtml += '<button id="editor_save">' + t('files_texteditor', 'Save') + '</button>';
 	}
-	editorbarhtml += '<label for="editorseachval">' + t('files_texteditor', 'Search');
-	editorbarhtml += '</label><input type="text" name="editorsearchval" id="editorsearchval">';
+	editorbarhtml += '<input type="text" placeholder="' + t('files_texteditor', 'Search') + '" name="editorsearchval" id="editorsearchval">';
 	editorbarhtml += '<button id="editor_close" class="icon-close svg"></button>';
 	editorbarhtml += '</div>';
 
