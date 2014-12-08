@@ -37,7 +37,7 @@ if(!empty($filename))
 	$mime = \OC\Files\Filesystem::getMimeType($path);
 	$mtime = \OC\Files\Filesystem::filemtime($path);
 	$filecontents = \OC\Files\Filesystem::file_get_contents($path);
-	$encoding = mb_detect_encoding($filecontents."a", "UTF-8, WINDOWS-1252, sjis-win, ISO-8859-15, ISO-8859-1, ASCII", true);
+	$encoding = mb_detect_encoding($filecontents."a", "UTF-8, WINDOWS-1252, sjis-win, euc-jp, ISO-8859-15, ISO-8859-1, ASCII", true);
 	if ($encoding == "") {
 		// set default encoding if it couldn't be detected
 		$encoding = 'ISO-8859-15';
