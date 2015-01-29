@@ -41,6 +41,12 @@ if(!empty($filename))
 	if($size > $maxsize) {
 		OCP\JSON::error(array('data' => array( 'message' => "Max size for opening files is $maxsize.")));
 	} else {
+		$filecontents = \OC\Files\Filesystem::file_get_contents($path);
+		$encoding = mb_detect_encoding($filecontents."a", "UTF-8, WINDOWS-1252, ISO-8859-15, ISO-8859-1, ASCII", true);
+		if ($encoding == "") {
+			// set default encoding if it couldn't be detected
+			$encoding = 'ISO-8859-15';
+		}
 		$filecontents = iconv($encoding, "UTF-8", $filecontents);
 		OCP\JSON::success(array('data' => array(
 			'filecontents' => $filecontents,
