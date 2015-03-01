@@ -231,6 +231,7 @@ function showFileEditor(dir, filename) {
 						$('#editor').attr('data-edited', 'false');
 						window.aceEditor = ace.edit("editor");
 						aceEditor.setShowPrintMargin(false);
+						aceEditor.getSession().setNewLineMode('windows');
 						aceEditor.getSession().setUseWrapMode(true);
 						if ( ! result.data.writeable ) {
 							aceEditor.setReadOnly(true);
