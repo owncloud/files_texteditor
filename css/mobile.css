@@ -7,5 +7,8 @@
 	display: none !important;
 }
 
+#editor_container {
+	z-index: 1001;
+}
 
 }
