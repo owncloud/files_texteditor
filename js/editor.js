@@ -91,6 +91,9 @@ function bindControlEvents() {
 	$('#content').on('keyup', '#editorsearchval', doSearch);
 	$('#content').on('click', '#clearsearchbtn', resetSearch);
 	$('#content').on('click', '#nextsearchbtn', nextSearchResult);
+	window.onpopstate = function(e) {
+		hideFileEditor();
+	}
 }
 
 // returns true or false if the editor is in view or not
