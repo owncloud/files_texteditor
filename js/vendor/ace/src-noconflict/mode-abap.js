@@ -28,10 +28,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/abap', ['require', 'exports', 'module' , 'ace/tokenizer', 'ace/mode/abap_highlight_rules', 'ace/mode/folding/coffee', 'ace/range', 'ace/mode/text', 'ace/lib/oop'], function(require, exports, module) {
+ace.define('ace/mode/abap', ['require', 'exports', 'module' , 'ace/mode/abap_highlight_rules', 'ace/mode/folding/coffee', 'ace/range', 'ace/mode/text', 'ace/lib/oop'], function(require, exports, module) {
 
 
-var Tokenizer = require("../tokenizer").Tokenizer;
 var Rules = require("./abap_highlight_rules").AbapHighlightRules;
 var FoldMode = require("./folding/coffee").FoldMode;
 var Range = require("../range").Range;
@@ -39,9 +38,7 @@ var TextMode = require("./text").Mode;
 var oop = require("../lib/oop");
 
 function Mode() {
-    var highlighter = new Rules();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
-    this.$keywordList = new Rules(highlighter.$keywordList);
+    this.HighlightRules = Rules;
     this.foldingRules = new FoldMode();
 }
 
@@ -72,6 +69,7 @@ oop.inherits(Mode, TextMode);
         }
     };
     
+    this.$id = "ace/mode/abap";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

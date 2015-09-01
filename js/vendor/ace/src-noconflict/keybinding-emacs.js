@@ -71,7 +71,7 @@ exports.handler.attach = function(editor) {
                 background-color: rgba(0,250,0,0.9);\
                 opacity: 0.5;\
             }\
-            .emacs-mode .ace_cursor.ace_hidden{\
+            .emacs-mode .ace_hidden-cursors .ace_cursor{\
                 opacity: 1;\
                 background-color: transparent;\
             }\
@@ -98,29 +98,29 @@ exports.handler.attach = function(editor) {
 
     editor.emacsMark = function() {
         return this.session.$emacsMark;
-    }
+    };
 
     editor.setEmacsMark = function(p) {
         this.session.$emacsMark = p;
-    }
+    };
 
     editor.pushEmacsMark = function(p, activate) {
         var prevMark = this.session.$emacsMark;
         if (prevMark)
             this.session.$emacsMarkRing.push(prevMark);
-        if (!p || activate) this.setEmacsMark(p)
+        if (!p || activate) this.setEmacsMark(p);
         else this.session.$emacsMarkRing.push(p);
-    }
+    };
 
     editor.popEmacsMark = function() {
         var mark = this.emacsMark();
         if (mark) { this.setEmacsMark(null); return mark; }
         return this.session.$emacsMarkRing.pop();
-    }
+    };
 
     editor.getLastEmacsMark = function(p) {
         return this.session.$emacsMark || this.session.$emacsMarkRing.slice(-1)[0];
-    }
+    };
 
     editor.on("click", $resetMarkMode);
     editor.on("changeSession", $kbSessionChange);
@@ -160,15 +160,15 @@ var $kbSessionChange = function(e) {
         e.session.$emacsMark = null;
     if (!e.session.hasOwnProperty('$emacsMarkRing'))
         e.session.$emacsMarkRing = [];
-}
+};
 
 var $resetMarkMode = function(e) {
     e.editor.session.$emacsMark = null;
-}
+};
 
-var keys = require("../lib/keys").KEY_MODS,
-    eMods = {C: "ctrl", S: "shift", M: "alt", CMD: "command"},
-    combinations = ["C-S-M-CMD",
+var keys = require("../lib/keys").KEY_MODS;
+var eMods = {C: "ctrl", S: "shift", M: "alt", CMD: "command"};
+var combinations = ["C-S-M-CMD",
                     "S-M-CMD", "C-M-CMD", "C-S-CMD", "C-S-M",
                     "M-CMD", "S-CMD", "S-M", "C-CMD", "C-M", "C-S",
                     "CMD", "M", "S", "C"];
@@ -185,17 +185,17 @@ exports.handler.onCopy = function(e, editor) {
     editor.$handlesEmacsOnCopy = true;
     exports.handler.commands.killRingSave.exec(editor);
     delete editor.$handlesEmacsOnCopy;
-}
+};
 
 exports.handler.onPaste = function(e, editor) {
     editor.pushEmacsMark(editor.getCursorPosition());
-}
+};
 
 exports.handler.bindKey = function(key, command) {
     if (!key)
         return;
 
-    var ckb = this.commmandKeyBinding;
+    var ckb = this.commandKeyBinding;
     key.split("|").forEach(function(keyPart) {
         keyPart = keyPart.toLowerCase();
         ckb[keyPart] = command;
@@ -207,14 +207,16 @@ exports.handler.bindKey = function(key, command) {
             if (!ckb[keyPart]) ckb[keyPart] = "null";
         });
     }, this);
-}
+};
 
 exports.handler.handleKeyboard = function(data, hashId, key, keyCode) {
+    if (keyCode === -1) return undefined;
+
     var editor = data.editor;
     if (hashId == -1) {
         editor.pushEmacsMark();
         if (data.count) {
-            var str = Array(data.count + 1).join(key);
+            var str = new Array(data.count + 1).join(key);
             data.count = null;
             return {command: "insertstring", args: str};
         }
@@ -236,7 +238,7 @@ exports.handler.handleKeyboard = function(data, hashId, key, keyCode) {
     data.universalArgument = false;
     if (modifier) key = modifier + key;
     if (data.keyChain) key = data.keyChain += " " + key;
-    var command = this.commmandKeyBinding[key];
+    var command = this.commandKeyBinding[key];
     data.keyChain = command == "null" ? key : "";
     if (!command) return undefined;
     if (command === "null") return {command: "null"};
@@ -282,7 +284,7 @@ exports.handler.handleKeyboard = function(data, hashId, key, keyCode) {
                 }
             };
         } else {
-            if (!args) args = {}
+            if (!args) args = {};
             if (typeof args === 'object') args.count = count;
         }
     }
@@ -456,8 +458,8 @@ exports.handler.addCommands({
     killLine: function(editor) {
         editor.pushEmacsMark(null);
         var pos = editor.getCursorPosition();
-        if (pos.column == 0 &&
-            editor.session.doc.getLine(pos.row).length == 0) {
+        if (pos.column === 0 &&
+            editor.session.doc.getLine(pos.row).length === 0) {
             editor.selection.selectLine();
         } else {
             editor.clearSelection();
@@ -565,6 +567,7 @@ oop.inherits(IncrementalSearch, Search);
         this.$options.needle = '';
         this.$options.backwards = backwards;
         ed.keyBinding.addKeyboardHandler(this.$keyboardHandler);
+        this.$originalEditorOnPaste = ed.onPaste; ed.onPaste = this.onPaste.bind(this);
         this.$mousedownHandler = ed.addEventListener('mousedown', this.onMouseDown.bind(this));
         this.selectionFix(ed);
         this.statusMessage(true);
@@ -572,11 +575,13 @@ oop.inherits(IncrementalSearch, Search);
 
     this.deactivate = function(reset) {
         this.cancelSearch(reset);
-        this.$editor.keyBinding.removeKeyboardHandler(this.$keyboardHandler);
+        var ed = this.$editor;
+        ed.keyBinding.removeKeyboardHandler(this.$keyboardHandler);
         if (this.$mousedownHandler) {
-            this.$editor.removeEventListener('mousedown', this.$mousedownHandler);
+            ed.removeEventListener('mousedown', this.$mousedownHandler);
             delete this.$mousedownHandler;
         }
+        ed.onPaste = this.$originalEditorOnPaste;
         this.message('');
     }
 
@@ -633,9 +638,9 @@ oop.inherits(IncrementalSearch, Search);
         return found;
     }
 
-    this.addChar = function(c) {
+    this.addString = function(s) {
         return this.highlightAndFindWithNeedle(false, function(needle) {
-            return needle + c;
+            return needle + s;
         });
     }
 
@@ -658,6 +663,10 @@ oop.inherits(IncrementalSearch, Search);
     this.onMouseDown = function(evt) {
         this.deactivate();
         return true;
+    }
+
+    this.onPaste = function(text) {
+        this.addString(text);
     }
 
     this.statusMessage = function(found) {
@@ -788,14 +797,14 @@ exports.iSearchCommands = [{
 }, {
     name: "extendSearchTerm",
     exec: function(iSearch, string) {
-        iSearch.addChar(string);
+        iSearch.addString(string);
     },
     readOnly: true,
     isIncrementalSearchCommand: true
 }, {
     name: "extendSearchTermSpace",
     bindKey: "space",
-    exec: function(iSearch) { iSearch.addChar(' '); },
+    exec: function(iSearch) { iSearch.addString(' '); },
     readOnly: true,
     isIncrementalSearchCommand: true
 }, {
@@ -828,6 +837,34 @@ exports.iSearchCommands = [{
     },
     readOnly: true,
     isIncrementalSearchCommand: true
+}, {
+    name: "yankNextWord",
+    bindKey: "Ctrl-w",
+    exec: function(iSearch) {
+        var ed = iSearch.$editor,
+            range = ed.selection.getRangeOfMovements(function(sel) { sel.moveCursorWordRight(); }),
+            string = ed.session.getTextRange(range);
+        iSearch.addString(string);
+    },
+    readOnly: true,
+    isIncrementalSearchCommand: true
+}, {
+    name: "yankNextChar",
+    bindKey: "Ctrl-Alt-y",
+    exec: function(iSearch) {
+        var ed = iSearch.$editor,
+            range = ed.selection.getRangeOfMovements(function(sel) { sel.moveCursorRight(); }),
+            string = ed.session.getTextRange(range);
+        iSearch.addString(string);
+    },
+    readOnly: true,
+    isIncrementalSearchCommand: true
+}, {
+    name: 'recenterTopBottom',
+    bindKey: 'Ctrl-l',
+    exec: function(iSearch) { iSearch.$editor.execCommand('recenterTopBottom'); },
+    readOnly: true,
+    isIncrementalSearchCommand: true
 }];
 
 function IncrementalSearchKeyboardHandler(iSearch) {
@@ -857,6 +894,8 @@ oop.inherits(IncrementalSearchKeyboardHandler, HashHandler);
 
     var handleKeyboard$super = this.handleKeyboard;
     this.handleKeyboard = function(data, hashId, key, keyCode) {
+        if (((hashId === 1/*ctrl*/ || hashId === 8/*command*/) && key === 'v')
+         || (hashId === 1/*ctrl*/ && key === 'y')) return null;
         var cmd = handleKeyboard$super.call(this, data, hashId, key, keyCode);
         if (cmd.command) { return cmd; }
         if (hashId == -1) {
@@ -997,12 +1036,15 @@ oop.inherits(Occur, Search);
         occurSession.$occur = this;
         occurSession.$occurMatchingLines = found;
         editor.setSession(occurSession);
+        this.$useEmacsStyleLineStart = this.$originalSession.$useEmacsStyleLineStart;
+        occurSession.$useEmacsStyleLineStart = this.$useEmacsStyleLineStart;
         this.highlight(occurSession, options.re);
         occurSession._emit('changeBackMarker');
     }
 
     this.displayOriginalContent = function(editor) {
         editor.setSession(this.$originalSession);
+        this.$originalSession.$useEmacsStyleLineStart = this.$useEmacsStyleLineStart;
     }
     this.originalToOccurPosition = function(session, pos) {
         var lines = session.$occurMatchingLines;

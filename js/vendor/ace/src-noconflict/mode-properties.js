@@ -28,19 +28,21 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/properties', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/properties_highlight_rules'], function(require, exports, module) {
+ace.define('ace/mode/properties', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/properties_highlight_rules'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var PropertiesHighlightRules = require("./properties_highlight_rules").PropertiesHighlightRules;
 
 var Mode = function() {
-    var highlighter = new PropertiesHighlightRules();
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.HighlightRules = PropertiesHighlightRules;
 };
 oop.inherits(Mode, TextMode);
+
+(function() {
+    this.$id = "ace/mode/properties";
+}).call(Mode.prototype);
 
 exports.Mode = Mode;
 });
@@ -69,7 +71,7 @@ var PropertiesHighlightRules = function() {
                 next  : "value"
             }, {
                 token : "constant.language.escape",
-                regex : escapeRe,
+                regex : escapeRe
             }, {
                 defaultToken: "variable"
             }

@@ -90,7 +90,7 @@ exports.handler = {
             if (util.currentMode === "insert") {            
                 this.onCompositionStartOrig(text);
             }
-        }
+        };
         if (enable) {
             if (!editor.onCompositionUpdateOrig) {
                 editor.onCompositionUpdateOrig = editor.onCompositionUpdate;
@@ -109,43 +109,46 @@ exports.handler = {
     },
 
     handleKeyboard: function(data, hashId, key, keyCode, e) {
-        if (hashId != 0 && (key == "" || key == "\x00"))
+        if (hashId !== 0 && (!key || keyCode == -1))
             return null;
         
         var editor = data.editor;
+        var vimState = data.vimState || "start";
         
         if (hashId == 1)
             key = "ctrl-" + key;
         if (key == "ctrl-c") {
             if (!useragent.isMac && editor.getCopyText()) {
                 editor.once("copy", function() {
-                    if (data.state == "start")
+                    if (vimState == "start")
                         coreCommands.stop.exec(editor);
                     else
                         editor.selection.clearSelection();
                 });
                 return {command: "null", passEvent: true};
             }
-            return {command: coreCommands.stop};            
-        } else if ((key == "esc" && hashId == 0) || key == "ctrl-[") {
             return {command: coreCommands.stop};
-        } else if (data.state == "start") {
+        } else if ((key == "esc" && hashId === 0) || key == "ctrl-[") {
+            return {command: coreCommands.stop};
+        } else if (vimState == "start") {
             if (useragent.isMac && this.handleMacRepeat(data, hashId, key)) {
                 hashId = -1;
                 key = data.inputChar;
             }
             
-            if (hashId == -1 || hashId == 1 || hashId == 0 && key.length > 1) {
+            if (hashId == -1 || hashId == 1 || hashId === 0 && key.length > 1) {
                 if (cmds.inputBuffer.idle && startCommands[key])
                     return startCommands[key];
-                cmds.inputBuffer.push(editor, key);
-                return {command: "null", passEvent: false}; 
-            } // if no modifier || shift: wait for input.
-            else if (key.length == 1 && (hashId == 0 || hashId == 4)) {
-                return {command: "null", passEvent: true};
-            } else if (key == "esc" && hashId == 0) {
+                var isHandled = cmds.inputBuffer.push(editor, key);
+                if (!isHandled && hashId !== -1)
+                    return;
+                return {command: "null", passEvent: !isHandled}; 
+            } else if (key == "esc" && hashId === 0) {
                 return {command: coreCommands.stop};
             }
+            else if (hashId === 0 || hashId == 4) {
+                return {command: "null", passEvent: true};
+            } 
         } else {
             if (key == "ctrl-w") {
                 return {command: "removewordleft"};
@@ -282,10 +285,12 @@ var actions = exports.actions = {
                     range.end.column++;
                 var text = editor.session.getTextRange(range);
                 var toggled = text.toUpperCase();
-                if (toggled == text)
-                    editor.navigateRight();
-                else
+                if (toggled != text)
                     editor.session.replace(range, toggled);
+                else if (text.toLowerCase() != text)
+                    editor.session.replace(range, text.toLowerCase())
+                else
+                    editor.navigateRight();
             }, count || 1);
         }
     },
@@ -323,6 +328,7 @@ var actions = exports.actions = {
         fn: function(editor, range, count, param) {
             var options = editor.getLastSearchOptions();
             options.backwards = false;
+            options.start = null;
 
             editor.selection.moveCursorRight();
             editor.selection.clearSelection();
@@ -339,6 +345,7 @@ var actions = exports.actions = {
         fn: function(editor, range, count, param) {
             var options = editor.getLastSearchOptions();
             options.backwards = true;
+            options.start = null;
 
             editor.findPrevious(options);
             ensureScrollMargin(editor);
@@ -358,8 +365,7 @@ var actions = exports.actions = {
     "V": {
         fn: function(editor, range, count, param) {
             var row = editor.getCursorPosition().row;
-            editor.selection.clearSelection();
-            editor.selection.moveCursorTo(row, 0);
+            editor.selection.moveTo(row, 0);
             editor.selection.selectLineEnd();
             editor.selection.visualLineStart = row;
 
@@ -497,6 +503,7 @@ var inputBuffer = exports.inputBuffer = {
     accepting: [NUMBER, OPERATOR, MOTION, ACTION],
     currentCmd: null,
     currentCount: "",
+    pendingCount: "",
     status: "",
     operator: null,
     motion: null,
@@ -593,8 +600,9 @@ var inputBuffer = exports.inputBuffer = {
     },
 
     getCount: function() {
-        var count = this.currentCount;
+        var count = this.currentCount || this.pendingCount;
         this.currentCount = "";
+        this.pendingCount = count;
         return count && parseInt(count, 10);
     },
 
@@ -646,7 +654,8 @@ var inputBuffer = exports.inputBuffer = {
             else if (selectable) {
                 repeat(function() {
                     run(motionObj.sel);
-                    operators[o.ch].fn(editor, editor.getSelectionRange(), o.count, param);
+                    operators[o.ch].fn(editor, editor.getSelectionRange(), 
+                        o.count, motionObj.param ? motionObj : param);
                 }, o.count || 1);
             }
             this.reset();
@@ -666,6 +675,7 @@ var inputBuffer = exports.inputBuffer = {
         this.operator = null;
         this.motion = null;
         this.currentCount = "";
+        this.pendingCount = "";
         this.status = "";
         this.accepting = [NUMBER, OPERATOR, MOTION, ACTION];
         this.idle = true;
@@ -728,13 +738,11 @@ var handleCursorMove = exports.onCursorMove = function(editor, e) {
             var cursorRow = editor.getCursorPosition().row;
             if(originRow <= cursorRow) {
                 var endLine = editor.session.getLine(cursorRow);
-                editor.selection.clearSelection();
-                editor.selection.moveCursorTo(originRow, 0);
+                editor.selection.moveTo(originRow, 0);
                 editor.selection.selectTo(cursorRow, endLine.length);
             } else {
                 var endLine = editor.session.getLine(originRow);
-                editor.selection.clearSelection();
-                editor.selection.moveCursorTo(originRow, endLine.length);
+                editor.selection.moveTo(originRow, endLine.length);
                 editor.selection.selectTo(cursorRow, 0);
             }
         }
@@ -791,7 +799,7 @@ module.exports = {
 
         editor.setOverwrite(false);
         editor.keyBinding.$data.buffer = "";
-        editor.keyBinding.$data.state = "insertMode";
+        editor.keyBinding.$data.vimState = "insertMode";
         this.onVisualMode = false;
         this.onVisualLineMode = false;
         if(this.onInsertReplaySequence) {
@@ -821,7 +829,7 @@ module.exports = {
 
         editor.setOverwrite(true);
         editor.keyBinding.$data.buffer = "";
-        editor.keyBinding.$data.state = "start";
+        editor.keyBinding.$data.vimState = "start";
         this.onVisualMode = false;
         this.onVisualLineMode = false;
         editor._emit("changeStatus");
@@ -876,13 +884,11 @@ module.exports = {
     },
     copyLine: function(editor) {
         var pos = editor.getCursorPosition();
-        editor.selection.clearSelection();
-        editor.moveCursorTo(pos.row, pos.column);
+        editor.selection.moveTo(pos.row, pos.column);
         editor.selection.selectLine();
         registers._default.isLine = true;
         registers._default.text = editor.getCopyText().replace(/\n$/, "");
-        editor.selection.clearSelection();
-        editor.moveCursorTo(pos.row, pos.column);
+        editor.selection.moveTo(pos.row, pos.column);
     }
 };
 });
@@ -925,8 +931,7 @@ function Motion(m) {
         var a = getPos(editor, range, count, param, false);
         if (!a)
             return;
-        editor.clearSelection();
-        editor.moveCursorTo(a.row, a.column);
+        editor.selection.moveTo(a.row, a.column);
     };
     m.sel = function(editor, range, count, param) {
         var a = getPos(editor, range, count, param, true);
@@ -1218,6 +1223,10 @@ module.exports = {
                 case "W":
                     editor.selection.selectAWord();
                     break;
+                case ")":
+                case "}":
+                case "]":
+                    param = editor.session.$brackets[param];
                 case "(":
                 case "{":
                 case "[":
@@ -1251,6 +1260,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "f", param: param};
             var cursor = editor.getCursorPosition();
@@ -1266,6 +1276,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "F", param: param};
             var cursor = editor.getCursorPosition();
@@ -1281,6 +1292,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "t", param: param};
             var cursor = editor.getCursorPosition();
@@ -1299,6 +1311,7 @@ module.exports = {
         param: true,
         handlesCount: true,
         getPos: function(editor, range, count, param, isSel, isRepeat) {
+            if (param == "space") param = " ";
             if (!isRepeat)
                 LAST_SEARCH_MOTION = {ch: "T", param: param};
             var cursor = editor.getCursorPosition();
@@ -1348,10 +1361,17 @@ module.exports = {
         }
     },
     "$": {
-        nav: function(editor) {
+        handlesCount: true,
+        nav: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.navigateDown(count-1);
+            }
             editor.navigateLineEnd();
         },
-        sel: function(editor) {
+        sel: function(editor, range, count, param) {
+            if (count > 1) {
+                editor.selection.moveCursorBy(count-1, 0);
+            }
             editor.selection.selectLineEnd();
         }
     },
@@ -1517,7 +1537,8 @@ module.exports = {
                     pos.column = line.length;
                 return pos;
             }
-        }
+        },
+        isLine: true
     })
 };
 
@@ -1527,6 +1548,8 @@ module.exports.up = module.exports.k;
 module.exports.down = module.exports.j;
 module.exports.pagedown = module.exports["ctrl-d"];
 module.exports.pageup = module.exports["ctrl-u"];
+module.exports.home = module.exports["0"];
+module.exports.end = module.exports["$"];
 
 });
  
@@ -1614,6 +1637,8 @@ module.exports = {
         },
         fn: function(editor, range, count, param) {
             count = count || 1;
+            if (param && param.isLine) 
+                param = "y";
             switch (param) {
                 case "y":
                     var pos = editor.getCursorPosition();

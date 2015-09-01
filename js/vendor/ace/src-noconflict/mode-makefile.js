@@ -33,21 +33,17 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/makefile', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/makefile_highlight_rules', 'ace/mode/folding/coffee'], function(require, exports, module) {
+ace.define('ace/mode/makefile', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/mode/makefile_highlight_rules', 'ace/mode/folding/coffee'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var Tokenizer = require("../tokenizer").Tokenizer;
 var MakefileHighlightRules = require("./makefile_highlight_rules").MakefileHighlightRules;
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    var highlighter = new MakefileHighlightRules();
+    this.HighlightRules = MakefileHighlightRules;
     this.foldingRules = new FoldMode();
-    
-    this.$tokenizer = new Tokenizer(highlighter.getRules());
-    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
@@ -56,6 +52,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = "#";    
     this.$indentWithTabs = true;
     
+    this.$id = "ace/mode/makefile";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -172,7 +169,7 @@ var ShHighlightRules = function() {
     var floatNumber = "(?:" + exponentFloat + "|" + pointFloat + ")";
     var fileDescriptor = "(?:&" + intPart + ")";
 
-    var variableName = "[a-zA-Z][a-zA-Z0-9_]*";
+    var variableName = "[a-zA-Z_][a-zA-Z0-9_]*";
     var variable = "(?:(?:\\$" + variableName + ")|(?:" + variableName + "=))";
 
     var builtinVariable = "(?:\\$(?:SHLVL|\\$|\\!|\\?))";
