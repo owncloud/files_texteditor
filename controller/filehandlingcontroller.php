@@ -128,7 +128,7 @@ class FileHandlingController extends Controller{
 				$this->logger->error('File: ' . $path . ' modified since opening.',
 					['app' => 'files_texteditor']);
 				return new DataResponse(
-					['message' => $this->l->t('Cannot save file as it has been modified since opening')],
+					['message' => $this->l->t('File modified since opening')],
 					Http::STATUS_BAD_REQUEST);
 			} else {
 				// File same as when opened, save file

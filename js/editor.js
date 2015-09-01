@@ -104,6 +104,7 @@ var Files_Texteditor = {
 			function(message){
 				// Boo
 				$('small.saving-message').text(t('files_texteditor', 'failed!'));
+				OC.Notification.showTemporary(message);
 				setTimeout(function() {
 					$('small.saving-message').fadeOut(200);
 				}, 5000);
