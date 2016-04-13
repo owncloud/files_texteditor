@@ -131,7 +131,7 @@ class FileHandlingController extends Controller{
 
 		if($path !== '' && (is_integer($mtime) && $mtime > 0)) {
 			// Get file mtime
-			$filemtime = $this->view->filemtime($path);
+			$filemtime = intval($this->view->filemtime($path));
 			if($mtime !== $filemtime) {
 				// Then the file has changed since opening
 				$this->logger->error('File: ' . $path . ' modified since opening.',
