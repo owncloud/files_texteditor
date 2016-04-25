@@ -34,6 +34,6 @@ $app->registerRoutes($this, array('routes' => array(
 	[
 		'name' => 'FileHandling#save',
 		'url' => '/ajax/savefile',
-		'verb' => 'PUT'
+		'verb' => 'POST'
 	]
 )));
