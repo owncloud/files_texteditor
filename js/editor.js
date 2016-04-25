@@ -512,7 +512,7 @@ var Files_Texteditor = {
 			var path = file.dir + '/' + file.name;
 		}
 		$.ajax({
-			type: 'PUT',
+			type: 'POST',
 			url: OC.generateUrl('/apps/files_texteditor/ajax/savefile'),
 			data: {
 				filecontents: data,
