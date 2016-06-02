@@ -89,7 +89,7 @@ class FileHandlingController extends Controller{
 					$writable = $this->view->isUpdatable($path);
 					$mime = $this->view->getMimeType($path);
 					$mTime = $this->view->filemtime($path);
-					$encoding = mb_detect_encoding($fileContents . "a", "UTF-8, WINDOWS-1252, ISO-8859-15, ISO-8859-1, ASCII", true);
+					$encoding = mb_detect_encoding($fileContents . "a", "UTF-8, WINDOWS-1252, SJIS-win, ISO-8859-15, ISO-8859-1, ASCII", true);
 					if ($encoding == "") {
 						// set default encoding if it couldn't be detected
 						$encoding = 'ISO-8859-15';
