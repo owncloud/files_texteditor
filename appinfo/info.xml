@@ -10,6 +10,14 @@ More information is available in the Text Editor documentation.
 	<version>2.1</version>
 	<shipped>true</shipped>
 	<default_enable/>
+	<documentation>
+		<user>https://github.com/owncloud/files_texteditor/blob/master/README.md</user>
+		<admin>https://github.com/owncloud/files_texteditor/blob/master/README.md</admin>
+		<developer>https://github.com/owncloud/files_texteditor/blob/master/README.md</developer>
+	</documentation>
+	<website>https://github.com/owncloud/files_texteditor</website>
+	<bugs>https://github.com/owncloud/files_texteditor/issues</bugs>
+	<repository type="git">https://github.com/owncloud/files_texteditor.git</repository>
 	<ocsid>166051</ocsid>
 	<dependencies>
 		<owncloud min-version="9.1" max-version="9.1" />
