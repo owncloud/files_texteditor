@@ -1,6 +1,9 @@
 { "translations": {
+    "This file is too big to be opened. Please download the file instead." : "Tento súbor je príliš veľký na to, aby ho bolo možné otvoriť. Prosím, namiesto toho si ho stiahnite.",
     "Cannot read the file." : "Nemožno čítať súbor.",
     "Invalid file path supplied." : "Neplatná cesta k súboru.",
+    "The file is locked." : "Súbor je zamknutý.",
+    "An internal server error occurred." : "Vyskytla sa vnútorná chyba na serveri.",
     "Cannot save file as it has been modified since opening" : "Nie je možné uložiť súbor, pretože bol od otvorenia zmenený",
     "Insufficient permissions" : "Nedostatočné oprávnenia",
     "File path not supplied" : "Nebola uvedená cesta k súboru",
