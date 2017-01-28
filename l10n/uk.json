@@ -1,6 +1,7 @@
 { "translations": {
-    "This file is too big to be opened. Please download the file instead." : "Файл занадто великий і неможе бути відкритий. Будь ласка завантажте файл.",
+    "This file is too big to be opened. Please download the file instead." : "Файл занадто великий для відкриття. Будь ласка, завантажте файл замість цього.",
     "Cannot read the file." : "Не можливо прочитати файл.",
+    "Invalid file path supplied." : "Помилковий шлях до файлу.",
     "The file is locked." : "Файл заблоковано.",
     "An internal server error occurred." : "Виникла внутрішня помилка серверу.",
     "Cannot save file as it has been modified since opening" : "Неможливо зберегти файл оскільки він був змінений після відкриття",
