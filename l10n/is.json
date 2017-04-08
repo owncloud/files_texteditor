@@ -4,7 +4,7 @@
     "Invalid file path supplied." : "Ógild skráarslóð.",
     "The file is locked." : "Skráin er læst.",
     "An internal server error occurred." : "Innri villa kom upp.",
-    "Cannot save file as it has been modified since opening" : "Get ekki vistað skrána þar sem það hefur verið gerð breytt á henni frá opnun",
+    "Cannot save file as it has been modified since opening" : "Get ekki vistað skrána þar sem henni hefur verið breytt síðan hún var opnuð",
     "Insufficient permissions" : "Ekki næg réttindi",
     "File path not supplied" : "Skrá slóð fylgir ekki",
     "File mtime not supplied" : "mtime skrá fylgir ekki",
