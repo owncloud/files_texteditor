@@ -8,7 +8,6 @@ More information is available in the Text Editor documentation.
 	<licence>AGPL</licence>
 	<author>Tom Needham, Björn Schießle</author>
 	<version>2.2</version>
-	<shipped>true</shipped>
 	<default_enable/>
 	<documentation>
 		<user>https://github.com/owncloud/files_texteditor/blob/master/README.md</user>
