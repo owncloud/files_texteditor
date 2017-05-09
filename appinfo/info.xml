@@ -7,17 +7,18 @@ More information is available in the Text Editor documentation.
 	</description>
 	<licence>AGPL</licence>
 	<author>Tom Needham, Björn Schießle</author>
-	<version>2.1</version>
-	<shipped>true</shipped>
+	<version>2.2</version>
 	<default_enable/>
 	<documentation>
 		<user>https://github.com/owncloud/files_texteditor/blob/master/README.md</user>
 		<admin>https://github.com/owncloud/files_texteditor/blob/master/README.md</admin>
 		<developer>https://github.com/owncloud/files_texteditor/blob/master/README.md</developer>
 	</documentation>
+	<category>productivity</category>
 	<website>https://github.com/owncloud/files_texteditor</website>
 	<bugs>https://github.com/owncloud/files_texteditor/issues</bugs>
 	<repository type="git">https://github.com/owncloud/files_texteditor.git</repository>
+	<screenshot>https://raw.githubusercontent.com/owncloud/screenshots/a068ff44c439aa4969ea37b60e45bed875bbbb98/files_texteditor/texteditor.png</screenshot>
 	<ocsid>166051</ocsid>
 	<dependencies>
 		<owncloud min-version="10.0" max-version="10.0" />
