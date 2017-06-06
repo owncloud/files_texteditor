@@ -11,3 +11,4 @@
 # Remove unnecessary extensions
 /js/vendor/ace/src-noconflict/ext-*
 !/js/vendor/ace/src-noconflict/ext-modelist.js
+!/js/vendor/ace/src-noconflict/ext-searchbox.js
