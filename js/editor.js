@@ -247,7 +247,6 @@ var Files_Texteditor = {
 				'text',
 				'application/javascript',
 				'application/json',
-				'application/octet-stream',
 				'application/xml',
 				'application/x-empty',
 				'application/x-php',
