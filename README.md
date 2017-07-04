@@ -17,7 +17,7 @@ Features:
 Simply copy the `files_texteditor` folder into the `apps` directory and enable the app within the ownCloud settings.
 
 ## Usage
-To use the editer, click on a [supported file](https://github.com/owncloud/files_texteditor/blob/master/js/editor.js#L6) within the Files app and the file will be loaded into the editor. Saving is automatic, but can also be triggered manually with `Ctrl+S` or `Cmd+S`.
+To use the editor, click on a [supported file](https://github.com/owncloud/files_texteditor/blob/master/js/editor.js#L6) within the Files app and the file will be loaded into the editor. Saving is automatic, but can also be triggered manually with `Ctrl+S` or `Cmd+S`.
 
 ## Contributors
 Maintainer: [Tom Needham](http://github.com/tomneedham)
@@ -55,6 +55,6 @@ OCA.Files_Texteditor.registerPreviewPlugin('text/markdown', new OCA.MYApp.Previe
 
 ```
 
-For styling of the preview, the preview element will have the id `preview` and the className will be set to the mimetype of the file being eddited with any slash replaced by dashes.
+For styling of the preview, the preview element will have the id `preview` and the className will be set to the mimetype of the file being edited with any slash replaced by dashes.
 
 e.g. when editing a markdown file the preview element can be styled using the `#preview.text-markdown` css query.
