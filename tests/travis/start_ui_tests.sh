@@ -2,8 +2,8 @@
 #
 # ownCloud
 #
-# @author Phil Davis
-# @copyright 2017 Phil Davis phil@jankaritech.com
+# @author Phillip Davis
+# @copyright 2017 Phillip Davis phil@jankaritech.com
 #
 cp tests/ui/features/bootstrap/FeatureContext.php apps/files_texteditor/tests/ui/features/bootstrap/FeatureContext.php
 echo "Running UI tests"
