@@ -1,6 +1,8 @@
 <?php
 require __DIR__ . '/../../../../../../lib/composer/autoload.php';
 require __DIR__ . '/../../../../../../tests/ui/features/bootstrap/BasicStructure.php';
+require __DIR__ . '/../../../../../../tests/ui/features/bootstrap/FeatureContext.php';
+require __DIR__ . '/../../../../../../tests/ui/features/bootstrap/FilesContext.php';
 
 $classLoader = new \Composer\Autoload\ClassLoader();
 $classLoader->addPsr4("Page\\", __DIR__ . "/../lib", true);
