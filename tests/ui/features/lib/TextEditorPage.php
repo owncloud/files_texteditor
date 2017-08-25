@@ -24,7 +24,7 @@ namespace Page;
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\ElementNotFoundException;
 
-class TextEditorFilesPage extends FilesPage
+class TextEditorPage extends FilesPage
 {
 	protected $newTextFileButtonXpath = './/div[contains(@class, "newFileMenu")]//a[@data-templatename="New text file.txt"]';
 	protected $newTextFileNameInputLabel = 'New text file.txt';

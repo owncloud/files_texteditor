@@ -23,22 +23,22 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\RawMinkContext;
-use Page\TextEditorFilesPage;
+use Page\TextEditorPage;
 
 require_once 'bootstrap.php';
 
 /**
  * Files context.
  */
-class TextEditorFilesContext extends RawMinkContext implements Context
+class TextEditorContext extends RawMinkContext implements Context
 {
-	private $textEditorFilesPage;
+	private $textEditorPage;
 	private $featureContext;
 	private $filesContext;
 
-	public function __construct(TextEditorFilesPage $textEditorFilesPage)
+	public function __construct(TextEditorPage $textEditorPage)
 	{
-		$this->textEditorFilesPage = $textEditorFilesPage;
+		$this->textEditorPage = $textEditorPage;
 	}
 
 	/**
@@ -48,8 +48,8 @@ class TextEditorFilesContext extends RawMinkContext implements Context
 	 * @return void
 	 */
 	public function createATextFile($name) {
-		$this->textEditorFilesPage->createTextFile($name);
-		$this->textEditorFilesPage->waitTillEditorIsLoaded();
+		$this->textEditorPage->createTextFile($name);
+		$this->textEditorPage->waitTillEditorIsLoaded();
 	}
 
 	/**
@@ -57,7 +57,7 @@ class TextEditorFilesContext extends RawMinkContext implements Context
 	 */
 	public function iEnterTextInTheTextFile($text)
 	{
-		$this->textEditorFilesPage->typeIntoTextFile($text);
+		$this->textEditorPage->typeIntoTextFile($text);
 	}
 
 	/**
@@ -80,5 +80,4 @@ class TextEditorFilesContext extends RawMinkContext implements Context
 			->getSettings() ['context'] ['parameters'];
 		$this->ocPath = $suiteParameters['ocPath'];
 	}
-
 }
