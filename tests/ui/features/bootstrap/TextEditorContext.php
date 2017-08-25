@@ -22,6 +22,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Page\TextEditorPage;
 
@@ -63,7 +64,7 @@ class TextEditorContext extends RawMinkContext implements Context
 	/**
 	 * @When I input the following text in the text area:
 	 */
-	public function iInputTheFollowingInTheTextArea(\Behat\Gherkin\Node\PyStringNode $multiLineText)
+	public function iInputTheFollowingInTheTextArea(PyStringNode $multiLineText)
 	{
 		$this->textEditorPage->typeIntoTextFile($multiLineText->getRaw());
 	}
