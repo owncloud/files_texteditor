@@ -22,6 +22,7 @@
 
 namespace Page;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\ElementNotFoundException;
 
 class TextEditorPage extends FilesPage
@@ -40,13 +41,16 @@ class TextEditorPage extends FilesPage
 	{
 		$this->find("xpath", $this->newFileFolderButtonXpath)->click();
 		$this->find("xpath", $this->newTextFileButtonXpath)->click();
-		if ($name !== null) {
+		if (strlen($name)) {
 			try {
 				$this->fillField($this->newTextFileNameInputLabel, $name . "\n");
 			} catch (\WebDriver\Exception\NoSuchElement $e) {
 				//this seems to be a bug in MinkSelenium2Driver. Used to work fine in 1.3.1 but now throws this exception
 				//actually all that we need does happen, so we just don't do anything
 			}
+		} else {
+			// TODO: Handle keeping the default "New text file.txt" name, and just pressing enter
+			throw new PendingException();
 		}
 	}
 
