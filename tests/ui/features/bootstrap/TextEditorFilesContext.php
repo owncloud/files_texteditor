@@ -2,8 +2,8 @@
 /**
 * ownCloud
 *
-* @author Artur Neumann
-* @copyright 2017 Artur Neumann info@individual-it.net
+* @author Phillip Davis
+* @copyright 2017 Phillip Davis info@individual-it.net
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
