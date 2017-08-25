@@ -53,11 +53,19 @@ class TextEditorContext extends RawMinkContext implements Context
 	}
 
 	/**
-	 * @When I enter :text in the text file
+	 * @When I input :text in the text area
 	 */
-	public function iEnterTextInTheTextFile($text)
+	public function iInputTextInTheTextArea($text)
 	{
 		$this->textEditorPage->typeIntoTextFile($text);
+	}
+
+	/**
+	 * @When I input the following text in the text area:
+	 */
+	public function iInputTheFollowingInTheTextArea(\Behat\Gherkin\Node\PyStringNode $multiLineText)
+	{
+		$this->textEditorPage->typeIntoTextFile($multiLineText->getRaw());
 	}
 
 	/**
