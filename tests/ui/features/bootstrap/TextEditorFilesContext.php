@@ -49,6 +49,15 @@ class TextEditorFilesContext extends RawMinkContext implements Context
 	 */
 	public function createATextFile($name) {
 		$this->textEditorFilesPage->createTextFile($name);
+		$this->textEditorFilesPage->waitTillEditorIsLoaded();
+	}
+
+	/**
+	 * @When I enter :text in the text file
+	 */
+	public function iEnterTextInTheTextFile($text)
+	{
+		$this->textEditorFilesPage->typeIntoTextFile($text);
 	}
 
 	/**

@@ -22,10 +22,13 @@
 
 namespace Page;
 
+use SensioLabs\Behat\PageObjectExtension\PageObject\Exception\ElementNotFoundException;
+
 class TextEditorFilesPage extends FilesPage
 {
 	protected $newTextFileButtonXpath = './/div[contains(@class, "newFileMenu")]//a[@data-templatename="New text file.txt"]';
 	protected $newTextFileNameInputLabel = 'New text file.txt';
+	protected $textFileEditXpath = "//textarea[contains(@class,'ace_text-input')]";
 
 	/**
 	 * create a text file with the given name.
@@ -46,4 +49,37 @@ class TextEditorFilesPage extends FilesPage
 			}
 		}
 	}
+
+	/**
+	 * finds the textarea field to use for editing a text file
+	 *
+	 * @throws ElementNotFoundException
+	 * @return \Behat\Mink\Element\NodeElement
+	 */
+	public function findTextFileEditField() {
+		$textField = $this->find(
+			"xpath", $this->textFileEditXpath
+		);
+		if ($textField === null) {
+			throw new ElementNotFoundException("could not find textarea field");
+		}
+		return $textField;
+	}
+
+	/**
+	 * type text into the text area
+	 *
+	 * @param string $text
+	 * @return void
+	 */
+	public function typeIntoTextFile($text) {
+		$textField = $this->findTextFileEditField();
+		$textField->setValue($text);
+	}
+
+	public function waitTillEditorIsLoaded($timeout_msec = STANDARDUIWAITTIMEOUTMILLISEC)
+	{
+		$this->waitTillElementIsNotNull($this->textFileEditXpath, $timeout_msec);
+	}
+
 }

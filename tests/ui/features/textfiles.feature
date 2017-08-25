@@ -14,3 +14,9 @@ Feature: textFiles
 		|'सिमप्ले text file.txt'|
 		|'"somequotes1" text.txt'|
 		|"'somequotes2' text.txt"|
+
+	Scenario: Create a text file with text in it
+		When I create a text file with the name "atextfile.txt"
+		And I enter "stuff here" in the text file
+		And the files page is reloaded
+		Then the file "atextfile.txt" should be listed
