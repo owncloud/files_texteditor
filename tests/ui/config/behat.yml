@@ -11,9 +11,12 @@ default:
       context:
         parameters:
           ocPath: ./
+          adminPassword: admin
           regularUserPassword: 123456
           regularUserName: regularuser
           regularUserNames: user1,user2,user3,user4,user5
+          regularGroupName: regulargrp
+          regularGroupNames: grp1,grp2,grp3,usergrp,grpuser
       contexts:
         - FeatureContext:
         - LoginzContext:
