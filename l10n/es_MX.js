@@ -5,6 +5,7 @@ OC.L10N.register(
     "Cannot read the file." : "No se puede leer el archivo.",
     "Invalid file path supplied." : "La ruta de archivo especificada es inválida.",
     "The file is locked." : "El archivo está bloqueado.",
+    "An internal server error occurred." : "Ocurrió un error interno del servidor",
     "Cannot save file as it has been modified since opening" : "No se puede guardar el archivo pues fue modificado desde que fue abierto.",
     "Insufficient permissions" : "Permisos insuficientes",
     "File path not supplied" : "Ruta de archivo no especificada",
