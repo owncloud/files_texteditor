@@ -133,15 +133,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function iCloseTheTextEditor() {
-		// Issue https://github.com/owncloud/files_texteditor/issues/205
-		// text file auto-save happens asynchronously at intervals
-		// give auto-save a chance to have saved recent changes
-		// before we close the text editor.
-		// Note: in testing with a 2 second sleep there were still some fails
-		// so it needs quite a long sleep to ensure the latest content has
-		// been saved.
-		sleep(5);
-		$this->textEditorPage->closeTheTextEditor();
+		$this->textEditorPage->closeTheTextEditor($this->getSession());
 	}
 	/**
 	 * general before scenario for all text editor tests.

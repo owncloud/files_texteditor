@@ -205,10 +205,13 @@ class TextEditorPage extends FilesPage {
 
 	/**
 	 *
+	 * @param Session $session
 	 * @throws ElementNotFoundException
 	 * @return void
 	 */
-	public function closeTheTextEditor() {
+	public function closeTheTextEditor(Session $session) {
+		$this->waitForAjaxCallsToStartAndFinish($session);
+
 		$closeButton = $this->findById($this->textEditorCloseButtonId);
 		if ($closeButton === null) {
 			throw new ElementNotFoundException(
