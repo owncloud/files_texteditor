@@ -49,7 +49,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @When /^I create a text file with the name ((?:'[^']*')|(?:"[^"]*"))( without changing the default file extension|)$/
 	 *
 	 * @param string $name
-	 * @param boolean $useDefaultFileExtension
+	 * @param string $useDefaultFileExtension
 	 * @return void
 	 */
 	public function createATextFileWithTheName(
@@ -86,13 +86,46 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
+	 * @Then there is/are :number line(s) of text
+	 * @param int $number
+	 * @return void
+	 */
+	public function thereAreLinesOfText($number) {
+		PHPUnit_Framework_Assert::assertEquals(
+			$number,
+			count($this->textEditorPage->textFileContent())
+		);
+	}
+
+	/**
+	 * @Then line :number of the text is :text
+	 * @param int $number
+	 * @param string $text
+	 * @return void
+	 */
+	public function lineOfTheTextIs($number, $text) {
+		$lineIndex = $number - 1;
+		$textFileContent = $this->textEditorPage->textFileContent();
+		PHPUnit_Framework_Assert::assertEquals(
+			$text,
+			$textFileContent[$lineIndex]
+		);
+	}
+	/**
 	 * @When I close the text editor
 	 * @return void
 	 */
 	public function iCloseTheTextEditor() {
+		// Issue https://github.com/owncloud/files_texteditor/issues/205
+		// text file auto-save happens asynchronously at intervals
+		// give auto-save a chance to have saved recent changes
+		// before we close the text editor.
+		// Note: in testing with a 2 second sleep there were still some fails
+		// so it needs quite a long sleep to ensure the latest content has
+		// been saved.
+		sleep(5);
 		$this->textEditorPage->closeTheTextEditor();
 	}
-
 	/**
 	 * general before scenario for all text editor tests.
 	 * This will run before EVERY scenario.

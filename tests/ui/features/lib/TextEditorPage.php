@@ -38,6 +38,8 @@ class TextEditorPage extends FilesPage {
 		= './/div[contains(@class, "newFileMenu")]' .
 			'//a[@data-templatename="New text file.txt"]//input';
 	protected $textFileEditXpath = "//textarea[contains(@class,'ace_text-input')]";
+	protected $textFileTextLayerXpath = "//div[contains(@class,'ace_text-layer')]";
+	protected $textFileLineXpath = ".//div[contains(@class,'ace_line')]";
 	protected $textEditorCloseButtonId = "editor_close";
 
 	/**
@@ -128,6 +130,8 @@ class TextEditorPage extends FilesPage {
 				$session
 			);
 		}
+
+		$this->waitForAjaxCallsToStartAndFinish($session);
 	}
 
 	/**
@@ -155,6 +159,36 @@ class TextEditorPage extends FilesPage {
 	public function typeIntoTextFile($text) {
 		$textField = $this->findTextFileEditField();
 		$textField->setValue($text);
+	}
+
+	/**
+	 * get the content of the open text file
+	 *
+	 * @return array of lines of text
+	 */
+	public function textFileContent() {
+		$textLayer = $this->find("xpath", $this->textFileTextLayerXpath);
+		if ($textLayer === null) {
+			throw new ElementNotFoundException("could not find text layer");
+		}
+		$textLineElements = $textLayer->findAll(
+			"xpath", $this->textFileLineXpath
+		);
+		if ($textLineElements === null) {
+			throw new ElementNotFoundException("could not find text lines");
+		}
+		$textLines = [];
+		$valid = true;
+		foreach ($textLineElements as $textLineElement) {
+			if ($valid) {
+				$textLines[] = $textLineElement->getText();
+			}
+			// Only grab every 2nd line.
+			// TODO:
+			// Work out why they are duplicated.
+			$valid = !$valid;
+		}
+		return $textLines;
 	}
 
 	/**
