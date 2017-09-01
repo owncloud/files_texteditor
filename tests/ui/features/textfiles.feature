@@ -95,3 +95,23 @@ Feature: textFiles
 		Then the file "सिमप्ले $%#?&@ name.txt" should be listed
 		And the files page is reloaded
 		Then the file "सिमप्ले $%#?&@ name.txt" should be listed
+
+	Scenario: Create a text file putting a name of a file which already exists
+		When I create a text file with the name "lorem.txt"
+		Then near the new text file box a tooltip with the text 'lorem.txt already exists' should be displayed
+
+	Scenario: Create a text file named with forward slash
+		When I create a text file with the name "simple-folder/a.txt"
+		Then near the new text file box a tooltip with the text 'File name cannot contain "/".' should be displayed
+
+	Scenario: Create a text file named ..
+		When I create a text file with the name ".."
+		Then near the new text file box a tooltip with the text '".." is an invalid file name.' should be displayed
+
+	Scenario: Create a text file named .
+		When I create a text file with the name "."
+		Then near the new text file box a tooltip with the text '"." is an invalid file name.' should be displayed
+
+	Scenario: Create a text file with file extension .part
+		When I create a text file with the name "data.part"
+		Then near the new text file box a tooltip with the text '"data.part" has a forbidden file type/extension.' should be displayed

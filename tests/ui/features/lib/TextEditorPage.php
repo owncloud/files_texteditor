@@ -37,6 +37,7 @@ class TextEditorPage extends FilesPage {
 	protected $newTextFileNameInputXpath
 		= './/div[contains(@class, "newFileMenu")]' .
 			'//a[@data-templatename="New text file.txt"]//input';
+	protected $newTextFileTooltipXpath = ".//*[@class='tooltip-inner']";
 	protected $textFileEditXpath = "//textarea[contains(@class,'ace_text-input')]";
 	protected $textFileTextLayerXpath = "//div[contains(@class,'ace_text-layer')]";
 	protected $textFileLineXpath = ".//div[contains(@class,'ace_line')]";
@@ -52,6 +53,7 @@ class TextEditorPage extends FilesPage {
 	 * @param string $text
 	 * @param bool $pressEnter
 	 * @throws ElementNotFoundException
+	 * @return void
 	 */
 	public function typeInField(
 		Session $session,
@@ -144,8 +146,26 @@ class TextEditorPage extends FilesPage {
 	}
 
 	/**
+	 * returns the tooltip that is displayed next to the new text file name box
+	 *
+	 * @return string
+	 */
+	public function getTooltipOfNewTextFileBox() {
+		$newTextFileTooltip = $this->find("xpath", $this->newTextFileTooltipXpath);
+
+		if ($newTextFileTooltip === null) {
+			throw new ElementNotFoundException(
+				"could not find new text file box tooltip"
+			);
+		}
+
+		return $newTextFileTooltip->getText();
+	}
+
+	/**
 	 * type text into the text area
 	 *
+	 * @param Session $session
 	 * @param string $text
 	 * @return void
 	 */

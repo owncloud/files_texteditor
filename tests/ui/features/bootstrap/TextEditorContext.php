@@ -67,6 +67,17 @@ class TextEditorContext extends RawMinkContext implements Context {
 		$this->textEditorPage->waitTillEditorIsLoaded();
 	}
 
+
+	/**
+	 * @Then near the new text file box a tooltip with the text :toolTipText should be displayed
+	 */
+	public function nearTheNewTextFileBoxATooltipShouldBeDisplayed($toolTipText)
+	{
+		PHPUnit_Framework_Assert::assertEquals($toolTipText,
+			$this->textEditorPage->getTooltipOfNewTextFileBox()
+		);
+	}
+
 	/**
 	 * @When I input :text in the text area
 	 * @param string $text
