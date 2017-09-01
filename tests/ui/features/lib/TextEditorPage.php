@@ -43,17 +43,22 @@ class TextEditorPage extends FilesPage {
 	protected $textEditorCloseButtonId = "editor_close";
 
 	/**
-	 * type in the field that matches the given xpath and press enter.
+	 * type in the field that matches the given xpath and optionally press enter.
 	 * Note: this depends on methods that might only be in the Selenium
 	 * implementation
 	 *
+	 * @param Session $session
 	 * @param string $xpath
 	 * @param string $text
-	 * @param Session $session
-	 * @throws \SensioLabs\Behat\PageObjectExtension\PageObject\Exception\ElementNotFoundException
-	 * @return void
+	 * @param bool $pressEnter
+	 * @throws ElementNotFoundException
 	 */
-	public function typeInFieldAndPressEnter($xpath, $text, Session $session) {
+	public function typeInField(
+		Session $session,
+		$xpath,
+		$text,
+		$pressEnter = false
+	) {
 		$element = $session->getDriver()->getWebDriverSession()->element(
 			"xpath", $xpath
 		);
@@ -65,7 +70,9 @@ class TextEditorPage extends FilesPage {
 		}
 
 		$keys = preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY);
-		$keys[] = Key::ENTER;
+		if ($pressEnter) {
+			$keys[] = Key::ENTER;
+		}
 		$element->postValue(array('value' => $keys));
 	}
 
@@ -108,10 +115,11 @@ class TextEditorPage extends FilesPage {
 
 		if (strlen($name)) {
 			if ($useDefaultFileExtension) {
-				$this->typeInFieldAndPressEnter(
+				$this->typeInField(
+					$session,
 					$this->newTextFileNameInputXpath,
 					$name,
-					$session
+					true
 				);
 			} else {
 				try {
@@ -124,30 +132,15 @@ class TextEditorPage extends FilesPage {
 				}
 			}
 		} else {
-			$this->typeInFieldAndPressEnter(
+			$this->typeInField(
+				$session,
 				$this->newTextFileNameInputXpath,
 				'',
-				$session
+				true
 			);
 		}
 
 		$this->waitForAjaxCallsToStartAndFinish($session);
-	}
-
-	/**
-	 * finds the textarea field to use for editing a text file
-	 *
-	 * @throws ElementNotFoundException
-	 * @return \Behat\Mink\Element\NodeElement
-	 */
-	public function findTextFileEditField() {
-		$textField = $this->find(
-			"xpath", $this->textFileEditXpath
-		);
-		if ($textField === null) {
-			throw new ElementNotFoundException("could not find textarea field");
-		}
-		return $textField;
 	}
 
 	/**
@@ -156,9 +149,15 @@ class TextEditorPage extends FilesPage {
 	 * @param string $text
 	 * @return void
 	 */
-	public function typeIntoTextFile($text) {
-		$textField = $this->findTextFileEditField();
-		$textField->setValue($text);
+	public function typeIntoTextFile(
+		Session $session,
+		$text
+	) {
+		$this->typeInField(
+			$session,
+			$this->textFileEditXpath,
+			$text
+		);
 	}
 
 	/**

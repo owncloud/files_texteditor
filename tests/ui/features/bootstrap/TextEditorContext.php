@@ -73,7 +73,10 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function iInputTextInTheTextArea($text) {
-		$this->textEditorPage->typeIntoTextFile($text);
+		$this->textEditorPage->typeIntoTextFile(
+			$this->getSession(),
+			$text
+		);
 	}
 
 	/**
@@ -82,7 +85,10 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function iInputTheFollowingInTheTextArea(PyStringNode $multiLineText) {
-		$this->textEditorPage->typeIntoTextFile($multiLineText->getRaw());
+		$this->textEditorPage->typeIntoTextFile(
+			$this->getSession(),
+			$multiLineText->getRaw()
+		);
 	}
 
 	/**

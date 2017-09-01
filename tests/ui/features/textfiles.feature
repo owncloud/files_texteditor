@@ -81,9 +81,10 @@ Feature: textFiles
 		Then the file "New text file.txt" should be listed
 		And I open the file "New text file.txt"
 		Then line 1 of the text is "stuff"
-		And I input "lots of other text so that I can see it working" in the text area
+		And I input "other text before " in the text area
 		And I close the text editor
-		Then the file "New text file.txt" should be listed
+		And I open the file "New text file.txt"
+		Then line 1 of the text is "other text before stuff"
 
 	Scenario: Create a text file in a sub-folder using special characters in the names
 		When I create a folder with the name "सिमप्ले फोल्देर $%#?&@"
