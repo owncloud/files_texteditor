@@ -40,7 +40,7 @@ class TextEditorPage extends FilesPage {
 	protected $newTextFileTooltipXpath = ".//*[@class='tooltip-inner']";
 	protected $textFileEditXpath = "//textarea[contains(@class,'ace_text-input')]";
 	protected $textFileTextLayerXpath = "//div[contains(@class,'ace_text-layer')]";
-	protected $textFileLineXpath = ".//div[contains(@class,'ace_line')]";
+	protected $textFileLineXpath = ".//div[@class='ace_line']";
 	protected $textEditorCloseButtonId = "editor_close";
 
 	/**
@@ -197,15 +197,8 @@ class TextEditorPage extends FilesPage {
 			throw new ElementNotFoundException("could not find text lines");
 		}
 		$textLines = [];
-		$valid = true;
 		foreach ($textLineElements as $textLineElement) {
-			if ($valid) {
-				$textLines[] = $textLineElement->getText();
-			}
-			// Only grab every 2nd line.
-			// TODO:
-			// Work out why they are duplicated.
-			$valid = !$valid;
+			$textLines[] = $textLineElement->getText();
 		}
 		return $textLines;
 	}
