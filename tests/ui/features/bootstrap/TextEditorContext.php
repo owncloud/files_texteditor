@@ -24,6 +24,8 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\RawMinkContext;
+use Behat\Testwork\Hook\Scope\AfterSuiteScope;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Page\TextEditorPage;
 use TestHelpers\SetupHelper;
 
@@ -36,6 +38,11 @@ class TextEditorContext extends RawMinkContext implements Context {
 	private $textEditorPage;
 	private $featureContext;
 	private $filesContext;
+
+	/**
+	 * @var boolean
+	 */
+	private static $appHadToBeEnabled = false;
 
 	/**
 	 * TextEditorContext constructor.
@@ -138,6 +145,36 @@ class TextEditorContext extends RawMinkContext implements Context {
 	public function iCloseTheTextEditor() {
 		$this->textEditorPage->closeTheTextEditor($this->getSession());
 	}
+
+	/**
+	 * This will run once at the start of a whole suite
+	 * of features with scenarios.
+	 *
+	 * @param BeforeSuiteScope $scope
+	 * @return void
+	 * @BeforeSuite
+	 */
+	public static function beforeTextEditorSuite(BeforeSuiteScope $scope) {
+		SetupHelper::setOcPath($scope);
+		self::$appHadToBeEnabled = SetupHelper::enableAppIfNotEnabled(
+			'files_texteditor'
+		);
+	}
+
+	/**
+	 * This will run once at the end of a whole suite
+	 * of features with scenarios.
+	 *
+	 * @param AfterSuiteScope $scope
+	 * @return void
+	 * @AfterSuite
+	 */
+	public static function afterTextEditorSuite(AfterSuiteScope $scope) {
+		if (self::$appHadToBeEnabled) {
+			SetupHelper::disableApp('files_texteditor');
+		}
+	}
+
 	/**
 	 * general before scenario for all text editor tests.
 	 * This will run before EVERY scenario.
@@ -154,6 +191,5 @@ class TextEditorContext extends RawMinkContext implements Context {
 		$this->featureContext = $environment->getContext('FeatureContext');
 		$this->filesContext = $environment->getContext('FilesContext');
 		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
-		SetupHelper::setOcPath($scope);
 	}
 }
