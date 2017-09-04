@@ -25,6 +25,7 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Page\TextEditorPage;
+use TestHelpers\SetupHelper;
 
 require_once 'bootstrap.php';
 
@@ -70,10 +71,12 @@ class TextEditorContext extends RawMinkContext implements Context {
 
 	/**
 	 * @Then near the new text file box a tooltip with the text :toolTipText should be displayed
+	 * @param string $toolTipText
+	 * @return void
 	 */
-	public function nearTheNewTextFileBoxATooltipShouldBeDisplayed($toolTipText)
-	{
-		PHPUnit_Framework_Assert::assertEquals($toolTipText,
+	public function nearTheNewTextFileBoxATooltipShouldBeDisplayed($toolTipText) {
+		PHPUnit_Framework_Assert::assertEquals(
+			$toolTipText,
 			$this->textEditorPage->getTooltipOfNewTextFileBox()
 		);
 	}
@@ -151,8 +154,6 @@ class TextEditorContext extends RawMinkContext implements Context {
 		$this->featureContext = $environment->getContext('FeatureContext');
 		$this->filesContext = $environment->getContext('FilesContext');
 		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
-		$suiteParameters = $scope->getEnvironment()->getSuite()
-			->getSettings() ['context'] ['parameters'];
-		$this->ocPath = $suiteParameters['ocPath'];
+		SetupHelper::setOcPath($scope);
 	}
 }
