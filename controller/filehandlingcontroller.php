@@ -29,7 +29,6 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Files\ForbiddenException;
-use OCP\Files\StorageNotAvailableException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
