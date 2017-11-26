@@ -26,7 +26,6 @@ use OC\Files\View;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
-use Punic\Exception;
 
 class Application extends App {
 
