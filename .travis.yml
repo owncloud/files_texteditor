@@ -20,6 +20,9 @@ branches:
     - /^stable\d+(\.\d+)?$/
 
 addons:
+  apt:
+    packages:
+    - libxml2-utils
   hosts: &common_hosts
     - owncloud
 
