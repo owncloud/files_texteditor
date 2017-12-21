@@ -44,11 +44,6 @@ class TextEditorContext extends RawMinkContext implements Context {
 	private $filesContext;
 
 	/**
-	 * @var boolean
-	 */
-	private static $appHadToBeEnabled = false;
-
-	/**
 	 * TextEditorContext constructor.
 	 *
 	 * @param TextEditorPage $textEditorPage
@@ -151,34 +146,6 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * This will run once at the start of a whole suite
-	 * of features with scenarios.
-	 *
-	 * @param BeforeSuiteScope $scope
-	 * @return void
-	 * @BeforeSuite
-	 */
-	public static function beforeTextEditorSuite(BeforeSuiteScope $scope) {
-		self::$appHadToBeEnabled = SetupHelper::enableAppIfNotEnabled(
-			'files_texteditor'
-		);
-	}
-
-	/**
-	 * This will run once at the end of a whole suite
-	 * of features with scenarios.
-	 *
-	 * @param AfterSuiteScope $scope
-	 * @return void
-	 * @AfterSuite
-	 */
-	public static function afterTextEditorSuite(AfterSuiteScope $scope) {
-		if (self::$appHadToBeEnabled) {
-			SetupHelper::disableApp('files_texteditor');
-		}
-	}
-
-	/**
 	 * general before scenario for all text editor tests.
 	 * This will run before EVERY scenario.
 	 * It will set the properties for this object.
@@ -194,6 +161,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 		$this->featureContext = $environment->getContext('FeatureContext');
 		$this->filesContext = $environment->getContext('FilesContext');
 		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
+		// Initialize the setup helper so it can be used
 		$suiteParameters = SetupHelper::getSuiteParameters($scope);
 		$this->adminPassword = (string)$suiteParameters['adminPassword'];
 		SetupHelper::init(
