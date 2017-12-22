@@ -58,6 +58,10 @@ fi
 echo "Running UI tests"
 bash tests/travis/start_ui_tests.sh --config apps/files_texteditor/tests/ui/config/behat.yml
 
+UI_TEST_EXIT_STATUS=$?
+
 if test "$FILES_TEXTEDITOR_APP_ENABLED_BY_SCRIPT" = true; then
 	remote_occ $ADMIN_PASSWORD $OCC_URL "--no-warnings app:disable files_texteditor"
 fi
+
+exit $UI_TEST_EXIT_STATUS
