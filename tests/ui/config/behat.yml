@@ -10,7 +10,7 @@ default:
         - %paths.base%/../features
       context:
         parameters:
-          ocPath: ./
+          ocPath: apps/testing/api/v1/occ
           adminPassword: admin
           regularUserPassword: 123456
           regularUserName: regularuser
