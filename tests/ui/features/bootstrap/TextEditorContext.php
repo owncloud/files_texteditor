@@ -36,9 +36,6 @@ require_once 'bootstrap.php';
  */
 class TextEditorContext extends RawMinkContext implements Context {
 
-	use BasicStructure;
-
-	private $adminPassword;
 	private $textEditorPage;
 	private $featureContext;
 	private $filesContext;
@@ -161,12 +158,5 @@ class TextEditorContext extends RawMinkContext implements Context {
 		$this->featureContext = $environment->getContext('FeatureContext');
 		$this->filesContext = $environment->getContext('FilesContext');
 		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
-		// Initialize the setup helper so it can be used
-		$suiteParameters = SetupHelper::getSuiteParameters($scope);
-		$this->adminPassword = (string)$suiteParameters['adminPassword'];
-		SetupHelper::init(
-			"admin", $this->getUserPassword("admin"),
-			$this->getMinkParameter('base_url'), $suiteParameters['ocPath']
-		);
 	}
 }
