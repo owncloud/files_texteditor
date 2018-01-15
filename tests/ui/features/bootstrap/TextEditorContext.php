@@ -24,10 +24,7 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\MinkExtension\Context\RawMinkContext;
-use Behat\Testwork\Hook\Scope\AfterSuiteScope;
-use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Page\TextEditorPage;
-use TestHelpers\SetupHelper;
 
 require_once 'bootstrap.php';
 
