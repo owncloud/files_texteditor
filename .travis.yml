@@ -8,7 +8,7 @@ php:
 
 env:
   global:
-    - CORE_BRANCH=master
+    - CORE_BRANCH=stable10
     - APP=files_texteditor
     - TC=other
     - SRV_HOST_NAME=owncloud
@@ -54,6 +54,16 @@ matrix:
   include:
     - php: 5.6
       env: DB=sqlite TC=selenium BROWSER="chrome" BROWSER_VERSION="latest" PLATFORM="Windows 10"
+      addons:
+        apt: *common_apt
+        hosts: *common_hosts
+        sauce_connect: true
+    - php: 7.1
+      env: DB=sqlite CORE_BRANCH=master
+    - php: 7.2
+      env: DB=sqlite CORE_BRANCH=master
+    - php: 7.1
+      env: DB=sqlite CORE_BRANCH=master TC=selenium BROWSER="chrome" BROWSER_VERSION="latest" PLATFORM="Windows 10"
       addons:
         apt: *common_apt
         hosts: *common_hosts
