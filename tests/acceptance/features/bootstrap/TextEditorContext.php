@@ -34,8 +34,8 @@ require_once 'bootstrap.php';
 class TextEditorContext extends RawMinkContext implements Context {
 
 	private $textEditorPage;
-	private $featureContext;
-	private $filesContext;
+	private $webUIGeneralContext;
+	private $webUIFilesContext;
 
 	/**
 	 * TextEditorContext constructor.
@@ -152,8 +152,8 @@ class TextEditorContext extends RawMinkContext implements Context {
 		// Get the environment
 		$environment = $scope->getEnvironment();
 		// Get all the contexts you need in this context
-		$this->featureContext = $environment->getContext('FeatureContext');
-		$this->filesContext = $environment->getContext('FilesContext');
+		$this->webUIGeneralContext = $environment->getContext('WebUIGeneralContext');
+		$this->webUIFilesContext = $environment->getContext('WebUIFilesContext');
 		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
 	}
 }
