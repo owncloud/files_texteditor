@@ -1,4 +1,4 @@
-@insulated
+@webUI @insulated
 Feature: textFiles
 
 	Background:

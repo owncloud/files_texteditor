@@ -19,5 +19,5 @@ default:
           regularGroupNames: grp1,grp2,grp3,usergrp,grpuser
       contexts:
         - TextEditorContext:
-        - FeatureContext:
-        - FilesContext:
+        - WebUIGeneralContext:
+        - WebUIFilesContext:
