@@ -47,13 +47,14 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @When /^I create a text file with the name ((?:'[^']*')|(?:"[^"]*"))( without changing the default file extension|)$/
+	 * @When /^the user creates a text file with the name ((?:'[^']*')|(?:"[^"]*")) using the webUI( without changing the default file extension|)$/
 	 *
 	 * @param string $name
 	 * @param string $useDefaultFileExtension
+	 *
 	 * @return void
 	 */
-	public function createATextFileWithTheName(
+	public function createATextFileWithTheNameUsingTheWebUI(
 		$name,
 		$useDefaultFileExtension = ''
 	) {
@@ -70,11 +71,15 @@ class TextEditorContext extends RawMinkContext implements Context {
 
 
 	/**
-	 * @Then near the new text file box a tooltip with the text :toolTipText should be displayed
+	 * @Then near the new text file box a tooltip with the text :toolTipText should be displayed on the webUI
+	 *
 	 * @param string $toolTipText
+	 *
 	 * @return void
 	 */
-	public function nearTheNewTextFileBoxATooltipShouldBeDisplayed($toolTipText) {
+	public function nearTheNewTextFileBoxATooltipShouldBeDisplayedOnTheWebUI(
+		$toolTipText
+	) {
 		PHPUnit_Framework_Assert::assertEquals(
 			$toolTipText,
 			$this->textEditorPage->getTooltipOfNewTextFileBox()
@@ -82,11 +87,13 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @When I input :text in the text area
+	 * @When the user inputs :text in the text area
+	 *
 	 * @param string $text
+	 *
 	 * @return void
 	 */
-	public function iInputTextInTheTextArea($text) {
+	public function theUserInputsTextInTheTextArea($text) {
 		$this->textEditorPage->typeIntoTextFile(
 			$this->getSession(),
 			$text
@@ -94,11 +101,15 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @When I input the following text in the text area:
+	 * @When the user inputs the following text in the text area:
+	 *
 	 * @param PyStringNode $multiLineText
+	 *
 	 * @return void
 	 */
-	public function iInputTheFollowingInTheTextArea(PyStringNode $multiLineText) {
+	public function theUserInputsTheFollowingInTheTextArea(
+		PyStringNode $multiLineText
+	) {
 		$this->textEditorPage->typeIntoTextFile(
 			$this->getSession(),
 			$multiLineText->getRaw()
@@ -106,11 +117,13 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @Then there is/are :number line(s) of text
+	 * @Then there should be :number line(s) of text in the text area
+	 *
 	 * @param int $number
+	 *
 	 * @return void
 	 */
-	public function thereAreLinesOfText($number) {
+	public function thereShouldBeLinesOfTextInTheTextArea($number) {
 		PHPUnit_Framework_Assert::assertEquals(
 			$number,
 			count($this->textEditorPage->textFileContent())
@@ -118,12 +131,14 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
-	 * @Then line :number of the text is :text
+	 * @Then line :number of the text should be :text
+	 *
 	 * @param int $number
 	 * @param string $text
+	 *
 	 * @return void
 	 */
-	public function lineOfTheTextIs($number, $text) {
+	public function lineOfTheTextShouldBe($number, $text) {
 		$lineIndex = $number - 1;
 		$textFileContent = $this->textEditorPage->textFileContent();
 		PHPUnit_Framework_Assert::assertEquals(
@@ -132,10 +147,11 @@ class TextEditorContext extends RawMinkContext implements Context {
 		);
 	}
 	/**
-	 * @When I close the text editor
+	 * @When the user closes the text editor
+	 *
 	 * @return void
 	 */
-	public function iCloseTheTextEditor() {
+	public function theUserClosesTheTextEditor() {
 		$this->textEditorPage->closeTheTextEditor($this->getSession());
 	}
 
@@ -144,9 +160,11 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * This will run before EVERY scenario.
 	 * It will set the properties for this object.
 	 *
-	 * @param BeforeScenarioScope $scope
-	 * @return void
 	 * @BeforeScenario
+	 *
+	 * @param BeforeScenarioScope $scope
+	 *
+	 * @return void
 	 */
 	public function before(BeforeScenarioScope $scope) {
 		// Get the environment
