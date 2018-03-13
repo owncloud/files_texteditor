@@ -52,6 +52,7 @@ class TextEditorPage extends FilesPage {
 	 * @param string $xpath
 	 * @param string $text
 	 * @param bool $pressEnter
+	 *
 	 * @throws ElementNotFoundException
 	 * @return void
 	 */
@@ -87,6 +88,7 @@ class TextEditorPage extends FilesPage {
 	 * @param Session $session
 	 * @param string $name
 	 * @param boolean $useDefaultFileExtension
+	 *
 	 * @return void
 	 */
 	public function createTextFile(
@@ -167,6 +169,7 @@ class TextEditorPage extends FilesPage {
 	 *
 	 * @param Session $session
 	 * @param string $text
+	 *
 	 * @return void
 	 */
 	public function typeIntoTextFile(
@@ -206,6 +209,7 @@ class TextEditorPage extends FilesPage {
 	/**
 	 *
 	 * @param Session $session
+	 *
 	 * @throws ElementNotFoundException
 	 * @return void
 	 */
@@ -223,6 +227,7 @@ class TextEditorPage extends FilesPage {
 
 	/**
 	 * @param int $timeout_msec
+	 *
 	 * @return void
 	 */
 	public function waitTillEditorIsLoaded(
