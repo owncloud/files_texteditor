@@ -11,13 +11,11 @@ default:
       context:
         parameters:
           ocPath: apps/testing/api/v1/occ
+          adminUsername: admin
           adminPassword: admin
           regularUserPassword: 123456
-          regularUserName: regularuser
-          regularUserNames: user1,user2,user3,user4,user5
-          regularGroupName: regulargrp
-          regularGroupNames: grp1,grp2,grp3,usergrp,grpuser
       contexts:
         - TextEditorContext:
         - WebUIGeneralContext:
+        - WebUILoginContext:
         - WebUIFilesContext:

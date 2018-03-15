@@ -23,6 +23,7 @@
 require __DIR__ . '/../../../../../../lib/composer/autoload.php';
 require __DIR__ . '/../../../../../../tests/acceptance/features/bootstrap/WebUIBasicStructure.php';
 require __DIR__ . '/../../../../../../tests/acceptance/features/bootstrap/WebUIGeneralContext.php';
+require __DIR__ . '/../../../../../../tests/acceptance/features/bootstrap/WebUILoginContext.php';
 require __DIR__ . '/../../../../../../tests/acceptance/features/bootstrap/WebUIFilesContext.php';
 require __DIR__ . '/../../../../../../tests/acceptance/features/lib/OwncloudPage.php';
 
