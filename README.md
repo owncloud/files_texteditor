@@ -58,3 +58,5 @@ OCA.Files_Texteditor.registerPreviewPlugin('text/markdown', new OCA.MYApp.Previe
 For styling of the preview, the preview element will have the id `preview` and the className will be set to the mimetype of the file being edited with any slash replaced by dashes.
 
 e.g. when editing a markdown file the preview element can be styled using the `#preview.text-markdown` css query.
+
+Touch to verify CI
