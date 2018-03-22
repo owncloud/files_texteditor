@@ -16,6 +16,13 @@ default:
           regularUserPassword: 123456
       contexts:
         - TextEditorContext:
+        - FeatureContext:
+            baseUrl:  http://localhost:8080/ocs/
+            adminUsername: admin
+            adminPassword: admin
+            regularUserPassword: 123456
+            mailhogUrl: http://127.0.0.1:8025/api/v2/messages
+            ocPath: ../../../../
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
