@@ -85,10 +85,6 @@ Feature: textFiles
 		Then the file "New text file.txt" should be listed on the webUI
 		And the user opens the file "New text file.txt" using the webUI
 		Then line 1 of the text should be "stuff"
-		And the user inputs "other text before " in the text area
-		And the user closes the text editor
-		And the user opens the file "New text file.txt" using the webUI
-		Then line 1 of the text should be "other text before stuff"
 
 	Scenario: Create a text file in a sub-folder using special characters in the names
 		When the user creates a folder with the name "सिमप्ले फोल्देर $%#?&@" using the webUI
