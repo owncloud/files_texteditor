@@ -5,9 +5,9 @@ default:
     SensioLabs\Behat\PageObjectExtension: ~
 
   suites:
-    default:
+    webUITextEditor:
       paths:
-        - %paths.base%/../features
+        - %paths.base%/../features/webUITextEditor
       context:
         parameters:
           ocPath: apps/testing/api/v1/occ
