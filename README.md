@@ -7,6 +7,8 @@
 
 The original text editor app for ownCloud, based on [Ace](http://ace.c9.io/).
 
+Change to test CI.
+
 Features:
  - Syntax highlighting
  - Autosave
