@@ -19,4 +19,4 @@ OC.L10N.register(
     "Text file" : "فایل متنی",
     "New text file.txt" : "متن جدید file.txt"
 },
-"nplurals=1; plural=0;");
+"nplurals=2; plural=(n > 1);");

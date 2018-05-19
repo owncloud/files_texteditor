@@ -16,5 +16,5 @@
     "An error occurred!" : "یک خطا رخ‌داده است!",
     "Text file" : "فایل متنی",
     "New text file.txt" : "متن جدید file.txt"
-},"pluralForm" :"nplurals=1; plural=0;"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

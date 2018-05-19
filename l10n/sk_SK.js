@@ -19,4 +19,4 @@ OC.L10N.register(
     "Text file" : "Textový súbor",
     "New text file.txt" : "Nový text file.txt"
 },
-"nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;");
+"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
