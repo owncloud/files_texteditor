@@ -1,8 +1,6 @@
 default:
   autoload:
     '': %paths.base%/../features/bootstrap
-  extensions:
-    SensioLabs\Behat\PageObjectExtension: ~
 
   suites:
     webUITextEditor:
@@ -25,3 +23,10 @@ default:
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
+
+  extensions:
+      jarnaiz\JUnitFormatter\JUnitFormatterExtension:
+          filename: report.xml
+          outputDir: %paths.base%/../output/
+
+      rdx\behatvars\BehatVariablesExtension: ~
