@@ -172,6 +172,5 @@ class TextEditorContext extends RawMinkContext implements Context {
 		// Get all the contexts you need in this context
 		$this->webUIGeneralContext = $environment->getContext('WebUIGeneralContext');
 		$this->webUIFilesContext = $environment->getContext('WebUIFilesContext');
-		$this->tmpDir = $this->getMinkParameter("show_tmp_dir");
 	}
 }
