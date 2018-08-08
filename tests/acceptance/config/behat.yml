@@ -6,12 +6,6 @@ default:
     webUITextEditor:
       paths:
         - %paths.base%/../features/webUITextEditor
-      context:
-        parameters:
-          ocPath: apps/testing/api/v1/occ
-          adminUsername: admin
-          adminPassword: admin
-          regularUserPassword: 123456
       contexts:
         - TextEditorContext:
         - FeatureContext:
@@ -19,7 +13,7 @@ default:
             adminUsername: admin
             adminPassword: admin
             regularUserPassword: 123456
-            ocPath: ../../../../
+            ocPath: apps/testing/api/v1/occ
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
