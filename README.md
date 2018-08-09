@@ -1,5 +1,7 @@
 # Texteditor
 
+Trigger CI
+
 [![Build Status](https://travis-ci.org/owncloud/files_texteditor.svg?branch=master)](https://travis-ci.org/owncloud/files_texteditor)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_texteditor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_texteditor/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_texteditor/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_texteditor/?branch=master)
