@@ -32,7 +32,6 @@ require_once 'bootstrap.php';
  * Text Editor context.
  */
 class TextEditorContext extends RawMinkContext implements Context {
-
 	private $textEditorPage;
 	private $webUIGeneralContext;
 	private $webUIFilesContext;
@@ -60,15 +59,14 @@ class TextEditorContext extends RawMinkContext implements Context {
 	) {
 		// The capturing group of the regex always includes the quotes at each
 		// end of the captured string, so trim them.
-		$name = trim($name, $name[0]);
+		$name = \trim($name, $name[0]);
 		$this->textEditorPage->createTextFile(
 			$this->getSession(),
 			$name,
-			strlen($useDefaultFileExtension) ? true : false
+			\strlen($useDefaultFileExtension) ? true : false
 		);
 		$this->textEditorPage->waitTillEditorIsLoaded();
 	}
-
 
 	/**
 	 * @Then near the new text file box a tooltip with the text :toolTipText should be displayed on the webUI
@@ -126,7 +124,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	public function thereShouldBeLinesOfTextInTheTextArea($number) {
 		PHPUnit_Framework_Assert::assertEquals(
 			$number,
-			count($this->textEditorPage->textFileContent())
+			\count($this->textEditorPage->textFileContent())
 		);
 	}
 

@@ -68,17 +68,17 @@ class TextEditorPage extends FilesPage {
 			"xpath", $xpath
 		);
 
-		if (is_null($element)) {
+		if ($element === null) {
 			throw new ElementNotFoundException(
 				"could not find element with xpath '" . $xpath . "'"
 			);
 		}
 
-		$keys = preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY);
+		$keys = \preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY);
 		if ($pressEnter) {
 			$keys[] = Key::ENTER;
 		}
-		$element->postValue(array('value' => $keys));
+		$element->postValue(['value' => $keys]);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class TextEditorPage extends FilesPage {
 
 		$newTextFileButton->click();
 
-		if (strlen($name)) {
+		if (\strlen($name)) {
 			if ($useDefaultFileExtension) {
 				$this->typeInField(
 					$session,
@@ -243,5 +243,4 @@ class TextEditorPage extends FilesPage {
 	) {
 		$this->waitTillElementIsNotNull($this->textFileEditXpath, $timeout_msec);
 	}
-
 }
