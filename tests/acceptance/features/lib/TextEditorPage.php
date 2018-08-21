@@ -136,9 +136,10 @@ class TextEditorPage extends FilesPage {
 					// actually all that we need does happen,
 					// so we just don't do anything
 				} catch (StaleElementReference $e) {
-					// At the end of processing setValue, MinkSelenium2Driver tries to blur
-					// away from the element. But we pressed enter which has already
-					// made the element go away. So we do not care about this exception.
+					// At the end of processing setValue, MinkSelenium2Driver
+					// tries to blur away from the element. But we pressed
+					// enter which has already made the element go away.
+					// So we do not care about this exception.
 					// This issue started happening due to:
 					// https://github.com/minkphp/MinkSelenium2Driver/pull/286
 				}
