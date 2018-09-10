@@ -7,3 +7,4 @@ file_filter = <lang>/files_texteditor.po
 source_file = templates/files_texteditor.pot
 source_lang = en
 type = PO
+
