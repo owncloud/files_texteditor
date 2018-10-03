@@ -3,10 +3,9 @@ Feature: textFiles
 
   Background:
     Given these users have been created:
-      | username | password | displayname | email        |
-      | user1    | 1234     | User One    | u1@oc.com.np |
-    And the user has browsed to the login page
-    And the user has logged in with username "user1" and password "1234" using the webUI
+      | username |
+      | user1    |
+    And user "user1" has logged in using the webUI
     And the user has browsed to the files page
 
   Scenario: Edit a text file with the default name and file extension in a sub-folder

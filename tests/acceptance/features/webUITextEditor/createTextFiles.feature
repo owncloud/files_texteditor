@@ -3,10 +3,9 @@ Feature: textFiles
 
   Background:
     Given these users have been created:
-      | username | password | displayname | email        |
-      | user1    | 1234     | User One    | u1@oc.com.np |
-    And the user has browsed to the login page
-    And the user has logged in with username "user1" and password "1234" using the webUI
+      | username |
+      | user1    |
+    And user "user1" has logged in using the webUI
     And the user has browsed to the files page
 
   Scenario Outline: Create a text file
@@ -54,14 +53,14 @@ Feature: textFiles
   Scenario: Create a text file with multiple lines of text in it
     When the user creates a text file with the name "atextfile.txt" using the webUI
     And the user inputs the following text in the text area:
-		"""
-		What is this?
-		This is some "example" text!
-		That goes on some lines in a 'text' file.
+      """
+      What is this?
+      This is some "example" text!
+      That goes on some lines in a 'text' file.
 
-		नेपाल
-		1 2 3 4 5 6 7 8 9 0
-		"""
+      नेपाल
+      1 2 3 4 5 6 7 8 9 0
+      """
     And the user closes the text editor
     Then the file "atextfile.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
