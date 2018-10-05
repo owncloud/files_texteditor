@@ -4,6 +4,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/owncloud/files_texteditor/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_texteditor/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/owncloud/files_texteditor/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/owncloud/files_texteditor/?branch=master)
 
+Trigger CI
 
 The original text editor app for ownCloud, based on [Ace](http://ace.c9.io/).
 
