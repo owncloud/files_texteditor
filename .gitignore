@@ -4,6 +4,7 @@
 /tests/acceptance/output
 /tests/coverage*
 /tests/clover.xml
+.php_cs.cache
 # Remove unnecessary workers
 /js/vendor/ace/src-noconflict/worker-*
 # Remove unnecessary themes, but keep the one we use!
@@ -13,3 +14,7 @@
 /js/vendor/ace/src-noconflict/ext-*
 !/js/vendor/ace/src-noconflict/ext-modelist.js
 !/js/vendor/ace/src-noconflict/ext-searchbox.js
+# composer
+composer.phar
+vendor/
+vendor-bin/**/composer.lock
