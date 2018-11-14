@@ -98,14 +98,7 @@ class TextEditorPage extends FilesPage {
 		$name = null,
 		$useDefaultFileExtension = false
 	) {
-		$newFileFolderButton
-			= $this->find("xpath", $this->newFileFolderButtonXpath);
-
-		if ($newFileFolderButton === null) {
-			throw new ElementNotFoundException(
-				"could not find new file/folder button"
-			);
-		}
+		$newFileFolderButton = $this->filesPageCRUDFunctions->findNewFileFolderButton();
 
 		$newFileFolderButton->click();
 
