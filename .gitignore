@@ -2,6 +2,7 @@
 .DS_Store
 # Tests - auto-generated files
 /tests/acceptance/output
+/tests/output
 /tests/coverage*
 /tests/clover.xml
 .php_cs.cache

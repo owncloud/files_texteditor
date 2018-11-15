@@ -100,6 +100,7 @@ endif
 # bin file definitions
 PHPUNIT=php -d zend.enable_gc=0  vendor/bin/phpunit
 PHP_CS_FIXER=php -d zend.enable_gc=0 vendor-bin/owncloud-codestyle/vendor/bin/php-cs-fixer
+PHPUNITDBG=phpdbg -qrr -d memory_limit=4096M -d zend.enable_gc=0 "./vendor/bin/phpunit"
 
 .PHONY: test-php-style
 test-php-style:            ## Run php-cs-fixer and check owncloud code-style
@@ -114,7 +115,13 @@ test-php-style-fix: vendor-bin/owncloud-codestyle/vendor
 .PHONY: test-php-unit
 test-php-unit:             ## Run php unit tests
 test-php-unit: vendor/bin/phpunit
-	$(PHPUNIT) --configuration ./tests/phpunit.xml --testsuite unit
+	$(PHPUNIT) --configuration ./phpunit.xml --testsuite unit
+
+.PHONY: test-php-unit-dbg
+test-php-unit-dbg:         ## Run php unit tests using phpdbg
+test-php-unit-dbg: vendor/bin/phpunit
+	$(PHPUNITDBG) --configuration ./phpunit.xml --testsuite unit
+
 
 .PHONY: test-acceptance-webui
 test-acceptance-webui:     ## Run webUI acceptance tests

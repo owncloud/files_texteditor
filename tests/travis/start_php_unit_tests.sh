@@ -7,4 +7,4 @@
 #
 cd apps/files_texteditor/tests
 echo "Running PHP unit tests"
-phpunit --configuration phpunit.xml
+phpunit --configuration ../phpunit.xml
