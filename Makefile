@@ -126,7 +126,7 @@ test-php-unit-dbg: vendor/bin/phpunit
 .PHONY: test-acceptance-webui
 test-acceptance-webui:     ## Run webUI acceptance tests
 test-acceptance-webui: vendor/bin/phpunit
-	../../tests/acceptance/run.sh --type webUI
+	../../tests/acceptance/run.sh --remote --type webUI
 
 #
 # Dependency management
