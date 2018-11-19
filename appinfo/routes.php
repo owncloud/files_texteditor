@@ -19,12 +19,11 @@
  *
  */
 
-
 namespace OCA\Files_Texteditor\AppInfo;
 
 $app = new Application();
 
-$app->registerRoutes($this, array('routes' => array(
+$app->registerRoutes($this, ['routes' => [
 
 	[
 		'name' => 'FileHandling#load',
@@ -36,4 +35,4 @@ $app->registerRoutes($this, array('routes' => array(
 		'url' => '/ajax/savefile',
 		'verb' => 'PUT'
 	]
-)));
+]]);

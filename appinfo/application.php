@@ -19,7 +19,6 @@
  *
  */
 
-
 namespace OCA\Files_Texteditor\AppInfo;
 
 use OC\Files\View;
@@ -32,7 +31,7 @@ class Application extends App {
 	/**
 	 * @param array $urlParams
 	 */
-	public function __construct(array $urlParams = array()) {
+	public function __construct(array $urlParams = []) {
 		parent::__construct('files_texteditor', $urlParams);
 
 		$container = $this->getContainer();

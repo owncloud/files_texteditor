@@ -162,6 +162,10 @@ services:
 
 matrix:
   include:
+    # oc coding standard
+    - PHP_VERSION: 7.1
+      TEST_SUITE: owncloud-coding-standard
+
     # Unit Tests
     - PHP_VERSION: 7.1
       OC_VERSION: daily-master-qa

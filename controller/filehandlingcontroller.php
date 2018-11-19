@@ -19,9 +19,7 @@
  *
  */
 
-
 namespace OCA\Files_Texteditor\Controller;
-
 
 use OC\Files\View;
 use OC\HintException;
@@ -34,7 +32,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\Lock\LockedException;
 
-class FileHandlingController extends Controller{
+class FileHandlingController extends Controller {
 
 	/** @var IL10N */
 	private $l;
@@ -88,12 +86,12 @@ class FileHandlingController extends Controller{
 					$writable = $this->view->isUpdatable($path);
 					$mime = $this->view->getMimeType($path);
 					$mTime = $this->view->filemtime($path);
-					$encoding = mb_detect_encoding($fileContents . "a", "UTF-8, WINDOWS-1252, ISO-8859-15, ISO-8859-1, ASCII", true);
+					$encoding = \mb_detect_encoding($fileContents . "a", "UTF-8, WINDOWS-1252, ISO-8859-15, ISO-8859-1, ASCII", true);
 					if ($encoding == "") {
 						// set default encoding if it couldn't be detected
 						$encoding = 'ISO-8859-15';
 					}
-					$fileContents = iconv($encoding, "UTF-8", $fileContents);
+					$fileContents = \iconv($encoding, "UTF-8", $fileContents);
 					return new DataResponse(
 						[
 							'filecontents' => $fileContents,
@@ -109,7 +107,6 @@ class FileHandlingController extends Controller{
 			} else {
 				return new DataResponse(['message' => (string)$this->l->t('Invalid file path supplied.')], Http::STATUS_BAD_REQUEST);
 			}
-
 		} catch (LockedException $e) {
 			$message = (string) $this->l->t('The file is locked.');
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
@@ -136,10 +133,10 @@ class FileHandlingController extends Controller{
 	 */
 	public function save($path, $filecontents, $mtime) {
 		try {
-			if($path !== '' && (is_integer($mtime) && $mtime > 0)) {
+			if ($path !== '' && (\is_integer($mtime) && $mtime > 0)) {
 				// Get file mtime
 				$filemtime = $this->view->filemtime($path);
-				if($mtime !== $filemtime) {
+				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
 					$this->logger->error('File: ' . $path . ' modified since opening.',
 						['app' => 'files_texteditor']);
@@ -148,8 +145,8 @@ class FileHandlingController extends Controller{
 						Http::STATUS_BAD_REQUEST);
 				} else {
 					// File same as when opened, save file
-					if($this->view->isUpdatable($path)) {
-						$filecontents = iconv(mb_detect_encoding($filecontents), "UTF-8", $filecontents);
+					if ($this->view->isUpdatable($path)) {
+						$filecontents = \iconv(\mb_detect_encoding($filecontents), "UTF-8", $filecontents);
 						try {
 							$this->view->file_put_contents($path, $filecontents);
 						} catch (LockedException $e) {
@@ -159,7 +156,7 @@ class FileHandlingController extends Controller{
 							return new DataResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 						}
 						// Clear statcache
-						clearstatcache();
+						\clearstatcache();
 						// Get new mtime
 						$newmtime = $this->view->filemtime($path);
 						$newsize = $this->view->filesize($path);
@@ -172,14 +169,13 @@ class FileHandlingController extends Controller{
 							Http::STATUS_BAD_REQUEST);
 					}
 				}
-			} else if ($path === '') {
+			} elseif ($path === '') {
 				$this->logger->error('No file path supplied');
 				return new DataResponse(['message' => $this->l->t('File path not supplied')], Http::STATUS_BAD_REQUEST);
 			} else {
 				$this->logger->error('No file mtime supplied', ['app' => 'files_texteditor']);
 				return new DataResponse(['message' => $this->l->t('File mtime not supplied')], Http::STATUS_BAD_REQUEST);
 			}
-
 		} catch (HintException $e) {
 			$message = (string)$e->getHint();
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
@@ -188,5 +184,4 @@ class FileHandlingController extends Controller{
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
 		}
 	}
-
 }
