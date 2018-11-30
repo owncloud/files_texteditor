@@ -19,9 +19,7 @@
  *
  */
 
-
 namespace OCA\Files_Texteditor\Tests\Controller;
-
 
 use OC\HintException;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
@@ -66,7 +64,7 @@ class FileHandlingControllerTest extends TestCase {
 			->getMock();
 
 		$this->l10nMock->expects($this->any())->method('t')->willReturnCallback(
-			function($message) {
+			function ($message) {
 				return $message;
 			}
 		);
@@ -109,13 +107,13 @@ class FileHandlingControllerTest extends TestCase {
 	}
 
 	public function dataTestLoad() {
-		return array(
-			array('test.txt', 'file content', 200, ''),
-			array('test.txt', '', 200, ''),
-			array('test.txt', '0', 200, ''),
-			array('', 'file content', 400, 'Invalid file path supplied.'),
-			array('test.txt', false, 400, 'Cannot read the file.'),
-		);
+		return [
+			['test.txt', 'file content', 200, ''],
+			['test.txt', '', 200, ''],
+			['test.txt', '0', 200, ''],
+			['', 'file content', 400, 'Invalid file path supplied.'],
+			['test.txt', false, 400, 'Cannot read the file.'],
+		];
 	}
 
 	public function dataLoadExceptionWithException() {
@@ -133,10 +131,9 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param string $expectedMessage
 	 */
 	public function testLoadExceptionWithException(\Exception $exception, $expectedMessage) {
-
 		$this->viewMock->expects($this->any())
 			->method('file_get_contents')
-			->willReturnCallback(function() use ($exception) {
+			->willReturnCallback(function () use ($exception) {
 				throw $exception;
 			});
 
@@ -154,10 +151,9 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param string $expectedMessage
 	 */
 	public function testSaveExceptionWithException(\Exception $exception, $expectedMessage) {
-
 		$this->viewMock->expects($this->any())
 			->method('file_put_contents')
-			->willReturnCallback(function() use ($exception) {
+			->willReturnCallback(function () use ($exception) {
 				throw $exception;
 			});
 
@@ -188,7 +184,6 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param $expectedMessage
 	 */
 	public function testSave($path, $fileContents, $mTime, $fileMTime, $isUpdatable, $expectedStatus, $expectedMessage) {
-
 		$this->viewMock->expects($this->any())
 			->method('filemtime')
 			->willReturn($fileMTime);
@@ -216,7 +211,6 @@ class FileHandlingControllerTest extends TestCase {
 			$this->assertArrayHasKey('message', $data);
 			$this->assertSame($expectedMessage, $data['message']);
 		}
-
 	}
 
 	public function testFileTooBig() {
@@ -233,14 +227,13 @@ class FileHandlingControllerTest extends TestCase {
 	}
 
 	public function dataTestSave() {
-		return array (
-			array('/test.txt', 'file content', 65638643, 65638643, true, 200, ''),
-			array('', 'file content', 65638643, 65638643, true, 400, 'File path not supplied'),
-			array('/test.txt', 'file content', '', 65638643, true, 400, 'File mtime not supplied'),
-			array('/test.txt', 'file content', 0, 65638643, true, 400, 'File mtime not supplied'),
-			array('/test.txt', 'file content', 65638643, 32848548, true, 400, 'Cannot save file as it has been modified since opening'),
-			array('/test.txt', 'file content', 65638643, 65638643, false, 400, 'Insufficient permissions'),
-		);
+		return [
+			['/test.txt', 'file content', 65638643, 65638643, true, 200, ''],
+			['', 'file content', 65638643, 65638643, true, 400, 'File path not supplied'],
+			['/test.txt', 'file content', '', 65638643, true, 400, 'File mtime not supplied'],
+			['/test.txt', 'file content', 0, 65638643, true, 400, 'File mtime not supplied'],
+			['/test.txt', 'file content', 65638643, 32848548, true, 400, 'Cannot save file as it has been modified since opening'],
+			['/test.txt', 'file content', 65638643, 65638643, false, 400, 'Insufficient permissions'],
+		];
 	}
-
 }

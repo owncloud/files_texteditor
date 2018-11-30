@@ -12,10 +12,10 @@ Feature: textFiles
     When the user creates a text file with the name <file_name> using the webUI
     And the user inputs <example_text> in the text area
     And the user closes the text editor
-    Then the file <file_name> should be listed on the webUI
+    Then file <file_name> should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file <file_name> should be listed on the webUI
-    And the user opens the file <file_name> using the webUI
+    Then file <file_name> should be listed on the webUI
+    And the user opens file <file_name> using the webUI
     Then there should be 1 line of text in the text area
     And line 1 of the text should be <example_text>
     Examples:
@@ -28,25 +28,25 @@ Feature: textFiles
     When the user creates a text file with the name "" using the webUI
     And the user inputs "stuff" in the text area
     And the user closes the text editor
-    Then the file "New text file.txt" should be listed on the webUI
+    Then file "New text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "New text file.txt" should be listed on the webUI
+    Then file "New text file.txt" should be listed on the webUI
 
   Scenario: Create a text file with the default file extension and do not close the editor
     When the user creates a text file with the name "abc" using the webUI without changing the default file extension
     And the user inputs "something" in the text area
-    Then the file "abc.txt" should be listed on the webUI
+    Then file "abc.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "abc.txt" should be listed on the webUI
+    Then file "abc.txt" should be listed on the webUI
 
   Scenario: Create a text file with the default file extension and unicode file name
     When the user creates a text file with the name "सिमप्ले text file" using the webUI without changing the default file extension
     And the user inputs "नेपाल" in the text area
     And the user closes the text editor
-    Then the file "सिमप्ले text file.txt" should be listed on the webUI
+    Then file "सिमप्ले text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "सिमप्ले text file.txt" should be listed on the webUI
-    And the user opens the file "सिमप्ले text file.txt" using the webUI
+    Then file "सिमप्ले text file.txt" should be listed on the webUI
+    And the user opens file "सिमप्ले text file.txt" using the webUI
     Then there should be 1 line of text in the text area
     And line 1 of the text should be "नेपाल"
 
@@ -62,10 +62,10 @@ Feature: textFiles
       1 2 3 4 5 6 7 8 9 0
       """
     And the user closes the text editor
-    Then the file "atextfile.txt" should be listed on the webUI
+    Then file "atextfile.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "atextfile.txt" should be listed on the webUI
-    And the user opens the file "atextfile.txt" using the webUI
+    Then file "atextfile.txt" should be listed on the webUI
+    And the user opens file "atextfile.txt" using the webUI
     Then there should be 6 lines of text in the text area
     And line 1 of the text should be "What is this?"
     And line 2 of the text should be 'This is some "example" text!'
@@ -75,25 +75,25 @@ Feature: textFiles
     And line 6 of the text should be "1 2 3 4 5 6 7 8 9 0"
 
   Scenario: Create a text file with the default name and file extension in a sub-folder
-    When the user opens the folder "simple-folder" using the webUI
+    When the user opens folder "simple-folder" using the webUI
     And the user creates a text file with the name "" using the webUI
     And the user inputs "stuff" in the text area
     And the user closes the text editor
-    Then the file "New text file.txt" should be listed on the webUI
+    Then file "New text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "New text file.txt" should be listed on the webUI
-    And the user opens the file "New text file.txt" using the webUI
+    Then file "New text file.txt" should be listed on the webUI
+    And the user opens file "New text file.txt" using the webUI
     Then line 1 of the text should be "stuff"
 
   Scenario: Create a text file in a sub-folder using special characters in the names
     When the user creates a folder with the name "सिमप्ले फोल्देर $%#?&@" using the webUI
-    And the user opens the folder "सिमप्ले फोल्देर $%#?&@" using the webUI
+    And the user opens folder "सिमप्ले फोल्देर $%#?&@" using the webUI
     And the user creates a text file with the name "सिमप्ले $%#?&@ name.txt" using the webUI
     And the user inputs "a line of text" in the text area
     And the user closes the text editor
-    Then the file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
+    Then file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then the file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
+    Then file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
 
   Scenario: Create a text file putting a name of a file which already exists
     When the user creates a text file with the name "lorem.txt" using the webUI

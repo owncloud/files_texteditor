@@ -98,14 +98,7 @@ class TextEditorPage extends FilesPage {
 		$name = null,
 		$useDefaultFileExtension = false
 	) {
-		$newFileFolderButton
-			= $this->find("xpath", $this->newFileFolderButtonXpath);
-
-		if ($newFileFolderButton === null) {
-			throw new ElementNotFoundException(
-				"could not find new file/folder button"
-			);
-		}
+		$newFileFolderButton = $this->filesPageCRUDFunctions->findNewFileFolderButton();
 
 		$newFileFolderButton->click();
 
@@ -240,7 +233,7 @@ class TextEditorPage extends FilesPage {
 	 * @return void
 	 */
 	public function waitTillEditorIsLoaded(
-		$timeout_msec = STANDARDUIWAITTIMEOUTMILLISEC
+		$timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
 	) {
 		$this->waitTillElementIsNotNull($this->textFileEditXpath, $timeout_msec);
 	}
