@@ -1,6 +1,6 @@
 # Texteditor
 
-[![Build Status](https://travis-ci.org/owncloud/files_texteditor.svg?branch=master)](https://travis-ci.org/owncloud/files_texteditor)
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud/files_texteditor/status.svg?branch=master)](https://drone.owncloud.com/owncloud/files_texteditor)
 
 
 The original text editor app for ownCloud, based on [Ace](http://ace.c9.io/).
