@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/owncloud/files_texteditor.svg?branch=master)](https://travis-ci.org/owncloud/files_texteditor)
 
+Check drone CI is OK
 
 The original text editor app for ownCloud, based on [Ace](http://ace.c9.io/).
 
