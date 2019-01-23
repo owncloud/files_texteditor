@@ -1,11 +1,11 @@
 default:
   autoload:
-    '': %paths.base%/../features/bootstrap
+    '': '%paths.base%/../features/bootstrap'
 
   suites:
     webUITextEditor:
       paths:
-        - %paths.base%/../features/webUITextEditor
+        - '%paths.base%/../features/webUITextEditor'
       contexts:
         - TextEditorContext:
         - FeatureContext:
@@ -21,6 +21,6 @@ default:
   extensions:
       jarnaiz\JUnitFormatter\JUnitFormatterExtension:
           filename: report.xml
-          outputDir: %paths.base%/../output/
+          outputDir: '%paths.base%/../output/'
 
       rdx\behatvars\BehatVariablesExtension: ~
