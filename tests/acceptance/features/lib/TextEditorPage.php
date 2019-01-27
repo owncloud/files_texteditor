@@ -225,6 +225,7 @@ class TextEditorPage extends FilesPage {
 			);
 		}
 		$closeButton->click();
+		$this->waitTillEditorIsUnloaded();
 	}
 
 	/**
@@ -236,5 +237,16 @@ class TextEditorPage extends FilesPage {
 		$timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
 	) {
 		$this->waitTillElementIsNotNull($this->textFileEditXpath, $timeout_msec);
+	}
+
+	/**
+	 * @param int $timeout_msec
+	 *
+	 * @return void
+	 */
+	public function waitTillEditorIsUnloaded(
+		$timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
+	) {
+		$this->waitTillElementIsNull($this->textFileEditXpath, $timeout_msec);
 	}
 }
