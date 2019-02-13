@@ -19,8 +19,6 @@ appstore_package_name=$(appstore_build_directory)/$(app_name)
 npm=$(shell which npm 2> /dev/null)
 
 # dependency folders (leave empty if not required)
-composer_deps=vendor
-composer_dev_deps=
 acceptance_test_deps=vendor-bin/behat/vendor
 
 # signing
@@ -47,8 +45,11 @@ PHAN=php -d zend.enable_gc=0 vendor-bin/phan/vendor/bin/phan
 PHPSTAN=php -d zend.enable_gc=0 vendor-bin/phpstan/vendor/bin/phpstan
 BEHAT_BIN=vendor-bin/behat/vendor/bin/behat
 
-.PHONY: all
-all: $(composer_dev_deps)
+.DEFAULT_GOAL := help
+
+# start with displaying help
+help:
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | sed -e 's/  */ /' | column -t -s :
 
 # Removes the appstore build
 .PHONY: clean
@@ -57,17 +58,8 @@ clean: clean-deps
 
 .PHONY: clean-deps
 clean-deps:
+	rm -Rf vendor
 	rm -Rf vendor-bin/**/vendor vendor-bin/**/composer.lock
-
-#
-# ownCloud core PHP dependencies
-#
-$(composer_deps): $(COMPOSER_BIN) composer.json composer.lock
-	php $(COMPOSER_BIN) install --no-dev
-
-$(composer_dev_deps): $(COMPOSER_BIN) composer.json composer.lock
-	php $(COMPOSER_BIN) install --dev
-
 
 # Builds the source and appstore package
 .PHONY: dist
