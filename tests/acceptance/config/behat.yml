@@ -8,7 +8,7 @@ default:
         - '%paths.base%/../features/webUITextEditor'
       contexts:
         - TextEditorContext:
-        - FeatureContext:
+        - FeatureContext: &common_feature_context_params
             baseUrl:  http://localhost:8080/ocs/
             adminUsername: admin
             adminPassword: admin
@@ -17,6 +17,17 @@ default:
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
+
+    webUIActivityList:
+      paths:
+        - '%paths.base%/../features/webUIActivityList'
+      contexts:
+        - TextEditorContext:
+        - FeatureContext: *common_feature_context_params
+        - WebUIGeneralContext:
+        - WebUILoginContext:
+        - WebUIFilesContext:
+        - WebUIActivityContext:
 
   extensions:
       jarnaiz\JUnitFormatter\JUnitFormatterExtension:

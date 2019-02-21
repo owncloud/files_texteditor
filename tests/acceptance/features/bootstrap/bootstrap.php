@@ -36,4 +36,13 @@ $classLoader->addPsr4(
 $classLoader->addPsr4(
 	"TestHelpers\\Files_TextEditor\\", __DIR__ . "/../../../TestHelpers", true
 );
+
+// Some tests require Activity app
+$classLoader->addPsr4(
+	"", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap", true
+);
+$classLoader->addPsr4(
+	"Page\\", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib", true
+);
+
 $classLoader->register();

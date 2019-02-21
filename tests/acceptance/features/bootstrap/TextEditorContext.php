@@ -46,6 +46,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
+	 * @Given /^the user has created a text file with the name ((?:'[^']*')|(?:"[^"]*"))( without changing the default file extension|)$/
 	 * @When /^the user creates a text file with the name ((?:'[^']*')|(?:"[^"]*")) using the webUI( without changing the default file extension|)$/
 	 *
 	 * @param string $name
@@ -85,6 +86,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
+	 * @Given the user has input :text in the text area
 	 * @When the user inputs :text in the text area
 	 *
 	 * @param string $text
@@ -145,6 +147,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 		);
 	}
 	/**
+	 * @Given the user has closed the text editor
 	 * @When the user closes the text editor
 	 *
 	 * @return void
