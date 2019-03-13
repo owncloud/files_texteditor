@@ -178,7 +178,7 @@ matrix:
     - PHP_VERSION: 7.2
       TEST_SUITE: owncloud-coding-standard
 
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       TEST_SUITE: owncloud-coding-standard
 
     # Unit Tests
@@ -222,18 +222,10 @@ matrix:
       NEED_CORE: true
       NEED_INSTALL_APP: true
 
-    - PHP_VERSION: 5.6
+    - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
       TEST_SUITE: phpunit
       DB_TYPE: sqlite
-      DB_NAME: owncloud
-      NEED_CORE: true
-      NEED_INSTALL_APP: true
-
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: phpunit
-      DB_TYPE: mysql
       DB_NAME: owncloud
       NEED_CORE: true
       NEED_INSTALL_APP: true
@@ -280,28 +272,6 @@ matrix:
       NEED_INSTALL_APP: true
 
     #webUI acceptance tests
-    #PHP 5.6 with core stable10
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: web-acceptance
-      BEHAT_SUITE: webUITextEditor
-      DB_TYPE: mysql
-      DB_NAME: owncloud
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-
-    - PHP_VERSION: 5.6
-      OC_VERSION: daily-stable10-qa
-      TEST_SUITE: web-acceptance
-      BEHAT_SUITE: webUIActivityList
-      DB_TYPE: mysql
-      DB_NAME: owncloud
-      NEED_CORE: true
-      NEED_SERVER: true
-      NEED_INSTALL_APP: true
-      NEED_ACTIVITY_APP: true
-
     #PHP 7.0 with core stable10
     - PHP_VERSION: 7.0
       OC_VERSION: daily-stable10-qa
