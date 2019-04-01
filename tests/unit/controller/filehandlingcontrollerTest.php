@@ -35,16 +35,16 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var string */
 	protected $appName;
 
-	/** @var \OCP\IRequest | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \OCP\IRequest | \PHPUnit\Framework\MockObject\MockObject */
 	protected $requestMock;
 
-	/** @var \OCP\IL10N | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \OCP\IL10N | \PHPUnit\Framework\MockObject\MockObject */
 	private $l10nMock;
 
-	/** @var \OCP\ILogger | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \OCP\ILogger | \PHPUnit\Framework\MockObject\MockObject */
 	private $loggerMock;
 
-	/** @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject */
+	/** @var \OC\Files\View | \PHPUnit\Framework\MockObject\MockObject */
 	private $viewMock;
 
 	public function setUp() {
