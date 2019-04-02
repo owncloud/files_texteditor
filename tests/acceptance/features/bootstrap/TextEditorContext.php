@@ -79,7 +79,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	public function nearTheNewTextFileBoxATooltipShouldBeDisplayedOnTheWebUI(
 		$toolTipText
 	) {
-		PHPUnit_Framework_Assert::assertEquals(
+		PHPUnit\Framework\Assert::assertEquals(
 			$toolTipText,
 			$this->textEditorPage->getTooltipOfNewTextFileBox()
 		);
@@ -124,7 +124,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function thereShouldBeLinesOfTextInTheTextArea($number) {
-		PHPUnit_Framework_Assert::assertEquals(
+		PHPUnit\Framework\Assert::assertEquals(
 			$number,
 			\count($this->textEditorPage->textFileContent())
 		);
@@ -141,7 +141,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	public function lineOfTheTextShouldBe($number, $text) {
 		$lineIndex = $number - 1;
 		$textFileContent = $this->textEditorPage->textFileContent();
-		PHPUnit_Framework_Assert::assertEquals(
+		PHPUnit\Framework\Assert::assertEquals(
 			$text,
 			$textFileContent[$lineIndex]
 		);
