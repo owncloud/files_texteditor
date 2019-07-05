@@ -385,7 +385,7 @@ matrix:
 
     # Owncloud Tarball
     - PHP_VERSION: 7.2
-      OC_VERSION: 10.2.0
+      OC_VERSION: 10.2.1
       TEST_SUITE: web-acceptance
       BEHAT_SUITE: webUITextEditor
       DB_TYPE: mysql
@@ -397,7 +397,7 @@ matrix:
       FIX_PERMISSIONS: true
 
     - PHP_VERSION: 7.2
-      OC_VERSION: 10.2.0
+      OC_VERSION: 10.2.1
       TEST_SUITE: web-acceptance
       BEHAT_SUITE: webUIActivityList
       DB_TYPE: mysql
