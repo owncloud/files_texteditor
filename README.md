@@ -2,6 +2,7 @@
 
 [![Build Status](https://drone.owncloud.com/api/badges/owncloud/files_texteditor/status.svg?branch=master)](https://drone.owncloud.com/owncloud/files_texteditor)
 
+Trigger CI
 
 The original text editor app for ownCloud, based on [Ace](http://ace.c9.io/).
 
