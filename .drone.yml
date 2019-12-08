@@ -683,7 +683,7 @@ steps:
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_texteditor /var/www/owncloud/server/apps/
   - cd /var/www/owncloud/testrunner
-  - make install-composer-deps vendor-bin-deps
+  - make install-composer-deps
 
 - name: setup-server-files_texteditor
   pull: always
@@ -800,7 +800,7 @@ steps:
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_texteditor /var/www/owncloud/server/apps/
   - cd /var/www/owncloud/testrunner
-  - make install-composer-deps vendor-bin-deps
+  - make install-composer-deps
 
 - name: setup-server-files_texteditor
   pull: always
@@ -917,7 +917,7 @@ steps:
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_texteditor /var/www/owncloud/server/apps/
   - cd /var/www/owncloud/testrunner
-  - make install-composer-deps vendor-bin-deps
+  - make install-composer-deps
 
 - name: install-extra-apps
   pull: always
@@ -1045,7 +1045,7 @@ steps:
   - rsync -aIX /tmp/testrunner /var/www/owncloud
   - cp -r /var/www/owncloud/testrunner/apps/files_texteditor /var/www/owncloud/server/apps/
   - cd /var/www/owncloud/testrunner
-  - make install-composer-deps vendor-bin-deps
+  - make install-composer-deps
 
 - name: install-extra-apps
   pull: always
