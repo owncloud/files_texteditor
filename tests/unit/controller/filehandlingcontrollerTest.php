@@ -47,7 +47,7 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OC\Files\View | \PHPUnit\Framework\MockObject\MockObject */
 	private $viewMock;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->appName = 'files_texteditor';
 		$this->requestMock = $this->getMockBuilder('OCP\IRequest')
