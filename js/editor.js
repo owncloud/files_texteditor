@@ -551,7 +551,7 @@ var Files_Texteditor = {
 		this.$container.html('').show();
 		this.unloadControlBar();
 		this.unBindVisibleActions();
-		if (this.fileInfoModel) {
+		if (this.fileInfoModel && this.file.size) {
 			this.fileInfoModel.set({
 				// temp dummy, until we can do a PROPFIND
 				etag: this.fileInfoModel.get('id') + this.file.mtime,
