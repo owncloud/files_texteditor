@@ -44,6 +44,7 @@ class Application extends App {
 			} else {
 				throw new \BadMethodCallException('no user logged in');
 			}
+			/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 			return new FileHandlingController(
 				$c->getAppName(),
 				$server->getRequest(),

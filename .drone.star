@@ -9,14 +9,9 @@ config = {
 		'master'
 	],
 
-	'codestyle': {
-		'ordinary' : {
-			'phpVersions': [
-				'7.2',
-				'7.3',
-			],
-		},
-	},
+	'codestyle': True,
+
+	'phan': True,
 
 	'javascript': False,
 
