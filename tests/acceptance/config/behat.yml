@@ -17,6 +17,8 @@ default:
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
+        - OccContext:
+        - TrashbinContext:
 
     webUIActivityList:
       paths:
