@@ -22,3 +22,28 @@ Feature: textFiles
     And the user closes the text editor
     And the user opens file "New text file.txt" using the webUI
     Then line 1 of the text should be "other text before stuff"
+
+  @issue-core-36233
+  Scenario: Edit restored hidden text file
+    Given user "user1" has uploaded file with content "This is a hidden file" to "/.abc.txt"
+    And the user has enabled the setting to view hidden files on the webUI
+    When user "user1" deletes file "/.abc.txt" using the WebDAV API
+    And user "user1" restores the file with original path "/.abc.txt" using the trashbin API
+    And the user browses to the files page
+    Then as "user1" file "/.abc.txt" should exist
+    When user "user1" downloads file "/.abc.txt" using the WebDAV API
+    Then the downloaded content should be "This is a hidden file"
+#    When the user opens file "/.abc.txt" using the webUI
+#    Then line 1 of the text should be "This is a hidden file"
+
+  @issue-core-36233
+  Scenario: Edit hidden text file
+    Given the user has enabled the setting to view hidden files on the webUI
+    When the user creates a text file with the name ".abc.txt" using the webUI
+    And the user inputs "This is a hidden file" in the text area
+    And the user closes the text editor
+    Then file ".abc.txt" should be listed on the webUI
+    When user "user1" downloads file "/.abc.txt" using the WebDAV API
+    Then the downloaded content should be "This is a hidden file"
+#    When the user opens file ".abc.txt" using the webUI
+#    Then line 1 of the text should be "This is a hidden file"
