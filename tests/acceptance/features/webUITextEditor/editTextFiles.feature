@@ -4,8 +4,8 @@ Feature: textFiles
   Background:
     Given these users have been created with skeleton files:
       | username |
-      | user1    |
-    And user "user1" has logged in using the webUI
+      | Alice    |
+    And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 
   Scenario: Edit a text file with the default name and file extension in a sub-folder
@@ -25,13 +25,13 @@ Feature: textFiles
 
   @issue-core-36233
   Scenario: Edit restored hidden text file
-    Given user "user1" has uploaded file with content "This is a hidden file" to "/.abc.txt"
+    Given user "Alice" has uploaded file with content "This is a hidden file" to "/.abc.txt"
     And the user has enabled the setting to view hidden files on the webUI
-    When user "user1" deletes file "/.abc.txt" using the WebDAV API
-    And user "user1" restores the file with original path "/.abc.txt" using the trashbin API
+    When user "Alice" deletes file "/.abc.txt" using the WebDAV API
+    And user "Alice" restores the file with original path "/.abc.txt" using the trashbin API
     And the user browses to the files page
-    Then as "user1" file "/.abc.txt" should exist
-    When user "user1" downloads file "/.abc.txt" using the WebDAV API
+    Then as "Alice" file "/.abc.txt" should exist
+    When user "Alice" downloads file "/.abc.txt" using the WebDAV API
     Then the downloaded content should be "This is a hidden file"
 #    When the user opens file "/.abc.txt" using the webUI
 #    Then line 1 of the text should be "This is a hidden file"
@@ -43,7 +43,7 @@ Feature: textFiles
     And the user inputs "This is a hidden file" in the text area
     And the user closes the text editor
     Then file ".abc.txt" should be listed on the webUI
-    When user "user1" downloads file "/.abc.txt" using the WebDAV API
+    When user "Alice" downloads file "/.abc.txt" using the WebDAV API
     Then the downloaded content should be "This is a hidden file"
 #    When the user opens file ".abc.txt" using the webUI
 #    Then line 1 of the text should be "This is a hidden file"

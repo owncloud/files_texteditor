@@ -4,8 +4,8 @@ Feature: textFiles
   Background:
     Given these users have been created with skeleton files:
       | username |
-      | user1    |
-    And user "user1" has logged in using the webUI
+      | Alice    |
+    And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 
   Scenario Outline: Create a text file
