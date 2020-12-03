@@ -26,3 +26,6 @@ vendor-bin/**/composer.lock
 !/js/vendor/ace/src-noconflict/ext-searchbox.js
 
 .phpunit.result.cache
+
+# SonarCloud scanner
+.scannerwork
