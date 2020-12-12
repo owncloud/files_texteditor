@@ -259,7 +259,8 @@ var Files_Texteditor = {
 
 		$.each(mimes, function(key, value) {
 			OCA.Files.fileActions.registerAction({
-				name: 'Edit',
+				name: 'FilesTextEditor',
+				displayName: t('files_texteditor', 'Open in Text Editor'),
 				mime: value,
 				actionHandler: _.bind(_self._onEditorTrigger, _self),
 				permissions: OC.PERMISSION_READ,
@@ -267,7 +268,7 @@ var Files_Texteditor = {
 					return OC.imagePath('core', 'actions/edit');
 				}
 			});
-			OCA.Files.fileActions.setDefault(value, 'Edit');
+			OCA.Files.fileActions.setDefault(value, 'FilesTextEditor');
 		});
 
 	},
