@@ -15,6 +15,7 @@ OC.L10N.register(
     "failed!" : "dështoi!",
     "Saved" : "U ruajt",
     "There was a problem saving your changes. Click to resume editing." : "Pati një problem në ruajtjen e ndryshimeve tuaja.  Klikoni që të rimerret përpunimi.",
+    "Open in Text Editor" : "Hape në Përpunues Tekstesh",
     "An error occurred!" : "Ndodhi një gabim!",
     "Text file" : "Kartelë tekst",
     "New text file.txt" : "Kartelë e re file.txt"
