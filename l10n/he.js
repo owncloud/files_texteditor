@@ -15,6 +15,7 @@ OC.L10N.register(
     "failed!" : "נכשל!",
     "Saved" : "נשמר",
     "There was a problem saving your changes. Click to resume editing." : "אירעה בעייה בשמירת השינויים. יש ללחוץ לחידוש העריכה.",
+    "Open in Text Editor" : "פתיחה בעורך טקסט",
     "An error occurred!" : "אירעה תקלה!",
     "Text file" : "קובץ טקסט",
     "New text file.txt" : "קובץ טקסט חדש.txt"
