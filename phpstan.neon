@@ -1,5 +1,6 @@
 parameters:
   inferPrivatePropertyTypeFromConstructor: true
-  bootstrap: %currentWorkingDirectory%/../../lib/base.php
+  bootstrapFiles:
+    - %currentWorkingDirectory%/../../lib/base.php
   ignoreErrors:
 
