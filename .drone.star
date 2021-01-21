@@ -13,6 +13,8 @@ config = {
 
 	'phan': True,
 
+	'phpstan': True,
+
 	'javascript': False,
 
 	'phpunit': {
