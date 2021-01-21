@@ -135,7 +135,7 @@ test-php-phan: vendor-bin/phan/vendor
 .PHONY: test-php-phpstan
 test-php-phpstan: ## Run phpstan
 test-php-phpstan: vendor-bin/phpstan/vendor
-	$(PHPSTAN) analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress --level=5 appinfo lib
+	$(PHPSTAN) analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress --level=5 appinfo controller
 
 .PHONY: test-acceptance-webui
 test-acceptance-webui: ## Run webUI acceptance tests
