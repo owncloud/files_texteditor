@@ -3,4 +3,6 @@ parameters:
   bootstrapFiles:
     - %currentWorkingDirectory%/../../lib/base.php
   ignoreErrors:
-
+    -
+      message: '#Variable \$this might not be defined.#'
+      path: appinfo/routes.php
