@@ -26,10 +26,14 @@ use OC\HintException;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\Files\Storage\IPersistentLockingStorage;
 use OCP\Files\ForbiddenException;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\IUser;
+use OCP\IUserSession;
 use OCP\Lock\LockedException;
 
 class FileHandlingController extends Controller {
@@ -43,6 +47,12 @@ class FileHandlingController extends Controller {
 	/** @var ILogger */
 	private $logger;
 
+	/** @var IUserSession */
+	protected $userSession;
+
+	/** @var IConfig */
+	private $config;
+
 	/**
 	 * @NoAdminRequired
 	 *
@@ -51,16 +61,22 @@ class FileHandlingController extends Controller {
 	 * @param IL10N $l10n
 	 * @param View $view
 	 * @param ILogger $logger
+	 * @param IUserSession $userSession
+	 * @param IConfig $config
 	 */
 	public function __construct($AppName,
 								IRequest $request,
 								IL10N $l10n,
 								View $view,
-								ILogger $logger) {
+								ILogger $logger,
+								IUserSession $userSession,
+								IConfig  $config) {
 		parent::__construct($AppName, $request);
 		$this->l = $l10n;
 		$this->view = $view;
 		$this->logger = $logger;
+		$this->userSession = $userSession;
+		$this->config = $config;
 	}
 
 	/**
@@ -146,6 +162,24 @@ class FileHandlingController extends Controller {
 				} else {
 					// File same as when opened, save file
 					if ($this->view->isUpdatable($path)) {
+						$fileInfo = $this->view->getFileInfo($path);
+						$storage = $fileInfo->getStorage();
+						$lookingEnabled = $this->config->getAppValue("files", "enable_lock_file_action", "no") === "yes";
+						if ($lookingEnabled && $storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+							/** @var IPersistentLockingStorage $storage */
+							/* @phan-suppress-next-line PhanUndeclaredMethod */
+							$locks = $storage->getLocks($fileInfo->getInternalPath(), false);
+							if (\count($locks) > 0) {
+								$user = $this->userSession->getUser();
+								$userId = ($user instanceof IUser) ? $user->getUID() : null;
+								$lockOwner = $locks[0]->getOwner();
+								if ($userId !== $lockOwner) {
+									$message = (string) $this->l->t('The file is locked.');
+									return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
+								}
+							}
+						}
+
 						$filecontents = \iconv(\mb_detect_encoding($filecontents), "UTF-8", $filecontents);
 						try {
 							$this->view->file_put_contents($path, $filecontents);

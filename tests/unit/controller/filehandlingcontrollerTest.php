@@ -24,11 +24,16 @@ namespace OCA\Files_Texteditor\Tests\Controller;
 use OC\HintException;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
 use OCP\Files\ForbiddenException;
+use OCP\Files\Storage\IPersistentLockingStorage;
+use OCP\Files\Storage\IStorage;
 use OCP\Lock\LockedException;
 use Test\TestCase;
 
-class FileHandlingControllerTest extends TestCase {
+// Dummy interface because phpunit9 createMock() will no longer allow an array of interfaces
+interface IPersistentLockingStorageTest extends IPersistentLockingStorage, IStorage {
+}
 
+class FileHandlingControllerTest extends TestCase {
 	/** @var FileHandlingController */
 	protected $controller;
 
@@ -47,6 +52,12 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OC\Files\View | \PHPUnit\Framework\MockObject\MockObject */
 	private $viewMock;
 
+	/** @var \OCP\IUserSession | \PHPUnit\Framework\MockObject\MockObject */
+	private $userSessionMock;
+
+	/** @var \OCP\IConfig | \PHPUnit\Framework\MockObject\MockObject */
+	private $configMock;
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->appName = 'files_texteditor';
@@ -62,6 +73,12 @@ class FileHandlingControllerTest extends TestCase {
 		$this->viewMock = $this->getMockBuilder('OC\Files\View')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->userSessionMock = $this->getMockBuilder('OCP\IUserSession')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->configMock = $this->getMockBuilder('OCP\IConfig')
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->l10nMock->expects($this->any())->method('t')->willReturnCallback(
 			function ($message) {
@@ -69,12 +86,22 @@ class FileHandlingControllerTest extends TestCase {
 			}
 		);
 
+		$userMock = $this->createMock('OCP\IUser');
+		$userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('testUser1');
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($userMock);
+
 		$this->controller = new FileHandlingController(
 			$this->appName,
 			$this->requestMock,
 			$this->l10nMock,
 			$this->viewMock,
-			$this->loggerMock);
+			$this->loggerMock,
+			$this->userSessionMock,
+			$this->configMock);
 	}
 
 	/**
@@ -164,6 +191,11 @@ class FileHandlingControllerTest extends TestCase {
 			->method('isUpdatable')
 			->willReturn(true);
 
+		$fileInfoMock = $this->createMock('\OCP\Files\FileInfo');
+		$this->viewMock->expects($this->any())
+			->method('getFileInfo')
+			->willReturn($fileInfoMock);
+
 		$result = $this->controller->save('/test.txt', 'content', 42);
 		$data = $result->getData();
 
@@ -192,6 +224,24 @@ class FileHandlingControllerTest extends TestCase {
 			->method('isUpdatable')
 			->willReturn($isUpdatable);
 
+		$this->configMock->expects($this->any())
+			->method('getAppValue')
+			->willReturn('no');
+
+		$storageMock = $this->createMock(IPersistentLockingStorageTest::class);
+		$storageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		$fileInfoMock = $this->createMock('\OCP\Files\FileInfo');
+		$fileInfoMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($storageMock);
+
+		$this->viewMock->expects($this->any())
+			->method('getFileInfo')
+			->willReturn($fileInfoMock);
+
 		if ($expectedStatus === 200) {
 			$this->viewMock->expects($this->once())
 				->method('file_put_contents')->with($path, $fileContents);
@@ -209,6 +259,63 @@ class FileHandlingControllerTest extends TestCase {
 			$this->assertArrayHasKey('size', $data);
 		} else {
 			$this->assertArrayHasKey('message', $data);
+			$this->assertSame($expectedMessage, $data['message']);
+		}
+	}
+
+	/**
+	 * @dataProvider dataTestSaveWithLock
+	 *
+	 * @param $expectedStatus
+	 * @param $expectedMessage
+	 * @param $fileLockOwner
+	 */
+	public function testSaveWithLock($expectedStatus, $expectedMessage, $fileLockOwner) {
+		$mTime = 65638643;
+		$path = 'test.txt';
+		$fileContents = 'content';
+
+		$this->viewMock->expects($this->any())
+			->method('filemtime')
+			->willReturn($mTime);
+		$this->viewMock->expects($this->any())
+			->method('isUpdatable')
+			->willReturn(true);
+		$this->configMock->expects($this->any())
+			->method('getAppValue')
+			->willReturn('yes');
+
+		$lockMock = $this->createMock('OCP\Lock\Persistent\ILock');
+		$lockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn($fileLockOwner);
+
+		$storageMock = $this->createMock(IPersistentLockingStorageTest::class);
+		$storageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+		$storageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$lockMock]);
+
+		$fileInfoMock = $this->createMock('\OCP\Files\FileInfo');
+		$fileInfoMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($storageMock);
+		$fileInfoMock->expects($this->any())
+			->method('getInternalPath')
+			->willReturn('');
+
+		$this->viewMock->expects($this->any())
+			->method('getFileInfo')
+			->willReturn($fileInfoMock);
+
+		$result = $this->controller->save($path, $fileContents, $mTime);
+		$status = $result->getStatus();
+		$data = $result->getData();
+
+		$this->assertSame($expectedStatus, $status);
+		if ($status !== 200) {
 			$this->assertSame($expectedMessage, $data['message']);
 		}
 	}
@@ -234,6 +341,13 @@ class FileHandlingControllerTest extends TestCase {
 			['/test.txt', 'file content', 0, 65638643, true, 400, 'File mtime not supplied'],
 			['/test.txt', 'file content', 65638643, 32848548, true, 400, 'Cannot save file as it has been modified since opening'],
 			['/test.txt', 'file content', 65638643, 65638643, false, 400, 'Insufficient permissions'],
+		];
+	}
+
+	public function dataTestSaveWithLock() {
+		return [
+			[400, 'The file is locked.', 'testUser2'],
+			[200, '', 'testUser1'],
 		];
 	}
 }

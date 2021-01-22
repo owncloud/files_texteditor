@@ -50,7 +50,9 @@ class Application extends App {
 				$server->getRequest(),
 				$server->getL10N($c->getAppName()),
 				new View('/' . $uid . '/files'),
-				$server->getLogger()
+				$server->getLogger(),
+				$server->getUserSession(),
+				$server->getConfig()
 			);
 		});
 	}
