@@ -55,9 +55,6 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OCP\IUserSession | \PHPUnit\Framework\MockObject\MockObject */
 	private $userSessionMock;
 
-	/** @var \OCP\IConfig | \PHPUnit\Framework\MockObject\MockObject */
-	private $configMock;
-
 	public function setUp(): void {
 		parent::setUp();
 		$this->appName = 'files_texteditor';
@@ -74,9 +71,6 @@ class FileHandlingControllerTest extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 		$this->userSessionMock = $this->getMockBuilder('OCP\IUserSession')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->configMock = $this->getMockBuilder('OCP\IConfig')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -100,8 +94,7 @@ class FileHandlingControllerTest extends TestCase {
 			$this->l10nMock,
 			$this->viewMock,
 			$this->loggerMock,
-			$this->userSessionMock,
-			$this->configMock);
+			$this->userSessionMock);
 	}
 
 	/**
@@ -191,7 +184,16 @@ class FileHandlingControllerTest extends TestCase {
 			->method('isUpdatable')
 			->willReturn(true);
 
+		$storageMock = $this->createMock(IPersistentLockingStorageTest::class);
+		$storageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(false);
+
 		$fileInfoMock = $this->createMock('\OCP\Files\FileInfo');
+		$fileInfoMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($storageMock);
+
 		$this->viewMock->expects($this->any())
 			->method('getFileInfo')
 			->willReturn($fileInfoMock);
@@ -224,14 +226,10 @@ class FileHandlingControllerTest extends TestCase {
 			->method('isUpdatable')
 			->willReturn($isUpdatable);
 
-		$this->configMock->expects($this->any())
-			->method('getAppValue')
-			->willReturn('no');
-
 		$storageMock = $this->createMock(IPersistentLockingStorageTest::class);
 		$storageMock->expects($this->any())
 			->method('instanceOfStorage')
-			->willReturn(true);
+			->willReturn(false);
 
 		$fileInfoMock = $this->createMock('\OCP\Files\FileInfo');
 		$fileInfoMock->expects($this->any())
@@ -281,9 +279,6 @@ class FileHandlingControllerTest extends TestCase {
 		$this->viewMock->expects($this->any())
 			->method('isUpdatable')
 			->willReturn(true);
-		$this->configMock->expects($this->any())
-			->method('getAppValue')
-			->willReturn('yes');
 
 		$lockMock = $this->createMock('OCP\Lock\Persistent\ILock');
 		$lockMock->expects($this->any())

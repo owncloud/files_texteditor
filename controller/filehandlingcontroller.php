@@ -28,7 +28,6 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Files\Storage\IPersistentLockingStorage;
 use OCP\Files\ForbiddenException;
-use OCP\IConfig;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -50,9 +49,6 @@ class FileHandlingController extends Controller {
 	/** @var IUserSession */
 	protected $userSession;
 
-	/** @var IConfig */
-	private $config;
-
 	/**
 	 * @NoAdminRequired
 	 *
@@ -62,21 +58,18 @@ class FileHandlingController extends Controller {
 	 * @param View $view
 	 * @param ILogger $logger
 	 * @param IUserSession $userSession
-	 * @param IConfig $config
 	 */
 	public function __construct($AppName,
 								IRequest $request,
 								IL10N $l10n,
 								View $view,
 								ILogger $logger,
-								IUserSession $userSession,
-								IConfig  $config) {
+								IUserSession $userSession) {
 		parent::__construct($AppName, $request);
 		$this->l = $l10n;
 		$this->view = $view;
 		$this->logger = $logger;
 		$this->userSession = $userSession;
-		$this->config = $config;
 	}
 
 	/**
@@ -164,8 +157,7 @@ class FileHandlingController extends Controller {
 					if ($this->view->isUpdatable($path)) {
 						$fileInfo = $this->view->getFileInfo($path);
 						$storage = $fileInfo->getStorage();
-						$lookingEnabled = $this->config->getAppValue("files", "enable_lock_file_action", "no") === "yes";
-						if ($lookingEnabled && $storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+						if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
 							/** @var IPersistentLockingStorage $storage */
 							/* @phan-suppress-next-line PhanUndeclaredMethod */
 							$locks = $storage->getLocks($fileInfo->getInternalPath(), false);
