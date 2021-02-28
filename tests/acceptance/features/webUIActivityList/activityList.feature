@@ -2,9 +2,10 @@
 Feature: log activity of actions done by the texteditor app
 
   Background:
-    Given these users have been created with skeleton files:
+    Given these users have been created without skeleton files:
       | username |
       | Alice    |
+    And user "Alice" has uploaded file with content "anything" to "/lorem.txt"
     And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 

@@ -2,9 +2,10 @@
 Feature: textFiles
 
   Background:
-    Given these users have been created with skeleton files:
+    Given these users have been created without skeleton files:
       | username |
       | Alice    |
+    And user "Alice" has uploaded file with content "anything" to "/lorem.txt"
     And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 
@@ -75,7 +76,8 @@ Feature: textFiles
     And line 6 of the text should be "1 2 3 4 5 6 7 8 9 0"
 
   Scenario: Create a text file with the default name and file extension in a sub-folder
-    When the user opens folder "simple-folder" using the webUI
+    When the user creates a folder with the name "simple-folder" using the webUI
+    And the user opens folder "simple-folder" using the webUI
     And the user creates a text file with the name "" using the webUI
     And the user inputs "stuff" in the text area
     And the user closes the text editor
