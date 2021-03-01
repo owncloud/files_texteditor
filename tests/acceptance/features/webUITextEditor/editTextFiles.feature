@@ -2,14 +2,15 @@
 Feature: textFiles
 
   Background:
-    Given these users have been created with skeleton files:
+    Given these users have been created without skeleton files:
       | username |
       | Alice    |
     And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 
   Scenario: Edit a text file with the default name and file extension in a sub-folder
-    When the user opens folder "simple-folder" using the webUI
+    When the user creates a folder with the name "simple-folder" using the webUI
+    And the user opens folder "simple-folder" using the webUI
     And the user creates a text file with the name "" using the webUI
     And the user inputs "stuff" in the text area
     And the user closes the text editor
