@@ -15,6 +15,7 @@ OC.L10N.register(
     "failed!" : "فشلت المهمة!",
     "Saved" : "تم الحفظ",
     "There was a problem saving your changes. Click to resume editing." : "حدثت مشكلة في حفظ تغييراتك. انقر لاستئناف التحرير.",
+    "Open in Text Editor" : "فتح في محرر النصوص",
     "An error occurred!" : "حدث خطأ!",
     "Text file" : "ملف نصي",
     "New text file.txt" : "ملف نصي جديد fille.txt"

@@ -15,6 +15,7 @@ OC.L10N.register(
     "failed!" : "ошибка!",
     "Saved" : "Сохранено",
     "There was a problem saving your changes. Click to resume editing." : "Произошла ошибка во время сохранения изменений. Нажмите для продолжения редактирования.",
+    "Open in Text Editor" : "Открыть в текстовом редакторе",
     "An error occurred!" : "Произошла ошибка!",
     "Text file" : "Текстовый файл",
     "New text file.txt" : "Новый текстовый документ.txt"
