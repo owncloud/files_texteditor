@@ -48,6 +48,9 @@ config = {
 			'extraApps': {
 				'activity': ''
 			},
+			'servers': [
+				'daily-master-qa',
+			],
 		},
 	}
 }
