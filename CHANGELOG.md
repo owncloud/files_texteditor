@@ -4,7 +4,13 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [2.3.1] - 2021-04-28
+
+### Added
+
+- Adjusted the text shown for opening a file from "Edit" to "Open in Text Editor. - [#331](https://github.com/owncloud/files_texteditor/pull/331)
+- Extra detection of codings for Chinese and Japanese character sets. [#333](https://github.com/owncloud/files_texteditor/pull/333)
+
 
 ## [2.3.0] - 2018-11-30
 
