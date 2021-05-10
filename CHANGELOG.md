@@ -4,6 +4,9 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] - XXXX-XX-XX
+
+
 ## [2.3.1] - 2021-04-28
 
 ### Added
@@ -37,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.3.0...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.3.1...master
+[2.3.1]: https://github.com/owncloud/files_texteditor/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/owncloud/files_texteditor/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/owncloud/files_texteditor/compare/v2.2...v2.2.1
