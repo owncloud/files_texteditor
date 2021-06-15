@@ -65,7 +65,8 @@ class TextEditorPage extends FilesPage {
 		$pressEnter = false
 	) {
 		$element = $session->getDriver()->getWebDriverSession()->element(
-			"xpath", $xpath
+			"xpath",
+			$xpath
 		);
 
 		if ($element === null) {
@@ -196,7 +197,8 @@ class TextEditorPage extends FilesPage {
 			throw new ElementNotFoundException("could not find text layer");
 		}
 		$textLineElements = $textLayer->findAll(
-			"xpath", $this->textFileLineXpath
+			"xpath",
+			$this->textFileLineXpath
 		);
 		if ($textLineElements === null) {
 			throw new ElementNotFoundException("could not find text lines");

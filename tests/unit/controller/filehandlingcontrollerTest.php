@@ -74,7 +74,8 @@ class FileHandlingControllerTest extends TestCase {
 			$this->requestMock,
 			$this->l10nMock,
 			$this->viewMock,
-			$this->loggerMock);
+			$this->loggerMock
+		);
 	}
 
 	/**
