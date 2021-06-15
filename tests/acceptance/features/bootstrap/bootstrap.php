@@ -22,25 +22,37 @@
 
 $classLoader = new \Composer\Autoload\ClassLoader();
 $classLoader->addPsr4(
-	"", __DIR__ . "/../../../../../../tests/acceptance/features/bootstrap", true
+	"",
+	__DIR__ . "/../../../../../../tests/acceptance/features/bootstrap",
+	true
 );
 $classLoader->addPsr4("Page\\", __DIR__ . "/../lib", true);
 $classLoader->addPsr4(
-	"Page\\", __DIR__ . "/../../../../../../tests/acceptance/features/lib", true
+	"Page\\",
+	__DIR__ . "/../../../../../../tests/acceptance/features/lib",
+	true
 );
 $classLoader->addPsr4(
-	"TestHelpers\\", __DIR__ . "/../../../../../../tests/TestHelpers", true
+	"TestHelpers\\",
+	__DIR__ . "/../../../../../../tests/TestHelpers",
+	true
 );
 $classLoader->addPsr4(
-	"TestHelpers\\Files_TextEditor\\", __DIR__ . "/../../../TestHelpers", true
+	"TestHelpers\\Files_TextEditor\\",
+	__DIR__ . "/../../../TestHelpers",
+	true
 );
 
 // Some tests require Activity app
 $classLoader->addPsr4(
-	"", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap", true
+	"",
+	__DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/bootstrap",
+	true
 );
 $classLoader->addPsr4(
-	"Page\\", __DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib", true
+	"Page\\",
+	__DIR__ . "/../../../../../../apps/activity/tests/acceptance/features/lib",
+	true
 );
 
 $classLoader->register();
