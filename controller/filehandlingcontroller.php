@@ -37,6 +37,7 @@ use OCP\IUserSession;
 use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
+use Sabre\DAV\Exception\NotFound;
 
 class FileHandlingController extends Controller {
 
@@ -119,6 +120,7 @@ class FileHandlingController extends Controller {
 					return new DataResponse(['message' => (string)$this->l->t('This file is too big to be opened. Please download the file instead.')], Http::STATUS_BAD_REQUEST);
 				}
 
+				/** @var mixed $fileContents */
 				$fileContents = $node->getContent();
 
 				if ($fileContents !== false) {
@@ -258,19 +260,23 @@ class FileHandlingController extends Controller {
 		if ($sharingToken) {
 			$share = $this->shareManager->getShareByToken($sharingToken);
 			$node = $share->getNode();
-			if (!($node instanceof \OCP\Files\File)) {
+			if (!($node instanceof File)) {
 				$node = $node->get($path);
 			}
+		} else {
+			$user = $this->userSession->getUser();
+			if (!$user) {
+				throw new NoUserException();
+			}
 
-			return $node;
+			$node = $this->root->get('/' . $user->getUID() . '/files' . $path);
 		}
 
-		$user = $this->userSession->getUser();
-		if (!$user) {
-			throw new NoUserException();
+		if (!($node instanceof File)) {
+			throw new NotFound();
 		}
 
-		return $this->root->get('/' . $user->getUID() . '/files' . $path);
+		return $node;
 	}
 
 	private function getPermissions($node): int {
