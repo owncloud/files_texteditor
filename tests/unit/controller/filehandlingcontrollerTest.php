@@ -23,6 +23,7 @@ namespace OCA\Files_Texteditor\Tests\Controller;
 
 use OC\HintException;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
+use OCP\Constants;
 use OCP\Files\ForbiddenException;
 use OCP\Lock\LockedException;
 use Test\TestCase;
@@ -35,17 +36,29 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var string */
 	protected $appName;
 
-	/** @var \OCP\IRequest | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var \OCP\IRequest|\PHPUnit\Framework\MockObject\MockObject */
 	protected $requestMock;
 
-	/** @var \OCP\IL10N | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var \OCP\IL10N|\PHPUnit\Framework\MockObject\MockObject */
 	private $l10nMock;
 
-	/** @var \OCP\ILogger | \PHPUnit\Framework\MockObject\MockObject */
+	/** @var \OCP\ILogger|\PHPUnit\Framework\MockObject\MockObject */
 	private $loggerMock;
 
-	/** @var \OC\Files\View | \PHPUnit\Framework\MockObject\MockObject */
-	private $viewMock;
+	/** @var \OCP\Share\IManager|\PHPUnit\Framework\MockObject\MockObject */
+	private $shareManagerMock;
+
+	/** @var \OCP\IUserSession|\PHPUnit\Framework\MockObject\MockObject */
+	private $userSessionMock;
+
+	/** @var \OCP\Files\IRootFolder|\PHPUnit\Framework\MockObject\MockObject */
+	private $rootMock;
+
+	/** @var \OCP\Files\File|\PHPUnit\Framework\MockObject\MockObject */
+	private $fileMock;
+
+	/** @var \OCP\IUser|\PHPUnit\Framework\MockObject\MockObject */
+	private $userMock;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -59,7 +72,21 @@ class FileHandlingControllerTest extends TestCase {
 		$this->loggerMock = $this->getMockBuilder('OCP\ILogger')
 			->disableOriginalConstructor()
 			->getMock();
-		$this->viewMock = $this->getMockBuilder('OC\Files\View')
+		$this->shareManagerMock = $this->getMockBuilder('OCP\Share\IManager')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->userSessionMock = $this->getMockBuilder('OCP\IUserSession')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->rootMock = $this->getMockBuilder('OCP\Files\IRootFolder')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->fileMock = $this->getMockBuilder('OCP\Files\File')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->userMock = $this->getMockBuilder('OCP\IUser')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -73,8 +100,10 @@ class FileHandlingControllerTest extends TestCase {
 			$this->appName,
 			$this->requestMock,
 			$this->l10nMock,
-			$this->viewMock,
-			$this->loggerMock
+			$this->loggerMock,
+			$this->shareManagerMock,
+			$this->userSessionMock,
+			$this->rootMock
 		);
 	}
 
@@ -87,9 +116,25 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param string $expectedMessage
 	 */
 	public function testLoad($filename, $fileContent, $expectedStatus, $expectedMessage) {
-		$this->viewMock->expects($this->any())
-			->method('file_get_contents')
+		$this->fileMock->expects($this->any())
+			->method('getContent')
 			->willReturn($fileContent);
+
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
 
 		$result = $this->controller->load('/', $filename);
 		$data = $result->getData();
@@ -132,11 +177,27 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param string $expectedMessage
 	 */
 	public function testLoadExceptionWithException(\Exception $exception, $expectedMessage) {
-		$this->viewMock->expects($this->any())
-			->method('file_get_contents')
+		$this->fileMock->expects($this->any())
+			->method('getContent')
 			->willReturnCallback(function () use ($exception) {
 				throw $exception;
 			});
+
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
 
 		$result = $this->controller->load('/', 'test.txt');
 		$data = $result->getData();
@@ -152,18 +213,31 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param string $expectedMessage
 	 */
 	public function testSaveExceptionWithException(\Exception $exception, $expectedMessage) {
-		$this->viewMock->expects($this->any())
-			->method('file_put_contents')
+		$this->fileMock->expects($this->any())
+			->method('putContent')
 			->willReturnCallback(function () use ($exception) {
 				throw $exception;
 			});
 
-		$this->viewMock->expects($this->any())
-			->method('filemtime')
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
 			->willReturn(42);
-		$this->viewMock->expects($this->any())
-			->method('isUpdatable')
-			->willReturn(true);
 
 		$result = $this->controller->save('/test.txt', 'content', 42);
 		$data = $result->getData();
@@ -185,19 +259,35 @@ class FileHandlingControllerTest extends TestCase {
 	 * @param $expectedMessage
 	 */
 	public function testSave($path, $fileContents, $mTime, $fileMTime, $isUpdatable, $expectedStatus, $expectedMessage) {
-		$this->viewMock->expects($this->any())
-			->method('filemtime')
+		if ($isUpdatable) {
+			$permissions = Constants::PERMISSION_ALL;
+		} else {
+			$permissions = Constants::PERMISSION_READ;
+		}
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn($permissions);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
 			->willReturn($fileMTime);
 
-		$this->viewMock->expects($this->any())
-			->method('isUpdatable')
-			->willReturn($isUpdatable);
-
 		if ($expectedStatus === 200) {
-			$this->viewMock->expects($this->once())
-				->method('file_put_contents')->with($path, $fileContents);
+			$this->fileMock->expects($this->once())->method('putContent')->with($fileContents);
 		} else {
-			$this->viewMock->expects($this->never())->method(('file_put_contents'));
+			$this->fileMock->expects($this->never())->method('putContent');
 		}
 
 		$result = $this->controller->save($path, $fileContents, $mTime);
@@ -215,8 +305,24 @@ class FileHandlingControllerTest extends TestCase {
 	}
 
 	public function testFileTooBig() {
-		$this->viewMock->expects($this->any())
-			->method('filesize')
+		$this->fileMock->expects($this->any())
+		->method('getPermissions')
+		->willReturn(Constants::PERMISSION_ALL);
+
+		$this->rootMock->expects($this->any())
+		->method('get')
+		->willReturn($this->fileMock);
+
+		$this->userMock->expects($this->any())
+		->method('getUID')
+		->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+		->method('getUser')
+		->willReturn($this->userMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getSize')
 			->willReturn(4194304 + 1);
 
 		$result = $this->controller->load('/', 'foo.bar');
