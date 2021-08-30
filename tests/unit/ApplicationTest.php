@@ -25,9 +25,8 @@ use Test\TestCase;
  *
  * Integration test to test the app framework initialisation
  *
- * @group DB
  *
- * @package OCA\Files_Backup\Tests\Unit
+ * @package OCA\Files_Texteditor\Tests\Unit
  */
 class ApplicationTest extends TestCase {
 	/**
