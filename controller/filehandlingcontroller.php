@@ -26,22 +26,33 @@ use OC\HintException;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\Constants;
+use OCP\Files\File;
 use OCP\Files\ForbiddenException;
+use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
+use OCP\IUserSession;
 use OCP\Lock\LockedException;
+use OCP\Share\IManager;
 
 class FileHandlingController extends Controller {
 
 	/** @var IL10N */
 	private $l;
 
-	/** @var View */
-	private $view;
-
 	/** @var ILogger */
 	private $logger;
+
+	/** @var IManager */
+	private $shareManager;
+
+	/** @var IUserSession */
+	private $userSession;
+
+	/** @var IRootFolder */
+	private $root;
 
 	/**
 	 * @NoAdminRequired
@@ -49,26 +60,35 @@ class FileHandlingController extends Controller {
 	 * @param string $AppName
 	 * @param IRequest $request
 	 * @param IL10N $l10n
-	 * @param View $view
 	 * @param ILogger $logger
+	 * @param IManager $shareManager
+	 * @param IUserSession $userSession
+	 * @param IRootFolder $root
 	 */
 	public function __construct(
 		$AppName,
 		IRequest $request,
 		IL10N $l10n,
-		View $view,
-		ILogger $logger
+		ILogger $logger,
+		IManager $shareManager,
+		IUserSession $userSession,
+		IRootFolder $root
 	) {
 		parent::__construct($AppName, $request);
 		$this->l = $l10n;
-		$this->view = $view;
 		$this->logger = $logger;
+		$this->shareManager = $shareManager;
+		$this->userSession = $userSession;
+		$this->root = $root;
 	}
 
 	/**
 	 * load text file
 	 *
 	 * @NoAdminRequired
+	 * @NoSubadminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
 	 *
 	 * @param string $dir
 	 * @param string $filename
@@ -78,16 +98,21 @@ class FileHandlingController extends Controller {
 		try {
 			if (!empty($filename)) {
 				$path = $dir . '/' . $filename;
+				$node = $this->getNode($path);
+
 				// default of 4MB
 				$maxSize = 4194304;
-				if ($this->view->filesize($path) > $maxSize) {
+				if ($node->getSize() > $maxSize) {
 					return new DataResponse(['message' => (string)$this->l->t('This file is too big to be opened. Please download the file instead.')], Http::STATUS_BAD_REQUEST);
 				}
-				$fileContents = $this->view->file_get_contents($path);
+
+				$fileContents = $node->getContent();
+
 				if ($fileContents !== false) {
-					$writable = $this->view->isUpdatable($path);
-					$mime = $this->view->getMimeType($path);
-					$mTime = $this->view->filemtime($path);
+					$permissions = $this->getPermissions($node);
+					$writable = ($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE;
+					$mime = $node->getMimeType();
+					$mTime = $node->getMTime();
 					$encoding = \mb_detect_encoding($fileContents . "a", "UTF-8, GB2312, GBK ,BIG5, WINDOWS-1252, SJIS-win, EUC-JP, ISO-8859-15, ISO-8859-1, ASCII", true);
 					if ($encoding == "") {
 						// set default encoding if it couldn't be detected
@@ -127,6 +152,9 @@ class FileHandlingController extends Controller {
 	 * save text file
 	 *
 	 * @NoAdminRequired
+	 * @NoSubadminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
 	 *
 	 * @param string $path
 	 * @param string $filecontents
@@ -136,8 +164,12 @@ class FileHandlingController extends Controller {
 	public function save($path, $filecontents, $mtime) {
 		try {
 			if ($path !== '' && (\is_integer($mtime) && $mtime > 0)) {
+				$node = $this->getNode($path);
+				$permissions = $this->getPermissions($node);
+
 				// Get file mtime
-				$filemtime = $this->view->filemtime($path);
+				$filemtime = $node->getMTime();
+
 				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
 					$this->logger->error(
@@ -150,10 +182,10 @@ class FileHandlingController extends Controller {
 					);
 				} else {
 					// File same as when opened, save file
-					if ($this->view->isUpdatable($path)) {
+					if (($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
 						$filecontents = \iconv(\mb_detect_encoding($filecontents), "UTF-8", $filecontents);
 						try {
-							$this->view->file_put_contents($path, $filecontents);
+							$node->putContent($filecontents);
 						} catch (LockedException $e) {
 							$message = (string) $this->l->t('The file is locked.');
 							return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
@@ -163,8 +195,8 @@ class FileHandlingController extends Controller {
 						// Clear statcache
 						\clearstatcache();
 						// Get new mtime
-						$newmtime = $this->view->filemtime($path);
-						$newsize = $this->view->filesize($path);
+						$newmtime = $node->getMTime();
+						$newsize = $node->getSize();
 						return new DataResponse(['mtime' => $newmtime, 'size' => $newsize], Http::STATUS_OK);
 					} else {
 						// Not writeable!
@@ -192,5 +224,47 @@ class FileHandlingController extends Controller {
 			$message = (string)$this->l->t('An internal server error occurred.');
 			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
 		}
+	}
+
+	private function getNode(string $path): File {
+		$sharingToken = $this->request->getParam('sharingToken');
+
+		if ($sharingToken) {
+			$share = $this->shareManager->getShareByToken($sharingToken);
+
+
+			if (!$share) {
+				return new DataResponse(
+					['message' => (string)$this->l->t('Invalid share token')], Http::STATUS_BAD_REQUEST
+				);
+			}
+
+			$node = $share->getNode();
+			if (!($node instanceof \OCP\Files\File)) {
+				$node = $node->get($path);
+			}
+
+			return $node;
+		}
+
+		$user = $this->userSession->getUser();
+		if (!$user) {
+			return new DataResponse(
+				['message' => (string)$this->l->t('No user logged in')], Http::STATUS_BAD_REQUEST
+			);
+		}
+
+		return $this->root->get('/' . $user->getUID() . '/files' . $path);
+	}
+
+	private function getPermissions($node): int {
+		$sharingToken = $this->request->getParam('sharingToken');
+
+		if ($sharingToken) {
+			$share = $this->shareManager->getShareByToken($sharingToken);
+			return $share->getPermissions();
+		}
+
+		return $node->getPermissions();
 	}
 }

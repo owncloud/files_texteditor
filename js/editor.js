@@ -229,8 +229,11 @@ var Files_Texteditor = {
 	 * Setup on page load
 	 */
 	initialize: function(container) {
-		// Don't load if not in the files app TODO: Fix for sharing
-		if(!$('#content.app-files').length) { return; }
+		// Don't load if not in the files app or not a public share
+		if (!$('#content.app-files').length && !$('#isPublic').val()) {
+			return;
+		}
+
 		this.$container = container;
 		this.registerFileActions();
 		this.oldTitle = document.title;
@@ -284,7 +287,7 @@ var Files_Texteditor = {
 			+'<div id="editor_container" class="icon-loading">'
 			+'<div id="editor_wrap"><div id="editor"></div>'
 			+'<div id="preview_wrap"><div id="preview"></div></div></div></div>');
-		$('#app-content').append(container);
+		$('#content').append(container);
 
 
 		// Get the file data
@@ -500,7 +503,8 @@ var Files_Texteditor = {
 			OC.generateUrl('/apps/files_texteditor/ajax/loadfile'),
 			{
 				filename: filename,
-				dir: dir
+				dir: dir,
+				sharingToken: $('#sharingToken').val()
 			}
 		).done(function(data) {
 			// Call success callback
@@ -529,7 +533,8 @@ var Files_Texteditor = {
 			data: {
 				filecontents: data,
 				path: path,
-				mtime: file.mtime
+				mtime: file.mtime,
+				sharingToken: $('#sharingToken').val()
 			}
 		})
 		.done(success)

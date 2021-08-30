@@ -21,10 +21,7 @@
 
 namespace OCA\Files_Texteditor\AppInfo;
 
-$app = new Application();
-
-$app->registerRoutes($this, ['routes' => [
-
+return ['routes' => [
 	[
 		'name' => 'FileHandling#load',
 		'url' => '/ajax/loadfile',
@@ -35,4 +32,4 @@ $app->registerRoutes($this, ['routes' => [
 		'url' => '/ajax/savefile',
 		'verb' => 'PUT'
 	]
-]]);
+]];
