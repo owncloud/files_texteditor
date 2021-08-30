@@ -21,8 +21,8 @@
 
 namespace OCA\Files_Texteditor\Controller;
 
-use OC\Files\View;
 use OC\HintException;
+use OC\User\NoUserException;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -35,6 +35,7 @@ use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IUserSession;
 use OCP\Lock\LockedException;
+use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 
 class FileHandlingController extends Controller {
@@ -98,7 +99,19 @@ class FileHandlingController extends Controller {
 		try {
 			if (!empty($filename)) {
 				$path = $dir . '/' . $filename;
-				$node = $this->getNode($path);
+				try {
+					$node = $this->getNode($path);
+				} catch (ShareNotFound $e) {
+					return new DataResponse(
+						['message' => $this->l->t('Invalid share token')],
+						Http::STATUS_BAD_REQUEST
+					);
+				} catch (NoUserException $e) {
+					return new DataResponse(
+						['message' => $this->l->t('No user found')],
+						Http::STATUS_BAD_REQUEST
+					);
+				}
 
 				// default of 4MB
 				$maxSize = 4194304;
@@ -164,7 +177,20 @@ class FileHandlingController extends Controller {
 	public function save($path, $filecontents, $mtime) {
 		try {
 			if ($path !== '' && (\is_integer($mtime) && $mtime > 0)) {
-				$node = $this->getNode($path);
+				try {
+					$node = $this->getNode($path);
+				} catch (ShareNotFound $e) {
+					return new DataResponse(
+						['message' => $this->l->t('Invalid share token')],
+						Http::STATUS_BAD_REQUEST
+					);
+				} catch (NoUserException $e) {
+					return new DataResponse(
+						['message' => $this->l->t('No user found')],
+						Http::STATUS_BAD_REQUEST
+					);
+				}
+
 				$permissions = $this->getPermissions($node);
 
 				// Get file mtime
@@ -231,14 +257,6 @@ class FileHandlingController extends Controller {
 
 		if ($sharingToken) {
 			$share = $this->shareManager->getShareByToken($sharingToken);
-
-
-			if (!$share) {
-				return new DataResponse(
-					['message' => (string)$this->l->t('Invalid share token')], Http::STATUS_BAD_REQUEST
-				);
-			}
-
 			$node = $share->getNode();
 			if (!($node instanceof \OCP\Files\File)) {
 				$node = $node->get($path);
@@ -249,9 +267,7 @@ class FileHandlingController extends Controller {
 
 		$user = $this->userSession->getUser();
 		if (!$user) {
-			return new DataResponse(
-				['message' => (string)$this->l->t('No user logged in')], Http::STATUS_BAD_REQUEST
-			);
+			throw new NoUserException();
 		}
 
 		return $this->root->get('/' . $user->getUID() . '/files' . $path);

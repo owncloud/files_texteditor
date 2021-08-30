@@ -229,11 +229,6 @@ var Files_Texteditor = {
 	 * Setup on page load
 	 */
 	initialize: function(container) {
-		// Don't load if not in the files app or not a public share
-		if (!$('#content.app-files').length && !$('#isPublic').val()) {
-			return;
-		}
-
 		this.$container = container;
 		this.registerFileActions();
 		this.oldTitle = document.title;

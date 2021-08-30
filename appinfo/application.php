@@ -46,7 +46,7 @@ class Application extends App {
 				$server->getLogger(),
 				$server->getShareManager(),
 				$server->getUserSession(),
-				$server->getRootFolder(),
+				$server->getRootFolder()
 			);
 		});
 	}
