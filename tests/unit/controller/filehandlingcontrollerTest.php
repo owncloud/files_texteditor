@@ -60,6 +60,9 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OCP\IUser|\PHPUnit\Framework\MockObject\MockObject */
 	private $userMock;
 
+	/** @var \OCP\Share\IShare|\PHPUnit\Framework\MockObject\MockObject */
+	private $shareMock;
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->appName = 'files_texteditor';
@@ -85,8 +88,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock = $this->getMockBuilder('OCP\Files\File')
 			->disableOriginalConstructor()
 			->getMock();
-
 		$this->userMock = $this->getMockBuilder('OCP\IUser')
+			->disableOriginalConstructor()
+			->getMock();
+		$this->shareMock = $this->getMockBuilder('OCP\Share\IShare')
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -306,20 +311,20 @@ class FileHandlingControllerTest extends TestCase {
 
 	public function testFileTooBig() {
 		$this->fileMock->expects($this->any())
-		->method('getPermissions')
-		->willReturn(Constants::PERMISSION_ALL);
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
 
 		$this->rootMock->expects($this->any())
-		->method('get')
-		->willReturn($this->fileMock);
+			->method('get')
+			->willReturn($this->fileMock);
 
 		$this->userMock->expects($this->any())
-		->method('getUID')
-		->willReturn('admin');
+			->method('getUID')
+			->willReturn('admin');
 
 		$this->userSessionMock->expects($this->any())
-		->method('getUser')
-		->willReturn($this->userMock);
+			->method('getUser')
+			->willReturn($this->userMock);
 
 		$this->fileMock->expects($this->any())
 			->method('getSize')
@@ -342,5 +347,86 @@ class FileHandlingControllerTest extends TestCase {
 			['/test.txt', 'file content', 65638643, 32848548, true, 400, 'Cannot save file as it has been modified since opening'],
 			['/test.txt', 'file content', 65638643, 65638643, false, 400, 'Insufficient permissions'],
 		];
+	}
+
+	public function testLoadWithShare() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn('token');
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 200);
+
+		$this->assertArrayHasKey('filecontents', $data);
+		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('mime', $data);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertSame($data['filecontents'], $fileContent);
+	}
+
+	public function testSaveWithShare() {
+		$path = '/test.txt';
+		$fileContent = 'test';
+		$mTime = 65638643;
+		$fileMTime = 65638643;
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn('token');
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$this->fileMock->expects($this->once())->method('putContent')->with($fileContent);
+
+		$result = $this->controller->save($path, $fileContent, $mTime);
+		$status = $result->getStatus();
+		$data = $result->getData();
+
+		$this->assertSame(200, $status);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertArrayHasKey('size', $data);
 	}
 }
