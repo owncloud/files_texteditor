@@ -52,11 +52,13 @@ class FileHandlingController extends Controller {
 	 * @param View $view
 	 * @param ILogger $logger
 	 */
-	public function __construct($AppName,
-								IRequest $request,
-								IL10N $l10n,
-								View $view,
-								ILogger $logger) {
+	public function __construct(
+		$AppName,
+		IRequest $request,
+		IL10N $l10n,
+		View $view,
+		ILogger $logger
+	) {
 		parent::__construct($AppName, $request);
 		$this->l = $l10n;
 		$this->view = $view;
@@ -138,11 +140,14 @@ class FileHandlingController extends Controller {
 				$filemtime = $this->view->filemtime($path);
 				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
-					$this->logger->error('File: ' . $path . ' modified since opening.',
-						['app' => 'files_texteditor']);
+					$this->logger->error(
+						'File: ' . $path . ' modified since opening.',
+						['app' => 'files_texteditor']
+					);
 					return new DataResponse(
 						['message' => $this->l->t('Cannot save file as it has been modified since opening')],
-						Http::STATUS_BAD_REQUEST);
+						Http::STATUS_BAD_REQUEST
+					);
 				} else {
 					// File same as when opened, save file
 					if ($this->view->isUpdatable($path)) {
@@ -163,10 +168,14 @@ class FileHandlingController extends Controller {
 						return new DataResponse(['mtime' => $newmtime, 'size' => $newsize], Http::STATUS_OK);
 					} else {
 						// Not writeable!
-						$this->logger->error('User does not have permission to write to file: ' . $path,
-							['app' => 'files_texteditor']);
-						return new DataResponse([ 'message' => $this->l->t('Insufficient permissions')],
-							Http::STATUS_BAD_REQUEST);
+						$this->logger->error(
+							'User does not have permission to write to file: ' . $path,
+							['app' => 'files_texteditor']
+						);
+						return new DataResponse(
+							[ 'message' => $this->l->t('Insufficient permissions')],
+							Http::STATUS_BAD_REQUEST
+						);
 					}
 				}
 			} elseif ($path === '') {
