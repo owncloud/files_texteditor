@@ -21,10 +21,10 @@
 
 namespace OCA\Files_Texteditor\AppInfo;
 
-use OC\Files\View;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
+use OCP\Util;
 
 class Application extends App {
 
@@ -38,20 +38,41 @@ class Application extends App {
 		$server = $container->getServer();
 
 		$container->registerService('FileHandlingController', function (IAppContainer $c) use ($server) {
-			$user = $server->getUserSession()->getUser();
-			if ($user) {
-				$uid = $user->getUID();
-			} else {
-				throw new \BadMethodCallException('no user logged in');
-			}
 			/** @phan-suppress-next-line PhanUndeclaredClassMethod */
 			return new FileHandlingController(
 				$c->getAppName(),
 				$server->getRequest(),
 				$server->getL10N($c->getAppName()),
-				new View('/' . $uid . '/files'),
-				$server->getLogger()
+				$server->getLogger(),
+				$server->getShareManager(),
+				$server->getUserSession(),
+				$server->getRootFolder()
 			);
 		});
+	}
+
+	private function registerEventHooks(): void {
+		$container = $this->getContainer();
+		$eventDispatcher = $container->getServer()->getEventDispatcher();
+		$callback = function () {
+			Util::addStyle('files_texteditor', 'DroidSansMono/stylesheet');
+			Util::addStyle('files_texteditor', 'style');
+			Util::addStyle('files_texteditor', 'mobile');
+			Util::addscript('files_texteditor', 'editor');
+			Util::addscript('files_texteditor', 'vendor/ace/src-noconflict/ace');
+		};
+
+		$eventDispatcher->addListener(
+			'OCA\Files::loadAdditionalScripts',
+			$callback
+		);
+		$eventDispatcher->addListener(
+			'OCA\Files_Sharing::loadAdditionalScripts',
+			$callback
+		);
+	}
+
+	public function boot(): void {
+		$this->registerEventHooks();
 	}
 }

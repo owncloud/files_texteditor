@@ -17,6 +17,7 @@ default:
         - WebUIGeneralContext:
         - WebUILoginContext:
         - WebUIFilesContext:
+        - WebUISharingContext:
         - OccContext:
         - TrashbinContext:
 
