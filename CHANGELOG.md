@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - XXXX-XX-XX
 
+## [2.4.1] - 2021-10-12
+
+### FIXED
+-  v2.4.0 is causing issues on ownCloud 10.8 [#361](https://github.com/owncloud/files_texteditor/issues/361)
+
 ## [2.4.0] - 2021-10-05
 
 ### Added
@@ -45,7 +50,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.4.0...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.4.1...master
+[2.4.1]: https://github.com/owncloud/files_texteditor/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/owncloud/files_texteditor/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/owncloud/files_texteditor/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/owncloud/files_texteditor/compare/v2.3.0...v2.3.1
