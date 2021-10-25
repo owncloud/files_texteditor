@@ -55,9 +55,9 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function createATextFileWithTheNameUsingTheWebUI(
-		$name,
-		$useDefaultFileExtension = ''
-	) {
+		string $name,
+		string $useDefaultFileExtension = ''
+	):void {
 		// The capturing group of the regex always includes the quotes at each
 		// end of the captured string, so trim them.
 		$name = \trim($name, $name[0]);
@@ -77,8 +77,8 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 * @return void
 	 */
 	public function nearTheNewTextFileBoxATooltipShouldBeDisplayedOnTheWebUI(
-		$toolTipText
-	) {
+		string $toolTipText
+	):void {
 		PHPUnit\Framework\Assert::assertEquals(
 			$toolTipText,
 			$this->textEditorPage->getTooltipOfNewTextFileBox()
@@ -93,7 +93,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function theUserInputsTextInTheTextArea($text) {
+	public function theUserInputsTextInTheTextArea(string $text):void {
 		$this->textEditorPage->typeIntoTextFile(
 			$this->getSession(),
 			$text
@@ -109,7 +109,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 */
 	public function theUserInputsTheFollowingInTheTextArea(
 		PyStringNode $multiLineText
-	) {
+	):void {
 		$this->textEditorPage->typeIntoTextFile(
 			$this->getSession(),
 			$multiLineText->getRaw()
@@ -123,7 +123,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function thereShouldBeLinesOfTextInTheTextArea($number) {
+	public function thereShouldBeLinesOfTextInTheTextArea(int $number):void {
 		PHPUnit\Framework\Assert::assertEquals(
 			$number,
 			\count($this->textEditorPage->textFileContent())
@@ -138,7 +138,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function lineOfTheTextShouldBe($number, $text) {
+	public function lineOfTheTextShouldBe(int $number, string $text):void {
 		$lineIndex = $number - 1;
 		$textFileContent = $this->textEditorPage->textFileContent();
 		PHPUnit\Framework\Assert::assertEquals(
@@ -152,7 +152,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function theUserClosesTheTextEditor() {
+	public function theUserClosesTheTextEditor():void {
 		$this->textEditorPage->closeTheTextEditor($this->getSession());
 	}
 
@@ -167,7 +167,7 @@ class TextEditorContext extends RawMinkContext implements Context {
 	 *
 	 * @return void
 	 */
-	public function before(BeforeScenarioScope $scope) {
+	public function before(BeforeScenarioScope $scope):void {
 		// Get the environment
 		$environment = $scope->getEnvironment();
 		// Get all the contexts you need in this context
