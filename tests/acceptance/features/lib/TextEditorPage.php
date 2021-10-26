@@ -60,10 +60,10 @@ class TextEditorPage extends FilesPage {
 	 */
 	public function typeInField(
 		Session $session,
-		$xpath,
-		$text,
-		$pressEnter = false
-	) {
+		string $xpath,
+		string $text,
+		bool $pressEnter = false
+	):void {
 		$element = $session->getDriver()->getWebDriverSession()->element(
 			"xpath",
 			$xpath
@@ -89,16 +89,16 @@ class TextEditorPage extends FilesPage {
 	 * file extension is the default given by the application.
 	 *
 	 * @param Session $session
-	 * @param string $name
-	 * @param boolean $useDefaultFileExtension
+	 * @param string|null $name
+	 * @param bool $useDefaultFileExtension
 	 *
 	 * @return void
 	 */
 	public function createTextFile(
 		Session $session,
-		$name = null,
-		$useDefaultFileExtension = false
-	) {
+		?string $name = null,
+		bool $useDefaultFileExtension = false
+	):void {
 		$newFileFolderButton = $this->filesPageCRUDFunctions->findNewFileFolderButton();
 
 		$newFileFolderButton->click();
@@ -155,7 +155,7 @@ class TextEditorPage extends FilesPage {
 	 *
 	 * @return string
 	 */
-	public function getTooltipOfNewTextFileBox() {
+	public function getTooltipOfNewTextFileBox():string {
 		$newTextFileTooltip = $this->find("xpath", $this->newTextFileTooltipXpath);
 
 		if ($newTextFileTooltip === null) {
@@ -177,8 +177,8 @@ class TextEditorPage extends FilesPage {
 	 */
 	public function typeIntoTextFile(
 		Session $session,
-		$text
-	) {
+		string $text
+	):void {
 		$this->typeInField(
 			$session,
 			$this->textFileEditXpath,
@@ -191,7 +191,7 @@ class TextEditorPage extends FilesPage {
 	 *
 	 * @return array of lines of text
 	 */
-	public function textFileContent() {
+	public function textFileContent():array {
 		$textLayer = $this->find("xpath", $this->textFileTextLayerXpath);
 		if ($textLayer === null) {
 			throw new ElementNotFoundException("could not find text layer");
@@ -217,7 +217,7 @@ class TextEditorPage extends FilesPage {
 	 * @throws ElementNotFoundException
 	 * @return void
 	 */
-	public function closeTheTextEditor(Session $session) {
+	public function closeTheTextEditor(Session $session):void {
 		$this->waitForAjaxCallsToStartAndFinish($session);
 
 		$closeButton = $this->findById($this->textEditorCloseButtonId);
@@ -236,8 +236,8 @@ class TextEditorPage extends FilesPage {
 	 * @return void
 	 */
 	public function waitTillEditorIsLoaded(
-		$timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
-	) {
+		int $timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
+	):void {
 		$this->waitTillElementIsNotNull($this->textFileEditXpath, $timeout_msec);
 	}
 
@@ -247,8 +247,8 @@ class TextEditorPage extends FilesPage {
 	 * @return void
 	 */
 	public function waitTillEditorIsUnloaded(
-		$timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
-	) {
+		int $timeout_msec = STANDARD_UI_WAIT_TIMEOUT_MILLISEC
+	):void {
 		$this->waitTillElementIsNull($this->textFileEditXpath, $timeout_msec);
 	}
 }
