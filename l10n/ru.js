@@ -1,6 +1,8 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "Неправильный токен доступа",
+    "No user found" : "Пользователь не найден",
     "This file is too big to be opened. Please download the file instead." : "Файл слишком большой для открытия. Пожалуйста скачайте его.",
     "Cannot read the file." : "Не удается прочитать файл.",
     "Invalid file path supplied." : "Указан некорректный путь.",
