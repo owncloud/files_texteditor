@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * ownCloud
  *
@@ -75,7 +75,7 @@ class TextEditorPage extends FilesPage {
 			);
 		}
 
-		$keys = \preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY);
+		$keys = \preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
 		if ($pressEnter) {
 			$keys[] = Key::ENTER;
 		}
