@@ -3,3 +3,9 @@ parameters:
   bootstrapFiles:
     - %currentWorkingDirectory%/../../lib/base.php
   ignoreErrors:
+    -
+      message: '#Dead catch - OCP\\Lock\\LockedException is never thrown in the try block.#'
+      path: controller/filehandlingcontroller.php
+    -
+      message: '#Dead catch - OCP\\Files\\ForbiddenException is never thrown in the try block.#'
+      path: controller/filehandlingcontroller.php
