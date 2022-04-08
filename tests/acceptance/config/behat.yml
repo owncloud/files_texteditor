@@ -33,10 +33,6 @@ default:
         - WebUIActivityContext:
 
   extensions:
-    jarnaiz\JUnitFormatter\JUnitFormatterExtension:
-      filename: report.xml
-      outputDir: '%paths.base%/../output/'
-
     Cjm\Behat\StepThroughExtension: ~
 
     rdx\behatvars\BehatVariablesExtension: ~
