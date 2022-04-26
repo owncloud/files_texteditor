@@ -1,6 +1,8 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "无效的共享令牌",
+    "No user found" : "未找到用户",
     "This file is too big to be opened. Please download the file instead." : "该文件太大无法在线预览，请下载后查看。",
     "Cannot read the file." : "不能读取文件",
     "Invalid file path supplied." : "提供了无效的文件路径",
@@ -15,6 +17,7 @@ OC.L10N.register(
     "failed!" : "失败",
     "Saved" : "已保存",
     "There was a problem saving your changes. Click to resume editing." : "在保存时出现了一些问题，点击以恢复编辑",
+    "Open in Text Editor" : "在文本编辑器中打开",
     "An error occurred!" : "发生错误！",
     "Text file" : "文本文件",
     "New text file.txt" : "创建文本文件 .txt"
