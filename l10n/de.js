@@ -1,6 +1,8 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "Ungültiger gemeinsamer Schlüssel",
+    "No user found" : "Kein Benutzer gefunden",
     "This file is too big to be opened. Please download the file instead." : "Diese Datei ist zu groß. Bitte lade die Datei stattdessen herunter.",
     "Cannot read the file." : "Datei kann nicht gelesen werden",
     "Invalid file path supplied." : "Ungültiger Dateipfad angegeben.",
