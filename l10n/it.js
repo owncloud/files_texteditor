@@ -1,6 +1,8 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "Token di condivisione non valido",
+    "No user found" : "Nessun utente trovato",
     "This file is too big to be opened. Please download the file instead." : "Il file è troppo grande per essere aperto. Scaricalo invece.",
     "Cannot read the file." : "Impossibile leggere il file.",
     "Invalid file path supplied." : "Fornito un percorso del file non valido.",
@@ -15,6 +17,7 @@ OC.L10N.register(
     "failed!" : " non riuscito!",
     "Saved" : "Salvato",
     "There was a problem saving your changes. Click to resume editing." : "Si è verificato un problema durante il salvataggio delle modifiche. Fai clic per riprendere la modifica.",
+    "Open in Text Editor" : "Apri nell'editor di testo",
     "An error occurred!" : "Si è verificato un errore!",
     "Text file" : "File di testo",
     "New text file.txt" : "Nuovo file di testo.txt"
