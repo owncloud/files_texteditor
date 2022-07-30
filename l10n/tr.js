@@ -1,6 +1,8 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "Geçersiz paylaşım jetonu",
+    "No user found" : "Kullanıcı bulunamadı",
     "This file is too big to be opened. Please download the file instead." : "Dosya açılmak için çok büyük. Bunun yerine lütfen dosyayı indirin.",
     "Cannot read the file." : "Dosya okunamıyor.",
     "Invalid file path supplied." : "Geçersiz dosya yolu sağlandı",
