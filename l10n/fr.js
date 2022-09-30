@@ -1,6 +1,7 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "No user found" : "Aucun utilisateur trouvé",
     "This file is too big to be opened. Please download the file instead." : "Ce fichier est trop volumineux pour être ouvert. Veuillez plutôt le télécharger.",
     "Cannot read the file." : "Impossible de lire le fichier.",
     "Invalid file path supplied." : "Chemin de fichier fourni non valide.",
