@@ -8,6 +8,7 @@ Feature: textFiles
     And user "Alice" has logged in using the webUI
     And the user has browsed to the files page
 
+
   Scenario: Edit a text file with the default name and file extension in a sub-folder
     When the user creates a folder with the name "simple-folder" using the webUI
     And the user opens folder "simple-folder" using the webUI
