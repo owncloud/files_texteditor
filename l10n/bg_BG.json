@@ -1,7 +1,7 @@
 { "translations": {
-    "Invalid share token" : "Невалиден маркер за споделяне",
+    "Invalid share token" : "Невалиден токен за споделяне",
     "No user found" : "Няма намерен потребител",
-    "This file is too big to be opened. Please download the file instead." : "Този файл е твърде голям за да се отвори. Моля, вместо това изтеглете файла.",
+    "This file is too big to be opened. Please download the file instead." : "Този файл е твърде голям за да се отвори. Моля, вместо това го изтеглете.",
     "Cannot read the file." : "Файлът не може да бъде прочетен.",
     "Invalid file path supplied." : "Предоставен е невалиден път до файл.",
     "The file is locked." : "Файлът е заключен.",
