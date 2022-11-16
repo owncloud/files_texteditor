@@ -9,7 +9,7 @@ OC.L10N.register(
     "The file is locked." : "Файлът е заключен.",
     "An internal server error occurred." : "Възникна вътрешна грешка на сървъра.",
     "Cannot save file as it has been modified since opening" : "Файлът не може да бъде запаметен, тъй като е бил променен след отварянето му",
-    "Insufficient permissions" : "Недостатъчни права",
+    "Insufficient permissions" : "Недостатъчни права за достъп",
     "File path not supplied" : "Не е предоставен път до файл",
     "File mtime not supplied" : "Файлът mtime не е предоставен",
     "saving..." : "запазване...",
