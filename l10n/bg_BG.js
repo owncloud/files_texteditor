@@ -13,7 +13,7 @@ OC.L10N.register(
     "File path not supplied" : "Не е предоставен път до файл",
     "File mtime not supplied" : "Файлът mtime не е предоставен",
     "saving..." : "запазване...",
-    "saved!" : "запазен!",
+    "saved!" : "запазено!",
     "failed!" : "неуспешно!",
     "Saved" : "Запазено",
     "There was a problem saving your changes. Click to resume editing." : "Възникна проблем при запазване на промените. Натиснете за да се възобнови редактирането.",
