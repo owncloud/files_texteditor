@@ -5,7 +5,7 @@ OC.L10N.register(
     "No user found" : "Няма намерен потребител",
     "This file is too big to be opened. Please download the file instead." : "Този файл е твърде голям за да се отвори. Моля, вместо това го изтеглете.",
     "Cannot read the file." : "Файлът не може да бъде прочетен.",
-    "Invalid file path supplied." : "Предоставен е невалиден път до файл.",
+    "Invalid file path supplied." : "До файла е предоставен невалиден път.",
     "The file is locked." : "Файлът е заключен.",
     "An internal server error occurred." : "Възникна вътрешна грешка на сървъра.",
     "Cannot save file as it has been modified since opening" : "Файлът не може да бъде запаметен, тъй като е бил променен след отварянето му",
