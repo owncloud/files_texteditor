@@ -30,6 +30,8 @@ use OCP\Constants;
 use OCP\Files\File;
 use OCP\Files\ForbiddenException;
 use OCP\Files\IRootFolder;
+use OCP\Files\Storage\IPersistentLockingStorage;
+use OCP\Lock\Persistent\ILock;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
@@ -198,6 +200,9 @@ class FileHandlingController extends Controller {
 				// Get file mtime
 				$filemtime = $node->getMTime();
 
+				// Get lock (if there is any)
+				$activePersistentLock = $this->getPersistentLock($node);
+
 				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
 					$this->logger->error(
@@ -206,6 +211,12 @@ class FileHandlingController extends Controller {
 					);
 					return new DataResponse(
 						['message' => $this->l->t('Cannot save file as it has been modified since opening')],
+						Http::STATUS_BAD_REQUEST
+					);
+				} elseif ($activePersistentLock) {
+					// Then the file has persistent lock acquired
+					return new DataResponse(
+						['message' => $this->l->t('Cannot save file as it is locked by %s.', [$activePersistentLock->getOwner()])],
 						Http::STATUS_BAD_REQUEST
 					);
 				} else {
@@ -279,7 +290,7 @@ class FileHandlingController extends Controller {
 		return $node;
 	}
 
-	private function getPermissions($node): int {
+	private function getPermissions(File $node): int {
 		$sharingToken = $this->request->getParam('sharingToken');
 
 		if ($sharingToken) {
@@ -288,5 +299,20 @@ class FileHandlingController extends Controller {
 		}
 
 		return $node->getPermissions();
+	}
+
+	private function getPersistentLock(File $node): ?ILock {
+		$storage = $node->getStorage();
+		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+			/** @var IPersistentLockingStorage $storage */
+			'@phan-var IPersistentLockingStorage $storage';
+			$locks = $storage->getLocks($node->getInternalPath(), false);
+			if (\count($locks) > 0) {
+				// use active lock (first returned)
+				return $locks[0];
+			}
+		}
+
+		return null;
 	}
 }
