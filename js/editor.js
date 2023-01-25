@@ -344,6 +344,16 @@ var Files_Texteditor = {
 		$('#editor_wrap').before(controlBar);
 		this.setFilenameMaxLength();
 		this.bindControlBar();
+		
+		if (file.locked) {
+			$('#editor_controls small.saving-message')
+				.text(t('files_texteditor', 'file is read-only, locked by {locked}', {locked: file.locked}))
+				.show();
+	   	} else if (!file.writeable) {
+			$('#editor_controls small.saving-message')
+				.text(t('files_texteditor', 'file is read-only, edit permission is missing'))
+				.show();
+	   	}
 
 	},
 
@@ -389,7 +399,9 @@ var Files_Texteditor = {
 		window.aceEditor = ace.edit(this.editor);
 		aceEditor.setShowPrintMargin(false);
 		aceEditor.getSession().setUseWrapMode(true);
-		if (!file.writeable) { aceEditor.setReadOnly(true); }
+		if (!file.writeable) {
+			 aceEditor.setReadOnly(true); 
+		}
 		if (file.mime && file.mime === 'text/html') {
 			this.setEditorSyntaxMode('html');
 		} else {
@@ -504,6 +516,7 @@ var Files_Texteditor = {
 		).done(function(data) {
 			// Call success callback
 			OCA.Files_Texteditor.file.writeable = data.writeable;
+			OCA.Files_Texteditor.file.locked = data.locked;
 			OCA.Files_Texteditor.file.mime = data.mime;
 			OCA.Files_Texteditor.file.mtime = data.mtime;
 			success(OCA.Files_Texteditor.file, data.filecontents);

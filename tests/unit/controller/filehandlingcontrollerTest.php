@@ -25,8 +25,15 @@ use OC\HintException;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
 use OCP\Constants;
 use OCP\Files\ForbiddenException;
+use OCP\Files\Storage\IStorage;
+use OCP\Files\Storage\IPersistentLockingStorage;
+use OCP\Lock\Persistent\ILock;
 use OCP\Lock\LockedException;
 use Test\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+
+interface IPersistentLockingStorageTest extends IPersistentLockingStorage, IStorage {
+}
 
 class FileHandlingControllerTest extends TestCase {
 
@@ -57,11 +64,17 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OCP\Files\File|\PHPUnit\Framework\MockObject\MockObject */
 	private $fileMock;
 
+	/** @var IPersistentLockingStorageTest|\PHPUnit\Framework\MockObject\MockObject */
+	private $fileStorageMock;
+
 	/** @var \OCP\IUser|\PHPUnit\Framework\MockObject\MockObject */
 	private $userMock;
 
 	/** @var \OCP\Share\IShare|\PHPUnit\Framework\MockObject\MockObject */
 	private $shareMock;
+
+	/** @var ILock|MockObject */
+	private $persistentLockMock;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -85,21 +98,32 @@ class FileHandlingControllerTest extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
+		$this->fileStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+		$this->fileStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+				
 		$this->fileMock = $this->getMockBuilder('OCP\Files\File')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 		$this->userMock = $this->getMockBuilder('OCP\IUser')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->shareMock = $this->getMockBuilder('OCP\Share\IShare')
 			->disableOriginalConstructor()
 			->getMock();
+		$this->persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-		$this->l10nMock->expects($this->any())->method('t')->willReturnCallback(
-			function ($message) {
-				return $message;
-			}
-		);
+		$this->l10nMock->expects($this->any())->method('t')->willReturnCallback(function ($text, $parameters = []) {
+			return \vsprintf($text, $parameters);
+		});
 
 		$this->controller = new FileHandlingController(
 			$this->appName,
@@ -129,6 +153,10 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
 
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
@@ -148,9 +176,12 @@ class FileHandlingControllerTest extends TestCase {
 		if ($status === 200) {
 			$this->assertArrayHasKey('filecontents', $data);
 			$this->assertArrayHasKey('writeable', $data);
+			$this->assertArrayHasKey('locked', $data);
 			$this->assertArrayHasKey('mime', $data);
 			$this->assertArrayHasKey('mtime', $data);
 			$this->assertSame($data['filecontents'], $fileContent);
+			$this->assertSame($data['writeable'], true);
+			$this->assertSame($data['locked'], null);
 		} else {
 			$this->assertArrayHasKey('message', $data);
 			$this->assertSame($expectedMessage, $data['message']);
@@ -191,6 +222,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
+		
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -227,6 +262,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -273,6 +312,10 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn($permissions);
 
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
@@ -314,6 +357,10 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
 
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+			
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
@@ -369,6 +416,10 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getContent')
 			->willReturn($fileContent);
 
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+			
 		$this->shareMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
@@ -384,6 +435,7 @@ class FileHandlingControllerTest extends TestCase {
 
 		$this->assertArrayHasKey('filecontents', $data);
 		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('locked', $data);
 		$this->assertArrayHasKey('mime', $data);
 		$this->assertArrayHasKey('mtime', $data);
 		$this->assertSame($data['filecontents'], $fileContent);
@@ -414,6 +466,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getMTime')
 			->willReturn($fileMTime);
+			
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -428,5 +484,148 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame(200, $status);
 		$this->assertArrayHasKey('mtime', $data);
 		$this->assertArrayHasKey('size', $data);
+	}
+
+	public function testLoadReadOnly() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+		$fileMTime = 65638643;
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_READ);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+		
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+		
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 200);
+
+		$this->assertArrayHasKey('filecontents', $data);
+		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('locked', $data);
+		$this->assertArrayHasKey('mime', $data);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertSame($data['filecontents'], $fileContent);
+		$this->assertSame($data['writeable'], false);
+		$this->assertSame($data['locked'], null);
+	}
+
+	public function testLoadWithPersistentLock() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+		$fileMTime = 65638643;
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+		
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+			
+		$this->persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn('test@test.com');
+
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$this->persistentLockMock]);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 200);
+
+		$this->assertArrayHasKey('filecontents', $data);
+		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('locked', $data);
+		$this->assertArrayHasKey('mime', $data);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertSame($data['filecontents'], $fileContent);
+		$this->assertSame($data['writeable'], false);
+		$this->assertSame($data['locked'], 'test@test.com');
+	}
+
+	public function testSaveWithPersistentLock() {
+		$path = '/test.txt';
+		$fileContent = 'test';
+		$mTime = 65638643;
+		$fileMTime = 65638643;
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn('admin');
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+			
+		$this->persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn('test@test.com');
+
+		$this->fileStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$this->persistentLockMock]);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->save($path, $fileContent, $mTime);
+		$status = $result->getStatus();
+		$data = $result->getData();
+
+		$this->assertSame(400, $status);
+		$this->assertArrayHasKey('message', $data);
+		$this->assertSame('Cannot save file as it is locked by test@test.com.', $data['message']);
 	}
 }

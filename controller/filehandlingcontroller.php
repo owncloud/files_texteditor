@@ -126,8 +126,10 @@ class FileHandlingController extends Controller {
 				$fileContents = $node->getContent();
 
 				if ($fileContents !== false) {
+					$activePersistentLock = $this->getPersistentLock($node);
 					$permissions = $this->getPermissions($node);
-					$writable = ($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE;
+					$writable = (($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE &&
+						$activePersistentLock === null);
 					$mime = $node->getMimeType();
 					$mTime = $node->getMTime();
 					$encoding = \mb_detect_encoding($fileContents . "a", "UTF-8, GB2312, GBK ,BIG5, WINDOWS-1252, SJIS-win, EUC-JP, ISO-8859-15, ISO-8859-1, ASCII", true);
@@ -140,6 +142,7 @@ class FileHandlingController extends Controller {
 						[
 							'filecontents' => $fileContents,
 							'writeable' => $writable,
+							'locked' => $activePersistentLock ? $activePersistentLock->getOwner() : null,
 							'mime' => $mime,
 							'mtime' => $mTime
 						],
@@ -304,7 +307,10 @@ class FileHandlingController extends Controller {
 	private function getPersistentLock(File $node): ?ILock {
 		$storage = $node->getStorage();
 		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
-			/** @var IPersistentLockingStorage $storage */
+			/**
+			 * @var IPersistentLockingStorage $storage
+			 * @phpstan-ignore-next-line
+			 */
 			'@phan-var IPersistentLockingStorage $storage';
 			$locks = $storage->getLocks($node->getInternalPath(), false);
 			if (\count($locks) > 0) {
