@@ -29,6 +29,8 @@ use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IPersistentLockingStorage;
 use OCP\Lock\Persistent\ILock;
 use OCP\Lock\LockedException;
+use OCP\Files\File;
+use OCP\Files\Folder;
 use Test\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -64,7 +66,7 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OCP\Files\File|\PHPUnit\Framework\MockObject\MockObject */
 	private $fileMock;
 
-	/** @var IPersistentLockingStorageTest|\PHPUnit\Framework\MockObject\MockObject */
+	/** @var IStorage|\PHPUnit\Framework\MockObject\MockObject */
 	private $fileStorageMock;
 
 	/** @var \OCP\IUser|\PHPUnit\Framework\MockObject\MockObject */
@@ -72,9 +74,6 @@ class FileHandlingControllerTest extends TestCase {
 
 	/** @var \OCP\Share\IShare|\PHPUnit\Framework\MockObject\MockObject */
 	private $shareMock;
-
-	/** @var ILock|MockObject */
-	private $persistentLockMock;
 
 	public function setUp(): void {
 		parent::setUp();
@@ -97,27 +96,16 @@ class FileHandlingControllerTest extends TestCase {
 		$this->rootMock = $this->getMockBuilder('OCP\Files\IRootFolder')
 			->disableOriginalConstructor()
 			->getMock();
-
-		$this->fileStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+		$this->fileStorageMock = $this->getMockBuilder(IStorage::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->fileStorageMock->expects($this->any())
-			->method('instanceOfStorage')
-			->willReturn(true);
-				
-		$this->fileMock = $this->getMockBuilder('OCP\Files\File')
+		$this->fileMock = $this->getMockBuilder(File::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$this->fileMock->expects($this->any())
-			->method('getStorage')
-			->willReturn($this->fileStorageMock);
 		$this->userMock = $this->getMockBuilder('OCP\IUser')
 			->disableOriginalConstructor()
 			->getMock();
 		$this->shareMock = $this->getMockBuilder('OCP\Share\IShare')
-			->disableOriginalConstructor()
-			->getMock();
-		$this->persistentLockMock = $this->getMockBuilder(ILock::class)
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -153,9 +141,9 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
 
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -222,10 +210,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
-		
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -263,9 +251,9 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
 
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -312,9 +300,9 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getPermissions')
 			->willReturn($permissions);
 
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -356,11 +344,11 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
-
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
 			
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
@@ -415,11 +403,11 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getContent')
 			->willReturn($fileContent);
-
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
 			
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
 		$this->shareMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
@@ -466,10 +454,10 @@ class FileHandlingControllerTest extends TestCase {
 		$this->fileMock->expects($this->any())
 			->method('getMTime')
 			->willReturn($fileMTime);
-			
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -504,16 +492,16 @@ class FileHandlingControllerTest extends TestCase {
 			->willReturn(Constants::PERMISSION_READ);
 
 		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
+		$this->fileMock->expects($this->any())
 			->method('getContent')
 			->willReturn($fileContent);
 		
 		$this->fileMock->expects($this->any())
 			->method('getMTime')
 			->willReturn($fileMTime);
-		
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([]);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
@@ -534,10 +522,50 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame($data['locked'], null);
 	}
 
-	public function testLoadWithPersistentLock() {
+	/**
+	 * Test that when there is lock from other app, load enforces read-only on a file
+	 */
+	public function testLoadWithPersistentLockFromOtherApp() {
 		$filename = 'test.txt';
 		$fileContent = 'test';
+		$parentPath = '/test';
+		$fileId = 1;
 		$fileMTime = 65638643;
+
+		$parentFolderMock = $this->getMockBuilder(Folder::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$parentFolderMock->expects($this->any())
+			->method('getPath')
+			->willReturn($parentPath);
+
+		$persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn('test@test.com');
+
+		$persistentLockMock->expects($this->any())
+			->method('getToken')
+			->willReturn('other-app-token');
+
+		$persistentLockingStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$persistentLockMock]);
+
+		$persistentLockingStorageMock->expects($this->never())
+			->method('lockNodePersistent');
 
 		$this->userMock->expects($this->any())
 			->method('getUID')
@@ -548,8 +576,16 @@ class FileHandlingControllerTest extends TestCase {
 			->willReturn($this->userMock);
 			
 		$this->fileMock->expects($this->any())
+			->method('getId')
+			->willReturn($fileId);
+
+		$this->fileMock->expects($this->any())
 			->method('getPermissions')
 			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($persistentLockingStorageMock);
 
 		$this->fileMock->expects($this->any())
 			->method('getContent')
@@ -559,19 +595,15 @@ class FileHandlingControllerTest extends TestCase {
 			->method('getMTime')
 			->willReturn($fileMTime);
 			
-		$this->persistentLockMock->expects($this->any())
-			->method('getOwner')
-			->willReturn('test@test.com');
-
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([$this->persistentLockMock]);
+		$this->fileMock->expects($this->any())
+			->method('getParent')
+			->willReturn($parentFolderMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
 
-		$result = $this->controller->load('/', $filename);
+		$result = $this->controller->load($parentPath, $filename);
 		$data = $result->getData();
 		$status = $result->getStatus();
 		$this->assertSame($status, 200);
@@ -586,11 +618,51 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame($data['locked'], 'test@test.com');
 	}
 
-	public function testSaveWithPersistentLock() {
-		$path = '/test.txt';
+	/**
+	 * Test that when there is lock from other app, save is not allowed
+	 */
+	public function testSaveWithPersistentLockFromOtherApp() {
+		$filename = 'test.txt';
 		$fileContent = 'test';
+		$parentPath = '/test';
+		$fileId = 1;
 		$mTime = 65638643;
 		$fileMTime = 65638643;
+
+		$parentFolderMock = $this->getMockBuilder(Folder::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$parentFolderMock->expects($this->any())
+			->method('getPath')
+			->willReturn($parentPath);
+
+		$persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn('test@test.com');
+
+		$persistentLockMock->expects($this->any())
+			->method('getToken')
+			->willReturn('other-app-token');
+
+		$persistentLockingStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$persistentLockMock]);
+
+		$persistentLockingStorageMock->expects($this->never())
+			->method('lockNodePersistent');
 
 		$this->userMock->expects($this->any())
 			->method('getUID')
@@ -605,22 +677,26 @@ class FileHandlingControllerTest extends TestCase {
 			->willReturn(Constants::PERMISSION_ALL);
 
 		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($persistentLockingStorageMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getId')
+			->willReturn($fileId);
+
+		$this->fileMock->expects($this->any())
 			->method('getMTime')
 			->willReturn($fileMTime);
-			
-		$this->persistentLockMock->expects($this->any())
-			->method('getOwner')
-			->willReturn('test@test.com');
 
-		$this->fileStorageMock->expects($this->any())
-			->method('getLocks')
-			->willReturn([$this->persistentLockMock]);
+		$this->fileMock->expects($this->any())
+			->method('getParent')
+			->willReturn($parentFolderMock);
 
 		$this->rootMock->expects($this->any())
 			->method('get')
 			->willReturn($this->fileMock);
 
-		$result = $this->controller->save($path, $fileContent, $mTime);
+		$result = $this->controller->save($parentPath . $filename, $fileContent, $mTime);
 		$status = $result->getStatus();
 		$data = $result->getData();
 

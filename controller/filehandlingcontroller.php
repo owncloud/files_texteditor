@@ -134,7 +134,7 @@ class FileHandlingController extends Controller {
 					// handle locks
 					$activePersistentLock = $this->getPersistentLock($node);
 					if ($activePersistentLock && !$this->verifyPersistentLock($node, $activePersistentLock)) {
-						// there is lock existing on this file 
+						// there is lock existing on this file
 						// and thus this user cannot write to this file
 						$writable = false;
 					} else {
@@ -384,9 +384,10 @@ class FileHandlingController extends Controller {
 	
 			if ($sharingToken) {
 				$accessToken = $this->getTokenForPublicLinkAccess(
-					$file->getId(), 
-					$file->getParent()->getPath(), 
-					$sharingToken);
+					$file->getId(),
+					$file->getParent()->getPath(),
+					$sharingToken
+				);
 				$owner = $this->l->t('Public Link User via Text Editor');
 			} else {
 				$user = $this->userSession->getUser();
@@ -394,12 +395,18 @@ class FileHandlingController extends Controller {
 					return null;
 				}
 				$accessToken = $this->getTokenForUserAccess(
-					$file->getId(), 
-					$file->getParent()->getPath(), 
-					$user->getUID());
+					$file->getId(),
+					$file->getParent()->getPath(),
+					$user->getUID()
+				);
 				$owner = $this->l->t('%s via Text Editor', [$user->getDisplayName()]);
 			}
 
+			/**
+			 * @var IPersistentLockingStorage $storage
+			 * @phpstan-ignore-next-line
+			 */
+			'@phan-var IPersistentLockingStorage $storage';
 			return $storage->lockNodePersistent($file->getInternalPath(), [
 				'token' => $accessToken,
 				'owner' => $owner
@@ -434,18 +441,20 @@ class FileHandlingController extends Controller {
 	
 			if ($sharingToken) {
 				$accessToken = $this->getTokenForPublicLinkAccess(
-					$file->getId(), 
-					$file->getParent()->getPath(), 
-					$sharingToken);
+					$file->getId(),
+					$file->getParent()->getPath(),
+					$sharingToken
+				);
 			} else {
 				$user = $this->userSession->getUser();
 				if (!$user) {
 					return false;
 				}
 				$accessToken = $this->getTokenForUserAccess(
-					$file->getId(), 
-					$file->getParent()->getPath(), 
-					$user->getUID());
+					$file->getId(),
+					$file->getParent()->getPath(),
+					$user->getUID()
+				);
 			}
 
 			// token in the lock should match access token for this user/share
@@ -458,6 +467,11 @@ class FileHandlingController extends Controller {
 	private function releasePersistentLock(File $file, ILock $lock): bool {
 		$storage = $file->getStorage();
 		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+			/**
+			 * @var IPersistentLockingStorage $storage
+			 * @phpstan-ignore-next-line
+			 */
+			'@phan-var IPersistentLockingStorage $storage';
 			return $storage->unlockNodePersistent($file->getInternalPath(), [
 				'token' => $lock->getToken()
 			]);
@@ -466,7 +480,7 @@ class FileHandlingController extends Controller {
 		return false;
 	}
 
-	private function getTokenForUserAccess(string $fileId, string $fileParentPath, string $userId): string {
+	private function getTokenForUserAccess(int $fileId, string $fileParentPath, string $userId): string {
 		// as this app is not collaborative, the token is static
 		return JWT::encode([
 			'uid' => $userId,
@@ -476,7 +490,7 @@ class FileHandlingController extends Controller {
 		], 'files_texteditor', 'HS256');
 	}
 
-	private function getTokenForPublicLinkAccess(string $fileId, string $fileParentPath, string $sharingToken): string {
+	private function getTokenForPublicLinkAccess(int $fileId, string $fileParentPath, string $sharingToken): string {
 		// as this app is not collaborative, the token is static
 		return JWT::encode([
 			'uid' => '',
@@ -485,5 +499,4 @@ class FileHandlingController extends Controller {
 			'fpp' => $fileParentPath,
 		], 'files_texteditor', 'HS256');
 	}
-
 }
