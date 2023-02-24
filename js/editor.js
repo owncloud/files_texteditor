@@ -139,6 +139,11 @@ var Files_Texteditor = {
 	_onCloseTrigger: function() {
 		// Hide or close?
 		if(!OCA.Files_Texteditor.file.edited) {
+			OCA.Files_Texteditor.closeFile(
+				OCA.Files_Texteditor.file,
+				function(data){},
+				function(message){}
+			);
 			OCA.Files_Texteditor.closeEditor();
 		} else {
 			// Trick the autosave attempt into thinking we have no changes
@@ -155,6 +160,12 @@ var Files_Texteditor = {
 						'Saved'
 						)
 					)
+					// Try to close 
+					OCA.Files_Texteditor.closeFile(
+						OCA.Files_Texteditor.file,
+						function(data){},
+						function(message){}
+					);
 					// Remove the editor
 					OCA.Files_Texteditor.closeEditor();
 				},
@@ -345,13 +356,13 @@ var Files_Texteditor = {
 		this.setFilenameMaxLength();
 		this.bindControlBar();
 		
-		if (file.locked) {
+		if (!file.writeable && file.locked) {
 			$('#editor_controls small.saving-message')
 				.text(t('files_texteditor', 'file is read-only, locked by {locked}', {locked: file.locked}))
 				.show();
 	   	} else if (!file.writeable) {
 			$('#editor_controls small.saving-message')
-				.text(t('files_texteditor', 'file is read-only, edit permission is missing'))
+				.text(t('files_texteditor', 'file is read-only'))
 				.show();
 	   	}
 
@@ -522,6 +533,37 @@ var Files_Texteditor = {
 			success(OCA.Files_Texteditor.file, data.filecontents);
 		}).fail(function(jqXHR) {
 			failure(JSON.parse(jqXHR.responseText).message);
+		});
+	},
+
+	/**
+	 * Close the file
+	 */
+	closeFile: function(file, success, failure) {
+		// Send the post request
+		if(file.dir == '/') {
+			var path = file.dir + file.name;
+		} else {
+			var path = file.dir + '/' + file.name;
+		}
+		$.ajax({
+			type: 'PUT',
+			url: OC.generateUrl('/apps/files_texteditor/ajax/closefile'),
+			data: {
+				path: path,
+				sharingToken: $('#sharingToken').val()
+			}
+		})
+		.done(success)
+		.fail(function(jqXHR) {
+			var message;
+
+			try{
+				message = JSON.parse(jqXHR.responseText).message;
+			}catch(e){
+			}
+
+			failure(message);
 		});
 	},
 

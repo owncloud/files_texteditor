@@ -39,7 +39,10 @@ use OCP\IUserSession;
 use OCP\Lock\LockedException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
+
 use Sabre\DAV\Exception\NotFound;
+
+use Firebase\JWT\JWT;
 
 class FileHandlingController extends Controller {
 
@@ -126,10 +129,24 @@ class FileHandlingController extends Controller {
 				$fileContents = $node->getContent();
 
 				if ($fileContents !== false) {
-					$activePersistentLock = $this->getPersistentLock($node);
 					$permissions = $this->getPermissions($node);
-					$writable = (($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE &&
-						$activePersistentLock === null);
+					
+					// handle locks
+					$activePersistentLock = $this->getPersistentLock($node);
+					if ($activePersistentLock && !$this->verifyPersistentLock($node, $activePersistentLock)) {
+						// there is lock existing on this file 
+						// and thus this user cannot write to this file
+						$writable = false;
+					} else {
+						// check if permissions allow writing
+						$writable = ($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE;
+					}
+
+					if ($writable) {
+						// get new/refresh write lock for the user
+						$activePersistentLock = $this->acquirePersistentLock($node);
+					}
+
 					$mime = $node->getMimeType();
 					$mTime = $node->getMTime();
 					$encoding = \mb_detect_encoding($fileContents . "a", "UTF-8, GB2312, GBK ,BIG5, WINDOWS-1252, SJIS-win, EUC-JP, ISO-8859-15, ISO-8859-1, ASCII", true);
@@ -203,8 +220,15 @@ class FileHandlingController extends Controller {
 				// Get file mtime
 				$filemtime = $node->getMTime();
 
-				// Get lock (if there is any)
+				// Check lock (if there is any)
 				$activePersistentLock = $this->getPersistentLock($node);
+				if ($activePersistentLock && !$this->verifyPersistentLock($node, $activePersistentLock)) {
+					// Then the file has persistent lock acquired
+					return new DataResponse(
+						['message' => $this->l->t('Cannot save file as it is locked by %s.', [$activePersistentLock->getOwner()])],
+						Http::STATUS_BAD_REQUEST
+					);
+				}
 
 				if ($mtime !== $filemtime) {
 					// Then the file has changed since opening
@@ -216,15 +240,13 @@ class FileHandlingController extends Controller {
 						['message' => $this->l->t('Cannot save file as it has been modified since opening')],
 						Http::STATUS_BAD_REQUEST
 					);
-				} elseif ($activePersistentLock) {
-					// Then the file has persistent lock acquired
-					return new DataResponse(
-						['message' => $this->l->t('Cannot save file as it is locked by %s.', [$activePersistentLock->getOwner()])],
-						Http::STATUS_BAD_REQUEST
-					);
 				} else {
 					// File same as when opened, save file
 					if (($permissions & Constants::PERMISSION_UPDATE) === Constants::PERMISSION_UPDATE) {
+						// Refresh (or aquire for expired) lock for the user for further writing
+						$activePersistentLock = $this->acquirePersistentLock($node);
+
+						// Write file
 						$filecontents = \iconv(\mb_detect_encoding($filecontents), "UTF-8", $filecontents);
 						try {
 							$node->putContent($filecontents);
@@ -234,8 +256,10 @@ class FileHandlingController extends Controller {
 						} catch (ForbiddenException $e) {
 							return new DataResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 						}
+
 						// Clear statcache
 						\clearstatcache();
+
 						// Get new mtime
 						$newmtime = $node->getMTime();
 						$newsize = $node->getSize();
@@ -258,6 +282,56 @@ class FileHandlingController extends Controller {
 			} else {
 				$this->logger->error('No file mtime supplied', ['app' => 'files_texteditor']);
 				return new DataResponse(['message' => $this->l->t('File mtime not supplied')], Http::STATUS_BAD_REQUEST);
+			}
+		} catch (HintException $e) {
+			$message = (string)$e->getHint();
+			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
+		} catch (\Exception $e) {
+			$message = (string)$this->l->t('An internal server error occurred.');
+			return new DataResponse(['message' => $message], Http::STATUS_BAD_REQUEST);
+		}
+	}
+
+	/**
+	 * close text file
+	 *
+	 * @NoAdminRequired
+	 * @NoSubadminRequired
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $path
+	 * @return DataResponse
+	 */
+	public function close($path) {
+		try {
+			if ($path !== '') {
+				try {
+					$node = $this->getNode($path);
+				} catch (ShareNotFound $e) {
+					return new DataResponse(
+						['message' => $this->l->t('Invalid share token')],
+						Http::STATUS_BAD_REQUEST
+					);
+				} catch (NoUserException $e) {
+					return new DataResponse(
+						['message' => $this->l->t('No user found')],
+						Http::STATUS_BAD_REQUEST
+					);
+				}
+
+				// Check lock (if there is any)
+				$activePersistentLock = $this->getPersistentLock($node);
+				if ($activePersistentLock && $this->verifyPersistentLock($node, $activePersistentLock)) {
+					// Clear lock on close
+					$this->releasePersistentLock($node, $activePersistentLock);
+				}
+
+				// Done
+				return new DataResponse([], Http::STATUS_OK);
+			} else {
+				$this->logger->error('No file path supplied');
+				return new DataResponse(['message' => $this->l->t('File path not supplied')], Http::STATUS_BAD_REQUEST);
 			}
 		} catch (HintException $e) {
 			$message = (string)$e->getHint();
@@ -303,16 +377,47 @@ class FileHandlingController extends Controller {
 
 		return $node->getPermissions();
 	}
+	private function acquirePersistentLock(File $file): ?ILock {
+		$storage = $file->getStorage();
+		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+			$sharingToken = $this->request->getParam('sharingToken');
+	
+			if ($sharingToken) {
+				$accessToken = $this->getTokenForPublicLinkAccess(
+					$file->getId(), 
+					$file->getParent()->getPath(), 
+					$sharingToken);
+				$owner = $this->l->t('Public Link User via Text Editor');
+			} else {
+				$user = $this->userSession->getUser();
+				if (!$user) {
+					return null;
+				}
+				$accessToken = $this->getTokenForUserAccess(
+					$file->getId(), 
+					$file->getParent()->getPath(), 
+					$user->getUID());
+				$owner = $this->l->t('%s via Text Editor', [$user->getDisplayName()]);
+			}
 
-	private function getPersistentLock(File $node): ?ILock {
-		$storage = $node->getStorage();
+			return $storage->lockNodePersistent($file->getInternalPath(), [
+				'token' => $accessToken,
+				'owner' => $owner
+			]);
+		}
+
+		return null;
+	}
+
+	private function getPersistentLock(File $file): ?ILock {
+		$storage = $file->getStorage();
 		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
 			/**
 			 * @var IPersistentLockingStorage $storage
 			 * @phpstan-ignore-next-line
 			 */
 			'@phan-var IPersistentLockingStorage $storage';
-			$locks = $storage->getLocks($node->getInternalPath(), false);
+			$locks = $storage->getLocks($file->getInternalPath(), false);
 			if (\count($locks) > 0) {
 				// use active lock (first returned)
 				return $locks[0];
@@ -321,4 +426,64 @@ class FileHandlingController extends Controller {
 
 		return null;
 	}
+
+	private function verifyPersistentLock(File $file, ILock $lock): bool {
+		$storage = $file->getStorage();
+		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+			$sharingToken = $this->request->getParam('sharingToken');
+	
+			if ($sharingToken) {
+				$accessToken = $this->getTokenForPublicLinkAccess(
+					$file->getId(), 
+					$file->getParent()->getPath(), 
+					$sharingToken);
+			} else {
+				$user = $this->userSession->getUser();
+				if (!$user) {
+					return false;
+				}
+				$accessToken = $this->getTokenForUserAccess(
+					$file->getId(), 
+					$file->getParent()->getPath(), 
+					$user->getUID());
+			}
+
+			// token in the lock should match access token for this user/share
+			return $lock->getToken() === $accessToken;
+		}
+
+		return false;
+	}
+
+	private function releasePersistentLock(File $file, ILock $lock): bool {
+		$storage = $file->getStorage();
+		if ($storage->instanceOfStorage(IPersistentLockingStorage::class)) {
+			return $storage->unlockNodePersistent($file->getInternalPath(), [
+				'token' => $lock->getToken()
+			]);
+		}
+
+		return false;
+	}
+
+	private function getTokenForUserAccess(string $fileId, string $fileParentPath, string $userId): string {
+		// as this app is not collaborative, the token is static
+		return JWT::encode([
+			'uid' => $userId,
+			'st' => '',
+			'fid' => $fileId,
+			'fpp' => $fileParentPath,
+		], 'files_texteditor', 'HS256');
+	}
+
+	private function getTokenForPublicLinkAccess(string $fileId, string $fileParentPath, string $sharingToken): string {
+		// as this app is not collaborative, the token is static
+		return JWT::encode([
+			'uid' => '',
+			'st' => $sharingToken,
+			'fid' => $fileId,
+			'fpp' => $fileParentPath,
+		], 'files_texteditor', 'HS256');
+	}
+
 }
