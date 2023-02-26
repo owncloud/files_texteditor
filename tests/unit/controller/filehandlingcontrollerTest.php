@@ -984,4 +984,152 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertArrayHasKey('message', $data);
 		$this->assertSame('Cannot save file as it is locked by test@test.com.', $data['message']);
 	}
+
+	public function dataClose() {
+		return [
+			[true, null],
+			[true, 'public-share'],
+			[false, null],
+			[false, 'public-share'],
+		];
+	}
+	/**
+	 * @dataProvider dataClose
+	 *
+	 * @param bool $isLocked
+	 * @param string $shareToken
+	 */
+	public function testClose($isLocked, $shareToken) {
+		$filename = 'test.txt';
+		$parentPath = '/test';
+		$fileId = 1;
+		$fileMTime = 65638643;
+		$userId = 'test@test.com';
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn($shareToken);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$parentFolderMock = $this->getMockBuilder(Folder::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$parentFolderMock->expects($this->any())
+			->method('getPath')
+			->willReturn($parentPath);
+
+		$persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		if ($shareToken) {
+			$token = JWT::encode([
+				'uid' => '',
+				'st' => $shareToken,
+				'fid' => $fileId,
+				'fpp' => $parentPath,
+			], 'files_texteditor', 'HS256');
+		} else {
+			$token = JWT::encode([
+				'uid' => $userId,
+				'st' => '',
+				'fid' => $fileId,
+				'fpp' => $parentPath,
+			], 'files_texteditor', 'HS256');
+		}
+
+		$persistentLockMock->expects($this->never())
+			->method('getOwner');
+
+		$persistentLockMock->expects($this->any())
+			->method('getToken')
+			->willReturn($token);
+
+		$persistentLockingStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		if ($isLocked) {
+			$persistentLockingStorageMock->expects($this->any())
+				->method('getLocks')
+				->willReturn([$persistentLockMock]);
+
+			$persistentLockingStorageMock->expects($this->once())
+				->method('unlockNodePersistent')
+				->with($this->stringContains($parentPath . $filename), $this->equalTo([
+					'token' => $token
+				]))
+				->willReturn(true);
+		} else {
+			$persistentLockingStorageMock->expects($this->any())
+				->method('getLocks')
+				->willReturn([]);
+
+			$persistentLockingStorageMock->expects($this->never())
+				->method('unlockNodePersistent');
+		}
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn($userId);
+
+		$this->userMock->expects($this->any())
+			->method('getDisplayName')
+			->willReturn($userId);
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($persistentLockingStorageMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getId')
+			->willReturn($fileId);
+
+		$this->fileMock->expects($this->any())
+			->method('getInternalPath')
+			->willReturn($parentPath . $filename);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+
+		$this->fileMock->expects($this->any())
+			->method('getParent')
+			->willReturn($parentFolderMock);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->close($parentPath . $filename);
+		$status = $result->getStatus();
+		$data = $result->getData();
+
+		$this->assertSame(200, $status);
+		$this->assertEmpty($data);
+	}
 }
