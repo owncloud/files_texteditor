@@ -33,6 +33,7 @@ use OCP\Files\File;
 use OCP\Files\Folder;
 use Test\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Firebase\JWT\JWT;
 
 interface IPersistentLockingStorageTest extends IPersistentLockingStorage, IStorage {
 }
@@ -752,6 +753,149 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame($data['filecontents'], $fileContent);
 		$this->assertSame($data['writeable'], false);
 		$this->assertSame($data['locked'], 'test@test.com');
+	}
+
+	public function dataSaveVerifyPersistentLock() {
+		return [
+			[null],
+			['public-share'],
+		];
+	}
+	/**
+	 * @dataProvider dataSaveVerifyPersistentLock
+	 *
+	 * @param string $shareToken
+	 */
+	public function testSaveVerifyPersistentLock($shareToken) {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+		$parentPath = '/test';
+		$fileId = 1;
+		$mTime = 65638643;
+		$fileMTime = 65638643;
+		$userId = 'test@test.com';
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn($shareToken);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$parentFolderMock = $this->getMockBuilder(Folder::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$parentFolderMock->expects($this->any())
+			->method('getPath')
+			->willReturn($parentPath);
+
+		$persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		if ($shareToken) {
+			$owner = 'Public Link User via Text Editor';
+			$token = JWT::encode([
+				'uid' => '',
+				'st' => $shareToken,
+				'fid' => $fileId,
+				'fpp' => $parentPath,
+			], 'files_texteditor', 'HS256');
+		} else {
+			$owner = $userId . ' via Text Editor';
+			$token = JWT::encode([
+				'uid' => $userId,
+				'st' => '',
+				'fid' => $fileId,
+				'fpp' => $parentPath,
+			], 'files_texteditor', 'HS256');
+		}
+
+		$persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn($owner);
+
+		$persistentLockMock->expects($this->any())
+			->method('getToken')
+			->willReturn($token);
+
+		$persistentLockingStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([$persistentLockMock]);
+
+		$persistentLockingStorageMock->expects($this->once())
+			->method('lockNodePersistent')
+			->with($this->stringContains($parentPath . $filename), $this->equalTo([
+				'token' => $token,
+				'owner' => $owner
+			]))
+			->willReturn($persistentLockMock);
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn($userId);
+
+		$this->userMock->expects($this->any())
+			->method('getDisplayName')
+			->willReturn($userId);
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($persistentLockingStorageMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getId')
+			->willReturn($fileId);
+
+		$this->fileMock->expects($this->any())
+			->method('getInternalPath')
+			->willReturn($parentPath . $filename);
+
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+
+		$this->fileMock->expects($this->any())
+			->method('getParent')
+			->willReturn($parentFolderMock);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->save($parentPath . $filename, $fileContent, $mTime);
+		$status = $result->getStatus();
+		$data = $result->getData();
+
+		$this->assertSame(200, $status);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertArrayHasKey('size', $data);
 	}
 
 	/**
