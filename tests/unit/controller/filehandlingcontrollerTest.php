@@ -522,6 +522,142 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame($data['locked'], null);
 	}
 
+	public function dataLoadAcquirePersistentLock() {
+		return [
+			[Constants::PERMISSION_ALL, null, true, 'test@test.com'],
+			[Constants::PERMISSION_ALL, 'public-share', true, 'test@test.com'],
+			[Constants::PERMISSION_READ, null, false, null],
+			[Constants::PERMISSION_READ, 'public-share', false, null],
+		];
+	}
+	/**
+	 * @dataProvider dataLoadAcquirePersistentLock
+	 *
+	 * @param int $permissions
+	 * @param string $shareToken
+	 * @param bool $expectWritable
+	 * @param string $expectLocked
+	 */
+	public function testLoadAcquirePersistentLock($permissions, $shareToken, $expectWritable, $expectLocked) {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+		$parentPath = '/test';
+		$fileId = 1;
+		$fileMTime = 65638643;
+		$userId = 'test@test.com';
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn($shareToken);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn($permissions);
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$parentFolderMock = $this->getMockBuilder(Folder::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$parentFolderMock->expects($this->any())
+			->method('getPath')
+			->willReturn($parentPath);
+
+		$persistentLockMock = $this->getMockBuilder(ILock::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockMock->expects($this->any())
+			->method('getOwner')
+			->willReturn($userId);
+
+		$persistentLockMock->expects($this->any())
+			->method('getToken')
+			->willReturn('token');
+
+		$persistentLockingStorageMock = $this->getMockBuilder(IPersistentLockingStorageTest::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('instanceOfStorage')
+			->willReturn(true);
+
+		$persistentLockingStorageMock->expects($this->any())
+			->method('getLocks')
+			->willReturn([]);
+
+		if ($expectWritable) {
+			$persistentLockingStorageMock->expects($this->once())
+				->method('lockNodePersistent')
+				->willReturn($persistentLockMock);
+		} else {
+			$persistentLockingStorageMock->expects($this->never())
+				->method('lockNodePersistent');
+		}
+
+		$this->userMock->expects($this->any())
+			->method('getUID')
+			->willReturn($userId);
+
+		$this->userSessionMock->expects($this->any())
+			->method('getUser')
+			->willReturn($this->userMock);
+			
+		$this->fileMock->expects($this->any())
+			->method('getId')
+			->willReturn($fileId);
+
+		$this->fileMock->expects($this->any())
+			->method('getInternalPath')
+			->willReturn($parentPath . $filename);
+
+		$this->fileMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn($permissions);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($persistentLockingStorageMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+		
+		$this->fileMock->expects($this->any())
+			->method('getMTime')
+			->willReturn($fileMTime);
+			
+		$this->fileMock->expects($this->any())
+			->method('getParent')
+			->willReturn($parentFolderMock);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load($parentPath, $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 200);
+
+		$this->assertArrayHasKey('filecontents', $data);
+		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('locked', $data);
+		$this->assertArrayHasKey('mime', $data);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertSame($data['filecontents'], $fileContent);
+		$this->assertSame($data['writeable'], $expectWritable);
+		$this->assertSame($data['locked'], $expectLocked);
+	}
+
 	/**
 	 * Test that when there is lock from other app, load enforces read-only on a file
 	 */
