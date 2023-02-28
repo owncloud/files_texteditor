@@ -101,6 +101,21 @@ class TextEditorContext extends RawMinkContext implements Context {
 	}
 
 	/**
+	 * @When the user inputs :text in the text area and waits for autosave
+	 *
+	 * @param string $text
+	 *
+	 * @return void
+	 */
+	public function theUserInputsTextInTheTextAreaAndWaits(string $text):void {
+		$this->theUserInputsTextInTheTextArea($text);
+		// The text editor autosaves every few seconds.
+		// So wait 10 seconds. We expect that the content should have been saved
+		// by then, and later test steps can check that the save worked.
+		\sleep(10);
+	}
+
+	/**
 	 * @When the user inputs the following text in the text area:
 	 *
 	 * @param PyStringNode $multiLineText
