@@ -36,12 +36,11 @@ Feature: textFiles
     Then file "New text file.txt" should be listed on the webUI
 
 
-  Scenario: Create a text file with the default file extension and do not close the editor
+  Scenario: Create a text file with the default file extension and check the editor autosave
     When the user creates a text file with the name "abc" using the webUI without changing the default file extension
-    And the user inputs "something" in the text area
+    And the user inputs "something" in the text area and waits for autosave
     Then file "abc.txt" should be listed on the webUI
-    And the user reloads the current page of the webUI
-    Then file "abc.txt" should be listed on the webUI
+    And the content of file "abc.txt" for user "Alice" should be "something"
 
 
   Scenario: Create a text file with the default file extension and unicode file name

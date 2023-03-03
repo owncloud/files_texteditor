@@ -31,5 +31,10 @@ return ['routes' => [
 		'name' => 'FileHandling#save',
 		'url' => '/ajax/savefile',
 		'verb' => 'PUT'
+	],
+	[
+		'name' => 'FileHandling#close',
+		'url' => '/ajax/closefile',
+		'verb' => 'PUT'
 	]
 ]];

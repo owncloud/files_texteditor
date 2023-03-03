@@ -24,6 +24,7 @@ var Files_Texteditor = {
 	 * Stores info on the file being edited
 	 */
 	file: {
+		opened: false,
 		edited: false,
 		mtime: null,
 		dir: null,
@@ -134,12 +135,18 @@ var Files_Texteditor = {
 	},
 
 	/**
-	 * Handles on close button click
+	 * Handles editor closing action
 	 */
 	_onCloseTrigger: function() {
 		// Hide or close?
 		if(!OCA.Files_Texteditor.file.edited) {
+			OCA.Files_Texteditor.closeFile(
+				OCA.Files_Texteditor.file,
+				function(data){},
+				function(message){}
+			);
 			OCA.Files_Texteditor.closeEditor();
+			OCA.Files_Texteditor.file.opened = false;
 		} else {
 			// Trick the autosave attempt into thinking we have no changes
 			OCA.Files_Texteditor.file.edited = false;
@@ -155,8 +162,16 @@ var Files_Texteditor = {
 						'Saved'
 						)
 					)
+					// Try to close 
+					OCA.Files_Texteditor.closeFile(
+						OCA.Files_Texteditor.file,
+						function(data){},
+						function(message){}
+					);
 					// Remove the editor
 					OCA.Files_Texteditor.closeEditor();
+					// Mark not opened 
+					OCA.Files_Texteditor.file.opened = false;
 				},
 				function(message){
 					OC.Notification.showTemporary(t(
@@ -218,6 +233,25 @@ var Files_Texteditor = {
 	},
 
 	/**
+	 * Handler for window close detected
+	 */
+	_onWindowClose: function (e) {
+		if(!OCA.Files_Texteditor.file.opened) {
+			// just close
+			return;
+		}
+
+		// inform user this could lead to changes lost or lock remaining
+		var message = t('files_texteditor','Editor has not been closed. Changes might be lost and file will remain locked for editing');
+		var e = e || window.event;
+		if (e) {
+			e.preventDefault(); // required in some browsers
+			e.returnValue = message; // required in some browsers
+		}
+		return message;
+	},
+
+	/**
 	 * Handler when unsaved work is detected
 	 */
 	_onUnsaved: function() {
@@ -234,6 +268,11 @@ var Files_Texteditor = {
 		this.oldTitle = document.title;
 		$.each(this.previewPlugins, function(mime, plugin) {
 			plugin.init();
+		});
+
+		$(window).bind('beforeunload', this._onWindowClose);
+		$(window).on('unload', function () {
+			$(window).trigger('beforeunload');
 		});
 	},
 
@@ -291,6 +330,8 @@ var Files_Texteditor = {
 			file.name,
 			function(file, data){
 				// Success!
+				OCA.Files_Texteditor.file.opened = true;
+
 				// Sort the title
 				document.title = file.name + ' - ' + OCA.Files_Texteditor.oldTitle;
 				// Load ace
@@ -344,6 +385,16 @@ var Files_Texteditor = {
 		$('#editor_wrap').before(controlBar);
 		this.setFilenameMaxLength();
 		this.bindControlBar();
+		
+		if (!file.writeable && file.locked) {
+			$('#editor_controls small.saving-message')
+				.text(t('files_texteditor', 'file is read-only, locked by {locked}', {locked: file.locked}))
+				.show();
+	   	} else if (!file.writeable) {
+			$('#editor_controls small.saving-message')
+				.text(t('files_texteditor', 'file is read-only'))
+				.show();
+	   	}
 
 	},
 
@@ -389,7 +440,9 @@ var Files_Texteditor = {
 		window.aceEditor = ace.edit(this.editor);
 		aceEditor.setShowPrintMargin(false);
 		aceEditor.getSession().setUseWrapMode(true);
-		if (!file.writeable) { aceEditor.setReadOnly(true); }
+		if (!file.writeable) {
+			 aceEditor.setReadOnly(true); 
+		}
 		if (file.mime && file.mime === 'text/html') {
 			this.setEditorSyntaxMode('html');
 		} else {
@@ -504,11 +557,43 @@ var Files_Texteditor = {
 		).done(function(data) {
 			// Call success callback
 			OCA.Files_Texteditor.file.writeable = data.writeable;
+			OCA.Files_Texteditor.file.locked = data.locked;
 			OCA.Files_Texteditor.file.mime = data.mime;
 			OCA.Files_Texteditor.file.mtime = data.mtime;
 			success(OCA.Files_Texteditor.file, data.filecontents);
 		}).fail(function(jqXHR) {
 			failure(JSON.parse(jqXHR.responseText).message);
+		});
+	},
+
+	/**
+	 * Close the file
+	 */
+	closeFile: function(file, success, failure) {
+		// Send the post request
+		if(file.dir == '/') {
+			var path = file.dir + file.name;
+		} else {
+			var path = file.dir + '/' + file.name;
+		}
+		$.ajax({
+			type: 'PUT',
+			url: OC.generateUrl('/apps/files_texteditor/ajax/closefile'),
+			data: {
+				path: path,
+				sharingToken: $('#sharingToken').val()
+			}
+		})
+		.done(success)
+		.fail(function(jqXHR) {
+			var message;
+
+			try{
+				message = JSON.parse(jqXHR.responseText).message;
+			}catch(e){
+			}
+
+			failure(message);
 		});
 	},
 
