@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 - [#382](https://github.com/owncloud/files_texteditor/issues/382) - Implement persistent locking
 
+### Changed
+
+- Bump firebase/php-jwt from 5.5.1 to 6.0.0
+
+
 ## [2.4.1] - 2021-10-12
 
 ### FIXED
