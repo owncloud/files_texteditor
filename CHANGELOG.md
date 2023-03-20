@@ -4,6 +4,9 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] - XXXXXXX
+
+
 ## [2.5.0] - 2023-03-03
 
 ### Added
