@@ -4,7 +4,19 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased] - XXXX-XX-XX
+## [Unreleased] - XXXXXXX
+
+
+## [2.5.0] - 2023-03-03
+
+### Added
+
+- [#382](https://github.com/owncloud/files_texteditor/issues/382) - Implement persistent locking
+
+### Changed
+
+- Bump firebase/php-jwt from 5.5.1 to 6.0.0
+
 
 ## [2.4.1] - 2021-10-12
 
@@ -50,7 +62,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.4.1...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.5.0...master
+[2.5.0]: https://github.com/owncloud/files_texteditor/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/owncloud/files_texteditor/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/owncloud/files_texteditor/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/owncloud/files_texteditor/compare/v2.3.1...v2.3.2
