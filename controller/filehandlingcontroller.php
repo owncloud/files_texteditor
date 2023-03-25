@@ -44,6 +44,8 @@ use Sabre\DAV\Exception\NotFound;
 
 use Firebase\JWT\JWT;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 class FileHandlingController extends Controller {
 
 	/** @var IL10N */

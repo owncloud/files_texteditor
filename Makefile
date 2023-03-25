@@ -60,7 +60,7 @@ clean-deps:
 
 # Builds the source and appstore package
 .PHONY: dist
-dist:
+dist: vendor
 	make source
 	make appstore
 
@@ -86,6 +86,7 @@ appstore:
 	cp --parents -r \
 	appinfo \
 	controller \
+	vendor \
 	css \
 	img \
 	l10n \
