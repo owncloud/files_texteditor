@@ -45,6 +45,7 @@ config = {
     "branches": [
         "master",
     ],
+    "appInstallCommandPhp": "composer install",
     "codestyle": True,
     "phan": {
         "multipleVersions": {
