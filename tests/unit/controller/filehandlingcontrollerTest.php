@@ -39,7 +39,6 @@ interface IPersistentLockingStorageTest extends IPersistentLockingStorage, IStor
 }
 
 class FileHandlingControllerTest extends TestCase {
-
 	/** @var FileHandlingController */
 	protected $controller;
 

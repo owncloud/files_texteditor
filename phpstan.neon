@@ -6,6 +6,8 @@ parameters:
     -
       message: '#Dead catch - OCP\\Lock\\LockedException is never thrown in the try block.#'
       path: controller/filehandlingcontroller.php
+      count: 1
     -
       message: '#Dead catch - OCP\\Files\\ForbiddenException is never thrown in the try block.#'
       path: controller/filehandlingcontroller.php
+      count: 1

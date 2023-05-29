@@ -27,7 +27,6 @@ use OCP\AppFramework\IAppContainer;
 use OCP\Util;
 
 class Application extends App {
-
 	/**
 	 * @param array $urlParams
 	 */
