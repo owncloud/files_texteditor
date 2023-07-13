@@ -4,8 +4,11 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased] - XXXX
+## [2.5.2] - 2023-07-13
 
+### Changed
+
+- Need PHP minversion 7.1 since version 2.5.1
 
 
 ## [2.5.1] - 2023-03-27
