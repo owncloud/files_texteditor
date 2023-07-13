@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- Need PHP minversion 7.1 since version 2.5.1
+- Need PHP minversion 7.1 since version 2.5.1, we bump to php minversion 7.4
 
 
 ## [2.5.1] - 2023-03-27
