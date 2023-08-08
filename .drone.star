@@ -76,6 +76,9 @@ config = {
             "suites": [
                 "webUITextEditor",
             ],
+            "servers": [
+                "daily-master-qa",
+            ],
         },
         "webUIActivity": {
             "suites": {
