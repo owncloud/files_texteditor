@@ -4,6 +4,12 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.5.3] - 2023-08-11
+
+### Fixed
+
+- [#401](https://github.com/owncloud/files_texteditor/pull/401) - fix: use firebase/php-jwt from core
+
 ## [2.5.2] - 2023-07-27
 
 ### Changed
@@ -73,7 +79,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.5.1...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.5.3...master
+[2.5.3]: https://github.com/owncloud/files_texteditor/compare/v2.5.2...v2.5.3
+[2.5.2]: https://github.com/owncloud/files_texteditor/compare/v2.5.1...v2.5.2
 [2.5.1]: https://github.com/owncloud/files_texteditor/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/owncloud/files_texteditor/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/owncloud/files_texteditor/compare/v2.4.0...v2.4.1
