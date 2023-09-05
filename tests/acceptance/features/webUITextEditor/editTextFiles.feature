@@ -17,13 +17,13 @@ Feature: textFiles
     And the user closes the text editor
     Then file "New text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "New text file.txt" should be listed on the webUI
+    And file "New text file.txt" should be listed on the webUI
     And the user opens file "New text file.txt" using the webUI
-    Then line 1 of the text should be "stuff"
+    And line 1 of the text should be "stuff"
     And the user inputs "other text before " in the text area
     And the user closes the text editor
     And the user opens file "New text file.txt" using the webUI
-    Then line 1 of the text should be "other text before stuff"
+    And line 1 of the text should be "other text before stuff"
 
   @issue-core-36233
   Scenario: Edit restored hidden text file

@@ -16,9 +16,9 @@ Feature: textFiles
     And the user closes the text editor
     Then file <file_name> should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file <file_name> should be listed on the webUI
+    And file <file_name> should be listed on the webUI
     And the user opens file <file_name> using the webUI
-    Then there should be 1 line of text in the text area
+    And there should be 1 line of text in the text area
     And line 1 of the text should be <example_text>
     Examples:
       | file_name                | example_text                      |
@@ -33,7 +33,7 @@ Feature: textFiles
     And the user closes the text editor
     Then file "New text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "New text file.txt" should be listed on the webUI
+    And file "New text file.txt" should be listed on the webUI
 
 
   Scenario: Create a text file with the default file extension and check the editor autosave
@@ -49,9 +49,9 @@ Feature: textFiles
     And the user closes the text editor
     Then file "सिमप्ले text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "सिमप्ले text file.txt" should be listed on the webUI
+    And file "सिमप्ले text file.txt" should be listed on the webUI
     And the user opens file "सिमप्ले text file.txt" using the webUI
-    Then there should be 1 line of text in the text area
+    And there should be 1 line of text in the text area
     And line 1 of the text should be "नेपाल"
 
 
@@ -69,9 +69,9 @@ Feature: textFiles
     And the user closes the text editor
     Then file "atextfile.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "atextfile.txt" should be listed on the webUI
+    And file "atextfile.txt" should be listed on the webUI
     And the user opens file "atextfile.txt" using the webUI
-    Then there should be 6 lines of text in the text area
+    And there should be 6 lines of text in the text area
     And line 1 of the text should be "What is this?"
     And line 2 of the text should be 'This is some "example" text!'
     And line 3 of the text should be "That goes on some lines in a 'text' file."
@@ -88,9 +88,9 @@ Feature: textFiles
     And the user closes the text editor
     Then file "New text file.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "New text file.txt" should be listed on the webUI
+    And file "New text file.txt" should be listed on the webUI
     And the user opens file "New text file.txt" using the webUI
-    Then line 1 of the text should be "stuff"
+    And line 1 of the text should be "stuff"
 
 
   Scenario: Create a text file in a sub-folder using special characters in the names
@@ -101,7 +101,7 @@ Feature: textFiles
     And the user closes the text editor
     Then file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
     And the user reloads the current page of the webUI
-    Then file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
+    And file "सिमप्ले $%#?&@ name.txt" should be listed on the webUI
 
 
   Scenario: Create a text file putting a name of a file which already exists
