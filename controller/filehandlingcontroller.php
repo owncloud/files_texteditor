@@ -154,7 +154,7 @@ class FileHandlingController extends Controller {
 					if ($encoding == 'UTF-8') {
 						return new DataResponse(
 							[
-							        'filecontents' => $fileContents,
+								'filecontents' => $fileContents,
 								'writeable' => $writable,
 								'locked' => $activePersistentLock ? $activePersistentLock->getOwner() : null,
 								'mime' => $mime,
