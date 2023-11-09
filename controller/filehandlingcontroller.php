@@ -156,11 +156,11 @@ class FileHandlingController extends Controller {
 						$encoding = 'ISO-8859-15';
 					}
 					$fileContents = \iconv($encoding, "UTF-8", $fileContents);
-                                        // safety net in case \iconv returns false because of wrongly detected encoding
-                                        if ($fileContents === false) {
-                                                $fileContents = $node->getContent();
-                                                $fileContents = \iconv("ISO-8859-15", "UTF-8", $fileContents);
-                                        }
+					// safety net in case \iconv returns false because of wrongly detected encoding
+					if ($fileContents === false) {
+						$fileContents = $node->getContent();
+						$fileContents = \iconv("ISO-8859-15", "UTF-8", $fileContents);
+					}
 					return new DataResponse(
 						[
 							'filecontents' => $fileContents,
