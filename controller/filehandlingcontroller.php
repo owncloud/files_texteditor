@@ -151,26 +151,33 @@ class FileHandlingController extends Controller {
 					$mime = $node->getMimeType();
 					$mTime = $node->getMTime();
 					$encoding = \mb_detect_encoding($fileContents . "a", "UTF-8, GB2312, GBK ,BIG5, WINDOWS-1252, SJIS-win, EUC-JP, ISO-8859-15, ISO-8859-1, ASCII", true);
-					if ($encoding == "") {
-						// set default encoding if it couldn't be detected
-						$encoding = 'ISO-8859-15';
+					if ($encoding == 'UTF-8') {
+						return new DataResponse(
+							[
+							        'filecontents' => $fileContents,
+								'writeable' => $writable,
+								'locked' => $activePersistentLock ? $activePersistentLock->getOwner() : null,
+								'mime' => $mime,
+								'mtime' => $mTime
+							],
+							Http::STATUS_OK
+						);
+					} else {
+						$fileContents = \iconv($encoding, "UTF-8", $fileContents);
+						if ($fileContents !== false) {
+							return new DataResponse(
+								[
+									'filecontents' => $fileContents,
+									'writeable' => false,
+									'locked' => $activePersistentLock ? $activePersistentLock->getOwner() : null,
+									'mime' => $mime,
+									'mtime' => $mTime
+								],
+								Http::STATUS_OK
+							);
+						}
+						return new DataResponse(['message' => (string)$this->l->t('Cannot convert the encoding to UTF-8.')], Http::STATUS_BAD_REQUEST);
 					}
-					$fileContents = \iconv($encoding, "UTF-8", $fileContents);
-					// safety net in case \iconv returns false because of wrongly detected encoding
-					if ($fileContents === false) {
-						$fileContents = $node->getContent();
-						$fileContents = \iconv("ISO-8859-15", "UTF-8", $fileContents);
-					}
-					return new DataResponse(
-						[
-							'filecontents' => $fileContents,
-							'writeable' => $writable,
-							'locked' => $activePersistentLock ? $activePersistentLock->getOwner() : null,
-							'mime' => $mime,
-							'mtime' => $mTime
-						],
-						Http::STATUS_OK
-					);
 				} else {
 					return new DataResponse(['message' => (string)$this->l->t('Cannot read the file.')], Http::STATUS_BAD_REQUEST);
 				}
