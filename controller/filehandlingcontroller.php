@@ -167,6 +167,7 @@ class FileHandlingController extends Controller {
 							Http::STATUS_OK
 						);
 					} else {
+						$this->releasePersistentLock($node, $activePersistentLock);
 						return new DataResponse(['message' => (string)$this->l->t('Cannot convert the encoding to UTF-8.')], Http::STATUS_BAD_REQUEST);
 					}
 				} else {
