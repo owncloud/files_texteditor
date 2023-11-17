@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - [#406](https://github.com/owncloud/files_texteditor/pull/406) - Fix for iconv returning false
-
+- [#412](https://github.com/owncloud/files_texteditor/pull/412) - fix: release locks on not converted files
 
 
 ## [2.6.0] - 2023-08-11
