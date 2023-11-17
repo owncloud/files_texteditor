@@ -4,6 +4,17 @@ All notable changes to this app will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased] -
+
+
+## [2.6.1] - 2023-11-15
+
+### Fixed
+
+- [#406](https://github.com/owncloud/files_texteditor/pull/406) - Fix for iconv returning false
+- [#412](https://github.com/owncloud/files_texteditor/pull/412) - fix: release locks on not converted files
+
+
 ## [2.6.0] - 2023-08-11
 
 ### Fixed
@@ -80,7 +91,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.6.0...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...master
+[2.6.1]: https://github.com/owncloud/files_texteditor/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/owncloud/files_texteditor/compare/v2.5.2...v2.6.0
 [2.5.2]: https://github.com/owncloud/files_texteditor/compare/v2.5.1...v2.5.2
 [2.5.1]: https://github.com/owncloud/files_texteditor/compare/v2.5.0...v2.5.1
