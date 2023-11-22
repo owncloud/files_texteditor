@@ -4,6 +4,7 @@ OC.L10N.register(
     "Invalid share token" : "Token i pavlefshëm pjesësh",
     "No user found" : "S’u gjet përdorues",
     "This file is too big to be opened. Please download the file instead." : "Kjo kartelë është shumë e madhe për hapje. Ju lutemi, në vend të kësaj, shkarkojeni.",
+    "Cannot convert the encoding to UTF-8." : "S’mund të shndërrohet kodimi në UTF-8.",
     "Cannot read the file." : "S’lexohet dot kartela.",
     "Invalid file path supplied." : "U dha shteg i pavlefshëm.",
     "The file is locked." : "Kartela është e kyçur.",
