@@ -1,6 +1,7 @@
 OC.L10N.register(
     "files_texteditor",
     {
+    "Invalid share token" : "無效的分享命令",
     "This file is too big to be opened. Please download the file instead." : "這個檔案太大以致於無法開啟，請您下載此檔案代替線上開啟",
     "Cannot read the file." : "無法讀取檔案。",
     "Invalid file path supplied." : "提供了無效的檔案路徑。",
@@ -10,6 +11,7 @@ OC.L10N.register(
     "Insufficient permissions" : "權限不足",
     "File path not supplied" : "沒有提供檔案路徑",
     "File mtime not supplied" : "沒有提供檔案修改時間",
+    "%s via Text Editor" : "%s經由文字編輯器",
     "saving..." : "儲存中...",
     "saved!" : "已儲存!",
     "failed!" : "失敗!",
@@ -17,6 +19,7 @@ OC.L10N.register(
     "There was a problem saving your changes. Click to resume editing." : "在儲存您的變更時發生錯誤，點選以回復編輯狀態。",
     "Open in Text Editor" : "開啟文字編輯器",
     "An error occurred!" : "發生錯誤！",
+    "file is read-only" : "檔案是唯讀",
     "Text file" : "文字檔",
     "New text file.txt" : "新文字檔.txt"
 },
