@@ -4,6 +4,7 @@ OC.L10N.register(
     "Invalid share token" : "Invalid share token",
     "No user found" : "No user found",
     "This file is too big to be opened. Please download the file instead." : "This file is too big to be opened. Please download the file instead.",
+    "Cannot convert the encoding to UTF-8." : "Cannot convert the encoding to UTF-8.",
     "Cannot read the file." : "Cannot read the file.",
     "Invalid file path supplied." : "Invalid file path supplied.",
     "The file is locked." : "The file is locked.",
