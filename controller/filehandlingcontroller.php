@@ -352,6 +352,15 @@ class FileHandlingController extends Controller {
 
 		if ($sharingToken) {
 			$share = $this->shareManager->getShareByToken($sharingToken);
+			$sharePassword = $share->getPassword();
+
+			if ($sharePassword !== null) {
+				$authenticatedShareId = $this->userSession->getSession()->get('public_link_authenticated');
+				if ($authenticatedShareId !== (string)$share->getId()) {
+					throw new HintException('Password required', $this->l->t('Access to this resource requires a password. Either no password has been supplied, or a wrong password has been used'));
+				}
+			}
+
 			$node = $share->getNode();
 			if (!($node instanceof File)) {
 				$node = $node->get($path);
