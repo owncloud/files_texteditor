@@ -22,6 +22,7 @@
 namespace OCA\Files_Texteditor\Tests\Controller;
 
 use OC\HintException;
+use OC\User\Session;
 use OCA\Files_Texteditor\Controller\FileHandlingController;
 use OCP\Constants;
 use OCP\Files\ForbiddenException;
@@ -31,6 +32,7 @@ use OCP\Lock\Persistent\ILock;
 use OCP\Lock\LockedException;
 use OCP\Files\File;
 use OCP\Files\Folder;
+use OCP\ISession;
 use Test\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Firebase\JWT\JWT;
@@ -427,6 +429,143 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertArrayHasKey('mime', $data);
 		$this->assertArrayHasKey('mtime', $data);
 		$this->assertSame($data['filecontents'], $fileContent);
+	}
+
+	public function testLoadWithShareWithPassword() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+
+		// need to replace the interface with the implementation to access the 'getSession' method
+		$this->userSessionMock = $this->createMock(Session::class);
+		$this->controller = new FileHandlingController(
+			$this->appName,
+			$this->requestMock,
+			$this->l10nMock,
+			$this->loggerMock,
+			$this->shareManagerMock,
+			$this->userSessionMock,
+			$this->rootMock
+		);
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn('token');
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+		$this->shareMock->expects($this->any())
+			->method('getPassword')
+			->willReturn('11111');
+		$this->shareMock->expects($this->any())
+			->method('getId')
+			->willReturn(42);
+
+		$session = $this->createMock(ISession::class);
+		$session->expects($this->any())
+			->method('get')
+			->with('public_link_authenticated')
+			->willReturn('42');
+		$this->userSessionMock->expects($this->any())
+			->method('getSession')
+			->willReturn($session);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 200);
+
+		$this->assertArrayHasKey('filecontents', $data);
+		$this->assertArrayHasKey('writeable', $data);
+		$this->assertArrayHasKey('locked', $data);
+		$this->assertArrayHasKey('mime', $data);
+		$this->assertArrayHasKey('mtime', $data);
+		$this->assertSame($data['filecontents'], $fileContent);
+	}
+
+	public function testLoadWithShareWithPasswordWrong() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+
+		// need to replace the interface with the implementation to access the 'getSession' method
+		$this->userSessionMock = $this->createMock(Session::class);
+		$this->controller = new FileHandlingController(
+			$this->appName,
+			$this->requestMock,
+			$this->l10nMock,
+			$this->loggerMock,
+			$this->shareManagerMock,
+			$this->userSessionMock,
+			$this->rootMock
+		);
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn('token');
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_ALL);
+		$this->shareMock->expects($this->any())
+			->method('getPassword')
+			->willReturn('11111');
+		$this->shareMock->expects($this->any())
+			->method('getId')
+			->willReturn(42);
+
+		$session = $this->createMock(ISession::class);
+		$session->expects($this->any())
+			->method('get')
+			->with('public_link_authenticated')
+			->willReturn('48');
+		$this->userSessionMock->expects($this->any())
+			->method('getSession')
+			->willReturn($session);
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 400);
 	}
 
 	public function testSaveWithShare() {
