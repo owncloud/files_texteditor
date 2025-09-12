@@ -431,6 +431,44 @@ class FileHandlingControllerTest extends TestCase {
 		$this->assertSame($data['filecontents'], $fileContent);
 	}
 
+	public function testLoadWithShareFileDrop() {
+		$filename = 'test.txt';
+		$fileContent = 'test';
+
+		$this->requestMock->expects($this->any())
+			->method('getParam')
+			->willReturn('token');
+
+		$this->shareMock->expects($this->any())
+			->method('getNode')
+			->willReturn($this->fileMock);
+
+		$this->shareManagerMock->expects($this->any())
+			->method('getShareByToken')
+			->willReturn($this->shareMock);
+
+		$this->fileMock->expects($this->any())
+			->method('getContent')
+			->willReturn($fileContent);
+
+		$this->fileMock->expects($this->any())
+			->method('getStorage')
+			->willReturn($this->fileStorageMock);
+
+		$this->shareMock->expects($this->any())
+			->method('getPermissions')
+			->willReturn(Constants::PERMISSION_CREATE); // explicit no read permission
+
+		$this->rootMock->expects($this->any())
+			->method('get')
+			->willReturn($this->fileMock);
+
+		$result = $this->controller->load('/', $filename);
+		$data = $result->getData();
+		$status = $result->getStatus();
+		$this->assertSame($status, 400);
+	}
+
 	public function testLoadWithShareWithPassword() {
 		$filename = 'test.txt';
 		$fileContent = 'test';

@@ -131,7 +131,11 @@ class FileHandlingController extends Controller {
 
 				if ($fileContents !== false) {
 					$permissions = $this->getPermissions($node);
-					
+					if (($permissions & Constants::PERMISSION_READ) !== Constants::PERMISSION_READ) {
+						// if we don't have permissions to read, then abort
+						return new DataResponse(['message' => (string)$this->l->t('Cannot read the file. Not enough permissions')], Http::STATUS_BAD_REQUEST);
+					}
+
 					// handle locks
 					$activePersistentLock = $this->getPersistentLock($node);
 					if ($activePersistentLock && !$this->verifyPersistentLock($node, $activePersistentLock)) {
