@@ -131,7 +131,11 @@ class FileHandlingController extends Controller {
 
 				if ($fileContents !== false) {
 					$permissions = $this->getPermissions($node);
-					
+					if (($permissions & Constants::PERMISSION_READ) !== Constants::PERMISSION_READ) {
+						// if we don't have permissions to read, then abort
+						return new DataResponse(['message' => (string)$this->l->t('Cannot read the file. Not enough permissions')], Http::STATUS_BAD_REQUEST);
+					}
+
 					// handle locks
 					$activePersistentLock = $this->getPersistentLock($node);
 					if ($activePersistentLock && !$this->verifyPersistentLock($node, $activePersistentLock)) {
@@ -352,6 +356,19 @@ class FileHandlingController extends Controller {
 
 		if ($sharingToken) {
 			$share = $this->shareManager->getShareByToken($sharingToken);
+			$sharePassword = $share->getPassword();
+
+			if ($sharePassword !== null) {
+				$authenticatedShareId = null;
+				if ($this->userSession instanceof \OC\User\Session) {
+					// getSession method isn't available in the interface but only in the implementation
+					$authenticatedShareId = $this->userSession->getSession()->get('public_link_authenticated');
+				}
+				if ($authenticatedShareId !== (string)$share->getId()) {
+					throw new HintException('Password required', $this->l->t('Access to this resource requires a password. Either no password has been supplied, or a wrong password has been used'));
+				}
+			}
+
 			$node = $share->getNode();
 			if (!($node instanceof File)) {
 				$node = $node->get($path);
