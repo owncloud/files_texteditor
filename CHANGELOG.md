@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] -
 
 
+## [2.6.2] - 2025-09-18
+
+### Fixed
+
+- [#416](https://github.com/owncloud/files_texteditor/pull/416) - fix: ensure password has been checked for password-protected shares and have permissions to read the file
+
+
 ## [2.6.1] - 2023-11-15
 
 ### Fixed
@@ -91,7 +98,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.6.2...master
+[2.6.2]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/owncloud/files_texteditor/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/owncloud/files_texteditor/compare/v2.5.2...v2.6.0
 [2.5.2]: https://github.com/owncloud/files_texteditor/compare/v2.5.1...v2.5.2
