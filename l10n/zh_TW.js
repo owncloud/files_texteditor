@@ -2,6 +2,7 @@ OC.L10N.register(
     "files_texteditor",
     {
     "Invalid share token" : "無效的分享命令",
+    "No user found" : "未找到用户",
     "This file is too big to be opened. Please download the file instead." : "這個檔案太大以致於無法開啟，請您下載此檔案代替線上開啟",
     "Cannot read the file." : "無法讀取檔案。",
     "Invalid file path supplied." : "提供了無效的檔案路徑。",
