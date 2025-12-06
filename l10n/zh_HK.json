@@ -1,0 +1,25 @@
+{ "translations": {
+    "Invalid share token" : "無效的分享命令",
+    "No user found" : "未找到用户",
+    "This file is too big to be opened. Please download the file instead." : "该文件太大无法在线预览，请下载后查看。",
+    "Cannot read the file." : "不能读取文件",
+    "Invalid file path supplied." : "提供了無效的檔案路徑。",
+    "The file is locked." : "此檔案已被鎖定",
+    "An internal server error occurred." : "内部服务器错误",
+    "Cannot save file as it has been modified since opening" : "由于打开之后已被修改，故无法保存文件。",
+    "Insufficient permissions" : "權限不足",
+    "File path not supplied" : "沒有提供檔案路徑",
+    "File mtime not supplied" : "沒有提供檔案修改時間",
+    "%s via Text Editor" : "%s經由文字編輯器",
+    "saving..." : "儲存中...",
+    "saved!" : "已儲存!",
+    "failed!" : "失敗!",
+    "Saved" : "已儲存",
+    "There was a problem saving your changes. Click to resume editing." : "在儲存您的變更時發生錯誤，點選以回復編輯狀態。",
+    "Open in Text Editor" : "在文本编辑器中打开",
+    "An error occurred!" : "发生错误！",
+    "file is read-only" : "檔案是唯讀",
+    "Text file" : "文字檔",
+    "New text file.txt" : "创建文本文件 .txt"
+},"pluralForm" :"nplurals=1; plural=0;"
+}
