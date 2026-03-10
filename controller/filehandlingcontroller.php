@@ -62,6 +62,8 @@ class FileHandlingController extends Controller {
 	/** @var IRootFolder */
 	private $root;
 
+	public const string JWT_SECRET_KEY = 'jwt-secret-key-for-files_texteditor';
+
 	/**
 	 * @NoAdminRequired
 	 *
@@ -480,7 +482,8 @@ class FileHandlingController extends Controller {
 			}
 
 			// token in the lock should match access token for this user/share
-			return $lock->getToken() === $accessToken;
+			$lockToken = $lock->getToken();
+			return $lockToken === $accessToken;
 		}
 
 		return false;
@@ -509,7 +512,7 @@ class FileHandlingController extends Controller {
 			'st' => '',
 			'fid' => $fileId,
 			'fpp' => $fileParentPath,
-		], 'files_texteditor', 'HS256');
+		], self::JWT_SECRET_KEY, 'HS256');
 	}
 
 	private function getTokenForPublicLinkAccess(int $fileId, string $fileParentPath, string $sharingToken): string {
@@ -519,6 +522,6 @@ class FileHandlingController extends Controller {
 			'st' => $sharingToken,
 			'fid' => $fileId,
 			'fpp' => $fileParentPath,
-		], 'files_texteditor', 'HS256');
+		], self::JWT_SECRET_KEY, 'HS256');
 	}
 }
