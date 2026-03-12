@@ -34,11 +34,11 @@ use WebDriver\Key;
 class TextEditorPage extends FilesPage {
 	protected $newTextFileButtonXpath
 		= './/div[contains(@class, "newFileMenu")]' .
-			'//a[@data-templatename="New text file.txt"]';
+		'//a[@data-templatename="New text file.txt"]';
 	protected $newTextFileNameInputLabel = 'New text file.txt';
 	protected $newTextFileNameInputXpath
 		= './/div[contains(@class, "newFileMenu")]' .
-			'//a[@data-templatename="New text file.txt"]//input';
+		'//a[@data-templatename="New text file.txt"]//input';
 	protected $newTextFileTooltipXpath = ".//*[@class='tooltip-inner']";
 	protected $textFileEditXpath = "//textarea[contains(@class,'ace_text-input')]";
 	protected $textFileTextLayerXpath = "//div[contains(@class,'ace_text-layer')]";

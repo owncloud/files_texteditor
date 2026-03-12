@@ -77,6 +77,9 @@ class FileHandlingControllerTest extends TestCase {
 	/** @var \OCP\Share\IShare|\PHPUnit\Framework\MockObject\MockObject */
 	private $shareMock;
 
+	# must be identical to the one in FileHandlingController
+	public const string JWT_SECRET_KEY = 'jwt-secret-key-for-files_texteditor';
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->appName = 'files_texteditor';
@@ -986,7 +989,7 @@ class FileHandlingControllerTest extends TestCase {
 				'st' => $shareToken,
 				'fid' => $fileId,
 				'fpp' => $parentPath,
-			], 'files_texteditor', 'HS256');
+			], self::JWT_SECRET_KEY, 'HS256');
 		} else {
 			$owner = $userId . ' via Text Editor';
 			$token = JWT::encode([
@@ -994,14 +997,14 @@ class FileHandlingControllerTest extends TestCase {
 				'st' => '',
 				'fid' => $fileId,
 				'fpp' => $parentPath,
-			], 'files_texteditor', 'HS256');
+			], self::JWT_SECRET_KEY, 'HS256');
 		}
 
-		$persistentLockMock->expects($this->any())
+		$persistentLockMock
 			->method('getOwner')
 			->willReturn($owner);
 
-		$persistentLockMock->expects($this->any())
+		$persistentLockMock
 			->method('getToken')
 			->willReturn($token);
 
@@ -1216,14 +1219,14 @@ class FileHandlingControllerTest extends TestCase {
 				'st' => $shareToken,
 				'fid' => $fileId,
 				'fpp' => $parentPath,
-			], 'files_texteditor', 'HS256');
+			], self::JWT_SECRET_KEY, 'HS256');
 		} else {
 			$token = JWT::encode([
 				'uid' => $userId,
 				'st' => '',
 				'fid' => $fileId,
 				'fpp' => $parentPath,
-			], 'files_texteditor', 'HS256');
+			], self::JWT_SECRET_KEY, 'HS256');
 		}
 
 		$persistentLockMock->expects($this->never())
