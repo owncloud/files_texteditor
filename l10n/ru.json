@@ -2,6 +2,7 @@
     "Invalid share token" : "Неправильный токен доступа",
     "No user found" : "Пользователь не найден",
     "This file is too big to be opened. Please download the file instead." : "Файл слишком большой для открытия. Пожалуйста скачайте его.",
+    "Cannot read the file. Not enough permissions" : "Невозможно прочитать файл -- недостаточно прав.",
     "Cannot convert the encoding to UTF-8." : "Невозможно преобразовать кодировку в UTF-8.",
     "Cannot read the file." : "Не удается прочитать файл.",
     "Invalid file path supplied." : "Указан некорректный путь.",
