@@ -64,3 +64,24 @@ jobs:
     uses: owncloud/reusable-workflows/.github/workflows/build.yml@main
     with:
       app-name: ${{ needs.get-vars.outputs.app-name }}
+
+  acceptance-webui:
+    name: WebUI acceptance tests
+    needs:
+      - get-vars
+    uses: owncloud/reusable-workflows/.github/workflows/acceptance.yml@main
+    with:
+      app-name: ${{ needs.get-vars.outputs.app-name }}
+      do-webui-tests: true
+      test-suites: "['webUITextEditor']"
+
+  acceptance-webui-activity:
+    name: WebUI acceptance tests with Activity app
+    needs:
+      - get-vars
+    uses: owncloud/reusable-workflows/.github/workflows/acceptance.yml@main
+    with:
+      app-name: ${{ needs.get-vars.outputs.app-name }}
+      do-webui-tests: true
+      additional-app: 'activity'
+      test-suites: "['webUIActivityList']"
