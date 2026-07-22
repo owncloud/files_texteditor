@@ -108,9 +108,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.7.1..master
-[2.7.1]: https://github.com/owncloud/files_texteditor/compare/v2.7.0..v2.7.1
-[2.7.0]: https://github.com/owncloud/files_texteditor/compare/v2.6.2..v2.7.0
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.7.1...master
+[2.7.1]: https://github.com/owncloud/files_texteditor/compare/v2.7.0...v2.7.1
+[2.7.0]: https://github.com/owncloud/files_texteditor/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/owncloud/files_texteditor/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/owncloud/files_texteditor/compare/v2.5.2...v2.6.0
@@ -119,7 +119,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 [2.5.0]: https://github.com/owncloud/files_texteditor/compare/v2.4.1...v2.5.0
 [2.4.1]: https://github.com/owncloud/files_texteditor/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/owncloud/files_texteditor/compare/v2.3.2...v2.4.0
+[2.3.2]: https://github.com/owncloud/files_texteditor/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/owncloud/files_texteditor/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/owncloud/files_texteditor/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/owncloud/files_texteditor/compare/v2.2...v2.2.1
-[2.3.2]: https://github.com/owncloud/files_texteditor/compare/v2.3.1...v2.3.2
