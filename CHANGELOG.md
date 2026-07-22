@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] -
 
 
+## [2.7.1] - 2026-07-22
+
+### Changed
+- Maintenance release re-signed with the ownCloud G2 code-signing certificate for the ownCloud 11.0.0 release.
+
+## [2.7.0] - 2026-06-29
+
+### Changed
+- ownCloud 11 compatible release (oc 11.0.0-rc1).
+
 ## [2.6.2] - 2025-09-18
 
 ### Fixed
@@ -98,7 +108,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.6.2...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.7.1...master
+[2.7.1]: https://github.com/owncloud/files_texteditor/compare/v2.7.0...v2.7.1
+[2.7.0]: https://github.com/owncloud/files_texteditor/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/owncloud/files_texteditor/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/owncloud/files_texteditor/compare/v2.5.2...v2.6.0
