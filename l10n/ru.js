@@ -15,6 +15,7 @@ OC.L10N.register(
     "Insufficient permissions" : "Недостаточно прав доступа",
     "File path not supplied" : "Неизвестен путь файла",
     "File mtime not supplied" : "Неизвестно время модификации файла",
+    "Access to this resource requires a password. Either no password has been supplied, or a wrong password has been used" : "Для доступа к этому ресурсу требуется пароль. Пароль либо не был предъявлен, либо он не верный.",
     "Public Link User via Text Editor" : "Пользователь публичной ссылки через текстовый редактор",
     "%s via Text Editor" : "%s Открыть в текстовом редакторе",
     "saving..." : "сохранение...",
