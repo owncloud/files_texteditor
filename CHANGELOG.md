@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] -
 
+### Added
+- Add `js/vendor/ace/PATCHES.md` recording the vendored Ace version, its
+  curation, the verification that it is unmodified upstream and the advisory
+  audit, plus a `package.json` so vulnerability scanners and SBOM tooling can
+  inventory the library instead of missing it entirely
+  ([#41824](https://github.com/owncloud/core/issues/41824))
+
+### Fixed
+- Anchor the `vendor/` gitignore rule to the project root. It previously matched
+  `js/vendor/` too, which ignored the whole directory and left the
+  `/js/vendor/ace/...` curation rules below it with no effect
+  ([#41824](https://github.com/owncloud/core/issues/41824))
+
 
 ## [2.7.1] - 2026-07-22
 

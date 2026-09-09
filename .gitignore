@@ -3,8 +3,12 @@
 .php_cs.cache
 .php-cs-fixer.cache
 
-# Composer
-vendor/
+# Composer. Anchored to the project root: an unanchored `vendor/` also silences
+# js/vendor/, where the vendored Ace build lives. That ignored the whole
+# directory, so the /js/vendor/ace/... rules below could never take effect (git
+# does not descend into an ignored directory) and new files there needed
+# `git add -f`.
+/vendor/
 vendor-bin/**/vendor
 vendor-bin/**/composer.lock
 
