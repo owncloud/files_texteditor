@@ -1,0 +1,7 @@
+{
+  "name": "ace-builds",
+  "version": "1.2.6",
+  "description": "Vendored, curated subset of the Ace editor src-noconflict build. Present so vulnerability scanners and SBOM tooling can inventory this library; see PATCHES.md. Not an install manifest.",
+  "license": "BSD-3-Clause",
+  "private": true
+}
