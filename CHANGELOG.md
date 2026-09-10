@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] -
 
+## [2.7.2] - 2026-09-09
+
 ### Added
 - Add `js/vendor/ace/PATCHES.md` recording the vendored Ace version, its
   curation, the verification that it is unmodified upstream and the advisory
@@ -19,6 +21,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   `/js/vendor/ace/...` curation rules below it with no effect
   ([#41824](https://github.com/owncloud/core/issues/41824))
 
+### Changed
+- Repackaged so the release artifact contains only the app payload. The 2.7.1
+  release was published from the build working tree, so it shipped `.git/`,
+  `.github/`, `tests/`, `vendor-bin/` and `build/artifacts/` as part of the signed
+  app ([#41824](https://github.com/owncloud/core/issues/41824))
 
 ## [2.7.1] - 2026-07-22
 
@@ -121,7 +128,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Updated
 - Update ace and replace searchbox extension for search support [#196] (https://github.com/owncloud/files_texteditor/pull/196)
 
-[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.7.1...master
+[Unreleased]: https://github.com/owncloud/files_texteditor/compare/v2.7.2...master
+[2.7.2]: https://github.com/owncloud/files_texteditor/compare/v2.7.1...v2.7.2
 [2.7.1]: https://github.com/owncloud/files_texteditor/compare/v2.7.0...v2.7.1
 [2.7.0]: https://github.com/owncloud/files_texteditor/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/owncloud/files_texteditor/compare/v2.6.1...v2.6.2
