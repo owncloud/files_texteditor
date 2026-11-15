@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "Invalid share token" : "Невалиден токен за споделяне",
     "No user found" : "Няма намерен потребител",
-    "This file is too big to be opened. Please download the file instead." : "Този файл е твърде голям за да се отвори. Моля, вместо това го изтеглете.",
+    "This file is too big to be opened. Please download the file instead." : "Този файл е твърде голям, за да се отвори. Моля, вместо това го изтеглете.",
     "Cannot read the file. Not enough permissions" : "Файлът не може да бъде прочетен. Няма достатъчно права за достъп.",
     "Cannot convert the encoding to UTF-8." : "Кодировката не може да бъде преобразувана в UTF-8.",
     "Cannot read the file." : "Файлът не може да бъде прочетен.",
